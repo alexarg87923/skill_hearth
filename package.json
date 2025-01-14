@@ -1,27 +1,18 @@
 {
   "name": "skill_hearth",
-  "version": "0.1.0",
-  "private": true,
+  "version": "1.0.0",
+  "main": "index.js",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+	"install:back-end": "cd back-end/ && npm install",
+    "install:front-end": "cd front-end/ && npm install",
+    "postinstall": "npm run install:back-end && npm run install:front-end",
+	"start": "concurrently -n \"Front-end,Back-end\" -c \"cyan,green\" \"npm run dev --prefix front-end\" \"npm start --prefix back-end\""
   },
-  "dependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "next": "15.1.4"
-  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
   "devDependencies": {
-    "typescript": "^5",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "postcss": "^8",
-    "tailwindcss": "^3.4.1",
-    "eslint": "^9",
-    "eslint-config-next": "15.1.4",
-    "@eslint/eslintrc": "^3"
+    "concurrently": "^9.1.2"
   }
 }
