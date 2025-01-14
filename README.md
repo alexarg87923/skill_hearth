@@ -2,6 +2,10 @@
 
 [description]
 
+## Clone the repo
+
+Clone the project at https://github.com/alexarg87923/skill_hearth and cd into the root folder e.g cd skill_hearth
+
 ## Installing dependancies
 
 Run `npm install` to install project dependancies.
