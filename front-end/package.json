@@ -13,6 +13,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
+  "proxy": "http://localhost:3001",
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@types/node": "^20",
