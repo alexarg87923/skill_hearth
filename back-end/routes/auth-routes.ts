@@ -5,6 +5,7 @@ import { db } from '../database/database';
 const router = Router();
 
 router.get('/login', (req: Request, res: Response): void => {
+	db.users.get();
 
 	return;
 });
