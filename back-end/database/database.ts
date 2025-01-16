@@ -1,15 +1,18 @@
 import { FirestoreDataConverter } from 'firebase-admin/firestore';
 import admin from 'firebase-admin';
 import dotenv from 'dotenv';
+import User from '../types/User';
+import { getAuth } from 'firebase-admin/auth';
 
 dotenv.config();
 
-admin.initializeApp({
+const app = admin.initializeApp({
   credential: admin.credential.cert(JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY!)),
   databaseURL: process.env.FIREBASE_DB_URL
 });
+const auth = getAuth(app);
 
-// Access Firestore
+// Configure Firestore
 const firestore = admin.firestore();
 
 const converter = <T>(): FirestoreDataConverter<T> => ({
@@ -23,9 +26,9 @@ const dataPoint = <T>(collectionPath: string) => firestore.collection(collection
 
 
 const db = {
+	auth: auth,
 	users: dataPoint<User>('users')
 }
-
 export { db };
 
 interface User {
