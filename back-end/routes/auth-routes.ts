@@ -10,7 +10,7 @@ router.get('/login', (req: Request, res: Response): void => {
 	return;
 });
 
-router.get('/signup', (req: Request, res: Response): void => {
+router.post('/signup', (req: Request, res: Response): void => {
 	return;
 });
 
