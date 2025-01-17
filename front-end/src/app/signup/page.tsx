@@ -21,21 +21,31 @@ function SignUp({ csrfToken }: ProtectedPageProps) {
     });
   };
 
+  const clearInput = () => {
+	setFormData({
+		first_name: '',
+		middle_name: '',
+		last_name: '',
+		email: '',
+		password: '',
+	  });
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
 	e.preventDefault();
 	try {
 	  const response = await axios.post('/api/auth/signup', 
-		{
-		  ...formData,
-		  uuid: crypto.randomUUID()
-		},
+		formData,
 		{
 		  headers: {
-			'X-CSRF-Token': csrfToken
-		  },
+			'CSRF-Token': csrfToken
+		  }
 		}
 	  );
-	  alert(response.data.message);
+	  if (response.status == 200) {
+		alert('Success!');
+		clearInput();
+	  }
 	} catch (error) {
 	  console.error('Error signing up:', error);
 	  alert('Failed to sign up. Please try again.');
@@ -47,12 +57,6 @@ function SignUp({ csrfToken }: ProtectedPageProps) {
     <main className="flex min-h-screen flex-col items-center justify-center p-24">
       <h1 className="text-4xl font-bold mb-8">Sign Up</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-	  <input
-	  	  hidden={true}
-          type="text"
-          name="csrf"
-          placeholder="csrf"
-        />
         <input
           type="text"
           name="first_name"

@@ -1,91 +1,93 @@
 import { Request, Response, Router } from 'express';
-import User from '../types/User'
 import { db } from '../database/database';
+import { FirebaseAuthError } from 'firebase-admin/auth';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const router = Router();
 
-router.get('/login', async (req: Request, res: Response): Promise<void> => {
-	// get specific row
-	// var test_user_id = get_users.docs[0].id;
+router.post('/login', async (req: Request, res: Response): Promise<void> => {
+	var userRecord = await db.auth.getUserByEmail(req.body.email);
 
-	// const usersRef = db.users;
-	// const userDocRef = usersRef.doc(get_users.docs[0].id);
+	if (userRecord === null || userRecord === undefined) {
+		console.log(`User attempted login but doesn't exist with email: ${req.body.email}`);
+		res.status(401).send('User does not exist.');
+		return;
+	};
 
-	// userDocRef.get().then(doc => {
-	// if (doc.exists) {
-	// 	const userData = doc.data();
-	// 	console.log(userData); 
-	// } else {
-	// 	console.log('No such document!');
-	// 	}
-	// });
-
-	// get auth user
-	// console.log(await db.auth.getUsers([{ uid: test_user_id }]));
-
-	console.log(req.csrfToken());
-
-	var get_users = await db.auth.getUserByEmail('test@test')
-	var user_id = get_users.uid;
-
-	const expiresIn = 60 * 60 * 24 * 5 * 1000; // 5 days
-	
-	db.auth.createSessionCookie(user_id, {expiresIn})
-		.then(
-		(sessionCookie) => {
-			const options = { maxAge: expiresIn, httpOnly: true, secure: true };
-			res.cookie('session', sessionCookie, options);
-			res.status(200).send('Success!');
+	const endpoint = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.FIREBASE_API_KEY}`;
+	const payload = {
+	  email: req.body.email,
+	  password: req.body.password,
+	  returnSecureToken: true,
+	};
+  
+	try {
+	  const response = await fetch(endpoint, {
+		method: 'POST',
+		headers: {
+		  'Content-Type': 'application/json',
 		},
-		(error) => {
-			console.log(`Error logging user in: ${error}`);
-			res.status(401).send('UNAUTHORIZED REQUEST!');
-		});
+		body: JSON.stringify(payload)
+	  });
+  
+	  if (!response.ok) {
+		const error = await response.json();
+		console.error('Error verifying password:', error);
+		res.status(response.status);
+		return;
+	  }
+  
+	  const data = await response.json();
+	  console.log('Password verified successfully:');
 
-
-	res.status(500);
-	return;
+	  const expiresIn = 60 * 60 * 24 * 5 * 1000; // 5 days
+	  db.auth.createSessionCookie(data.idToken, {expiresIn})
+		  .then(
+		  (sessionCookie) => {
+			  const options = { maxAge: expiresIn, httpOnly: true, secure: true };
+			  res.cookie('session', sessionCookie, options);
+			  res.status(200).send('Success!');
+			  return;
+		  },
+		  (error) => {
+			  console.log(`Error logging user in: ${error}`);
+			  res.status(401).send('UNAUTHORIZED REQUEST!');
+			  return;
+		  });
+  
+	  res.status(500);
+	  return;
+	} catch (error) {
+	  console.error('Error verifying password:', error);
+	  throw error;
+	}
 });
 
 router.post('/signup', async (req: Request, res: Response): Promise<void> => {
-	var test_user = {
-		first_name: 'test',
-		middle_name: 'test',
-		last_name: 'test',
-		email: 'test@test.com',
-		password: 'valid_password',
-		onboarded: false,
-		created_at: new Date() as Date
-	};
-	// console.log("Added user: ");
-	// console.log(await db.users.add(test_user));
-
-	var get_users = await db.users.get();
-	console.log(get_users.docs[0].id);
-
-	var test_user_id = get_users.docs[0].id;
-
-	const usersRef = db.users;
-	const userDocRef = usersRef.doc(get_users.docs[0].id);
-
-	userDocRef.get().then(doc => {
-	if (doc.exists) {
-		const userData = doc.data();
-		console.log(userData); 
-	} else {
-		console.log('No such document!');
-		}
-	});
-
-	console.log("new user uuid: ")
-	console.log(await db.auth.createUser(test_user));
-
-
-	console.log(await db.auth.getUsers([{ uid: test_user_id }]));
+	const { first_name, middle_name, last_name, email, password } = req.body; 
 	
-
-	res.status(200);
-	return;
+	if (!first_name || !last_name || !email || !password) {
+		res.status(500).send('Missing Fields on sign up.')
+		return;
+	}
+	try {
+		req.body.displayName = middle_name ? `${first_name.trim()} ${middle_name.trim()} ${last_name.trim()}` : `${first_name.trim()} ${last_name.trim()}`;
+		const userRecord = await db.auth.createUser(req.body);
+		console.log("new user created with uuid: ");
+		console.log(userRecord);
+		res.status(200).send('Success!');
+		return;
+	} catch (err) {
+		if (err instanceof FirebaseAuthError) {
+			console.error('Error creating account');
+			if (err.code == 'auth/email-already-exists') {
+				console.error(`${err.message} ${req.body.email}`);
+			}
+		}
+		res.status(500).send('Error!');
+	}
 });
 
 export const AuthRoutes: Router = router;
