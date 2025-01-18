@@ -8,10 +8,10 @@ export async function middleware(request: NextRequest) {
 	console.log(`${request.nextUrl.host}/login`);
 	console.log(`${request.nextUrl.host}/api${request.nextUrl.pathname}`);
     if (!sessionCookie) {
-      return NextResponse.redirect(`${request.nextUrl.host}/login`);
+      return NextResponse.redirect(`${request.nextUrl.protocol}://${request.nextUrl.host}/login`);
     }
 
-	const verifyResponse = await axios.get(`http://${request.nextUrl.host}/api${request.nextUrl.pathname}`, {
+	const verifyResponse = await axios.get(`${request.nextUrl.protocol}://${request.nextUrl.host}/api${request.nextUrl.pathname}`, {
 		headers: {
 			Cookie: `session=${sessionCookie}`
 		  }
