@@ -10,7 +10,7 @@ export const Authenticate = async (req: Request, res: Response): Promise<void> =
 		res.status(401);
 		return;
 	}
-	console.log('verifying users cookie');
+	console.log('verifying users cookie for protected route...');
 	db.auth
     .verifySessionCookie(sessionCookie, true)
     .then(() => {

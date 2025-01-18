@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 import axios from 'axios';
-import { withProtectedPage } from '../lib/withProtectedPage';
-import ProtectedPageProps from '../types/ProtectedPageProps';
+import { withProtectedPage } from '../../lib/withProtectedPage';
+import ProtectedPageProps from '../../types/ProtectedPageProps';
 
 function SignUp({ csrfToken }: ProtectedPageProps) {
   const [formData, setFormData] = useState({

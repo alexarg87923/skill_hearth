@@ -13,7 +13,10 @@ var corsOptions;
   
 if (ENV === 'development') {
 	corsOptions = {
-		origin: '*',
+		origin: 'http://localhost:3000',
+		credentials: true,
+		methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+		allowedHeaders: ['Content-Type', 'Authorization', '*']
 	};
 	console.log('CORS in development mode: allowing all origins');
   } else {

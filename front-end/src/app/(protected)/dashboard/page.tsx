@@ -12,7 +12,6 @@ interface chatUser {
 }
 
 const dashboard: React.FC = () => {
-    
     const currentUser = {
         name: "John Doe",
         skillset: ["Javascript", "React", "TypeScript"],

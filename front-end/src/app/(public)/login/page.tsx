@@ -1,8 +1,8 @@
 "use client"
 
 import React, { useState } from 'react';
-import { withProtectedPage } from '../lib/withProtectedPage';
-import ProtectedPageProps from '../types/ProtectedPageProps';
+import { withProtectedPage } from '../../lib/withProtectedPage';
+import ProtectedPageProps from '../../types/ProtectedPageProps';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
@@ -33,7 +33,7 @@ function LogIn({ csrfToken }: ProtectedPageProps) {
 		  );
 		  if (response.status == 200) {
 			alert('Success!');
-			router.push('/dashboard')
+			router.push('/dashboard');
 		  }
 		} catch (error) {
 		  console.error('Error signing up:', error);
@@ -46,6 +46,7 @@ function LogIn({ csrfToken }: ProtectedPageProps) {
       <h1 className="text-4xl font-bold mb-8">Login</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
+		  className="text-white rounded-sm bg-gray-800 focus-visible:outline-none h-10 min-w-80 p-4"
           type="email"
           name="email"
           placeholder="Email"
@@ -54,6 +55,7 @@ function LogIn({ csrfToken }: ProtectedPageProps) {
           required
         />
         <input
+		  className="text-white rounded-sm bg-gray-800 focus-visible:outline-none h-10 min-w-80 p-4"
           type="password"
           name="password"
           placeholder="Password"
@@ -61,7 +63,7 @@ function LogIn({ csrfToken }: ProtectedPageProps) {
           onChange={handleChange}
           required
         />
-        <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded">
+        <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-400 hover:text-white">
           Log in!
         </button>
       </form>
