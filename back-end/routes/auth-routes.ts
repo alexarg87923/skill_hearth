@@ -102,11 +102,10 @@ router.post('/signup', async (req: Request, res: Response): Promise<void> => {
 
 router.get(('/verify-session'), async (req: Request, res: Response): Promise<void> => {
 	const sessionCookie = req.cookies.session;
-
 	if (sessionCookie === null || sessionCookie === undefined || sessionCookie === 'undefined')
 	{
 		console.log(`User does not have a session to decode.`);
-		res.status(200).json({});
+		res.status(204).json();
 		return;
 	}
 
@@ -119,9 +118,14 @@ router.get(('/verify-session'), async (req: Request, res: Response): Promise<voi
     })
     .catch((error) => {
 		console.log(`Catastrophic error decoding user's cookie: ${error}`);	
-		res.status(500);
+		res.status(500).json();
 		return
     });
+});
+
+router.get('/get_token', async (req: Request, res: Response): Promise<void> => {
+	res.status(200).send({ csrfToken: req.csrfToken() });
+	return;
 });
 
 export const AuthRoutes: Router = router;

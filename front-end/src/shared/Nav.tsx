@@ -1,13 +1,8 @@
-"use client"
+import React, { useContext } from 'react';
+import UserContext from '../provider/UserProvider';
 
-import React from 'react';
-import SessionData from "../types/SessionData";
-
-interface NavProps {
-	session: SessionData;
-  }
-
-const Nav: React.FC<NavProps> = ({ session }) => {
+const Nav: React.FC = () => {
+	const { userContext } = useContext(UserContext);
 	return (
 		<nav className="bg-white border-gray-200 dark:bg-gray-900">
 			<div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
@@ -23,32 +18,40 @@ const Nav: React.FC<NavProps> = ({ session }) => {
 			</button>
 			<div className="hidden w-full md:block md:w-auto" id="navbar-default">
 				<ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-					{Object.keys(session).length !== 0 ?
-						<li>
-							<a href="/dashboard" className="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white md:dark:text-blue-500" aria-current="page">Dashboard</a>
-						</li>
-						:
-						<>
-						<li>
-							<a href="/" className="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white md:dark:text-blue-500" aria-current="page">Home</a>
-						</li>
-						<li>
-							<a href="#" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">About</a>
-						</li>
-						<li>
-							<a href="#" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Services</a>
-						</li>
-						</>
-						
-					}
-					{Object.keys(session).length !== 0 ?
+					{!userContext || Object.keys(userContext).length === 0 ?
+							<>
+								<li>
+									<a href="/" className="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white md:dark:text-blue-500" aria-current="page">Home</a>
+								</li>
+								<li>
+									<a href="#" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">About</a>
+								</li>
+								<li>
+									<a href="#" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Services</a>
+								</li>
+							</>
+							:
+							<li>
+								<a href="/dashboard" className="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white md:dark:text-blue-500" aria-current="page">Dashboard</a>
+							</li>
+						}
+						{!userContext || Object.keys(userContext).length === 0 ?
+							<>
+								<li>
+									<a href="/login" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Login</a>
+								</li>
+								<li>
+									<a href="/signup" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Sign up</a>
+								</li> 
+							</> 
+							:
 							<>
 								<button
 									type="button"
 									className="flex items-center space-x-2 text-gray-900 dark:text-white focus:outline-none"
 								>
-									{
-										session?.profile_picture
+									{/* {
+										userContext?.profile_picture
 										?
 										<img
 										src={session.profile_picture}
@@ -67,19 +70,10 @@ const Nav: React.FC<NavProps> = ({ session }) => {
 											d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-4.418 0-8 1.79-8 4v1h16v-1c0-2.21-3.582-4-8-4z"
 										/>
 										</svg>
-									}
+									} */}
 								</button>
 							</> 
-							:
-							<>
-								<li>
-									<a href="/login" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Login</a>
-								</li>
-								<li>
-									<a href="/signup" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Sign up</a>
-								</li> 
-							</> 
-					}
+						}
 				</ul>
 			</div>
 			</div>
