@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
+interface User {
+	name: string;
+	profile_picture?: string;
+}
+
 interface UserContextProps {
-	userContext: null | {};
+	userContext: null | User;
 	setUserContext: Function;
 	loading: boolean;
 }

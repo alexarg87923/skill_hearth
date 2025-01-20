@@ -50,12 +50,12 @@ const Nav: React.FC = () => {
 									type="button"
 									className="flex items-center space-x-2 text-gray-900 dark:text-white focus:outline-none"
 								>
-									{/* {
+									{
 										userContext?.profile_picture
 										?
 										<img
-										src={session.profile_picture}
-										alt={`${session.name}'s profile`}
+										src={userContext.profile_picture}
+										alt={`${userContext.name}'s profile`}
 										width="40"
 										height="40"
 										/>
@@ -70,7 +70,7 @@ const Nav: React.FC = () => {
 											d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-4.418 0-8 1.79-8 4v1h16v-1c0-2.21-3.582-4-8-4z"
 										/>
 										</svg>
-									} */}
+									}
 								</button>
 							</> 
 						}
