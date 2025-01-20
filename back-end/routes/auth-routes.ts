@@ -58,7 +58,7 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
 		  .then(
 		  (sessionCookie) => {
 			  res.cookie('session', sessionCookie, cookieOptions);
-			  res.status(200).send('Success!');
+			  res.status(200).send({name: data.name});
 			  return;
 		  },
 		  (error) => {

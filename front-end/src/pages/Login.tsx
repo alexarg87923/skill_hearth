@@ -2,9 +2,11 @@ import React, { useContext, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import CsrfContext from '../provider/CsrfProvider';
+import UserContext from '../provider/UserProvider';
 
 function Login() {
 	const csrfToken = useContext(CsrfContext);
+	const { setUserContext } = useContext(UserContext);
 	const navigate = useNavigate();
 	const [formData, setFormData] = useState({
 		email: '',
@@ -21,28 +23,32 @@ function Login() {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		try {
-		  const response = await axios.post('/api/auth/login', 
-			formData,
-			{
-			  headers: {
-				'CSRF-Token': csrfToken
-			  }
+			const response = await axios.post('/api/auth/login', 
+				formData,
+				{
+					headers: {
+						'CSRF-Token': csrfToken
+					}
+				}
+			);
+			console.log(response);
+			if (response.status === 200) {
+				console.log(response.data)
+				setUserContext(response.data.user);
+				navigate('/dashboard');
+				alert('Success!');
 			}
-		  );
-		  console.log(response);
-		  if (response.status === 200) {
-			navigate('/dashboard');
-		  }
 		} catch (error) {
-		  console.error('Error signing up:', error);
-		  alert(`Failed to sign up. Please try again. ${error}`);
+			navigate('/dashboard');
+			console.error('Error signing up:', error);
+			alert(`Failed to sign up. Please try again. ${error}`);
 		}
 	  };
 
     return (
 		<main className="flex min-h-screen flex-col items-center justify-center p-24">
 			<h1 className="text-4xl font-bold mb-8">Login</h1>
-			<form onSubmit={handleSubmit} className="flex flex-col gap-4">
+			<form onSubmit={handleSubmit} method="POST" className="flex flex-col gap-4">
 				<input
 				className="text-white rounded-sm bg-gray-800 focus-visible:outline-none h-10 min-w-80 p-4"
 				type="email"

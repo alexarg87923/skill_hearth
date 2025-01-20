@@ -20,7 +20,7 @@ export const CsrfProvider =  ({ children }: { children: any }) => {
 		};
 
 		fetchCSRFToken();
-    }, [navigate]);
+    }, []);
 
     if (!csrfToken) {
       return <div>Loading...</div>;
