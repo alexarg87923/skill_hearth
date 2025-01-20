@@ -1,8 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import UserContext from '../provider/UserProvider';
 
 const Nav: React.FC = () => {
 	const { userContext } = useContext(UserContext);
+	const [optionsOpen, setOptionsOpen] = useState(false);
+
 	return (
 		<nav className="bg-white border-gray-200 dark:bg-gray-900">
 			<div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
@@ -45,19 +47,20 @@ const Nav: React.FC = () => {
 								</li> 
 							</> 
 							:
-							<>
+							<div className=' relative'>
 								<button
 									type="button"
 									className="flex items-center space-x-2 text-gray-900 dark:text-white focus:outline-none"
+									onClick={() => setOptionsOpen(!optionsOpen)}
 								>
 									{
 										userContext?.profile_picture
 										?
 										<img
-										src={userContext.profile_picture}
-										alt={`${userContext.name}'s profile`}
-										width="40"
-										height="40"
+											src={userContext.profile_picture}
+											alt={`${userContext.name}'s profile`}
+											width="40"
+											height="40"
 										/>
 										:
 										<svg
@@ -72,7 +75,31 @@ const Nav: React.FC = () => {
 										</svg>
 									}
 								</button>
-							</> 
+								<div className='absolute'>
+									{optionsOpen &&
+										<div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 shadow-lg rounded-md z-10">
+											<ul>
+											<li>
+												<a
+												href="/profile"
+												className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white"
+												>
+												Profile
+												</a>
+											</li>
+											<li>
+												<a
+												href="/settings"
+												className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white"
+												>
+												Settings
+												</a>
+											</li>
+											</ul>
+										</div>
+									}
+								</div>
+							</div> 
 						}
 				</ul>
 			</div>

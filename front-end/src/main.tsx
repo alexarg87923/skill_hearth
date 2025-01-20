@@ -10,6 +10,8 @@ import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
 import PageNotFound from './pages/PageNotFound';
 import Logout from './pages/Logout';
+import Settings from './pages/Settings';
+import Profile from './pages/Profile';
 
 import Nav from './shared/Nav';
 import ProtectedRoute from './shared/ProtectedRoute';
@@ -28,6 +30,7 @@ createRoot(document.getElementById('root')!).render(
 				<Nav />
 				<Routes>
 					<Route path="/" element={<Landing />} />
+
 					<Route element={<AuthProtectedRoute />}>
 						<Route path="/login" element={<Login />} />
 						<Route path="/signup" element={<Signup />} />
@@ -35,6 +38,8 @@ createRoot(document.getElementById('root')!).render(
 
 					<Route element={<ProtectedRoute />}>
 						<Route path="/dashboard" element={<Dashboard />} />
+						<Route path="/settings" element={<Settings />} />
+						<Route path="/profile" element={<Profile />} />
 					</Route>
 
 					<Route path="/logout" element={<Logout />} />
