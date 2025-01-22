@@ -1,10 +1,12 @@
-import React from "react"
+import React, { useContext } from "react";
+import UserContext from "../provider/UserProvider";
 
 interface userProfile {
     name: string;
     skillset: string[];
     bio: string;
 }
+
 interface chatUser {
     name: string;
     lastMessage: string;
@@ -12,10 +14,11 @@ interface chatUser {
 }
 
 const dashboard: React.FC = () => {
+	const { userContext } = useContext(UserContext);
     const currentUser = {
-        name: "John Doe",
-        skillset: ["Javascript", "React", "TypeScript"],
-        bio: "I love developing web apps and live in my basement"
+        name: userContext?.name || '',
+        skillset: userContext?.skillset || [],
+        bio: userContext?.bio || ''
     };
 
     const suggestedProfiles: userProfile[] = [

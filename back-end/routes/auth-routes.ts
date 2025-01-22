@@ -55,18 +55,35 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
 	  console.log('Password verified successfully:');
 
 	  db.auth.createSessionCookie(data.idToken, {expiresIn})
-		  .then(
-		  (sessionCookie) => {
-			  res.cookie('session', sessionCookie, cookieOptions);
-			  res.status(200).send({name: data.name});
-			  return;
-		  },
-		  (error) => {
-			  console.log(`Error logging user in: ${error}`);
-			  res.status(401).send('UNAUTHORIZED REQUEST!');
-			  return;
-		  });
-  
+			.then(
+				async (sessionCookie) => {
+					const userProfileRef = db.user_profile;
+					const userProfileSnapshot = await userProfileRef.where('user_id', '==', data.localId).limit(1).get();
+
+					if (!userProfileSnapshot.empty && userProfileSnapshot !== undefined) {
+						console.log(userProfileSnapshot.docs);
+						const userProfileData = userProfileSnapshot.docs[0].data();
+
+						res.cookie('session', sessionCookie, cookieOptions);
+
+						if (userProfileData) {
+							res.status(200).send({ name: data.name, onboarded: userProfileData.onboarded });
+							return;
+						} else {
+							res.status(400).send({ error: "User profile data is undefined." });
+							return;
+						}
+					} else {
+						console.error('User does not have a profile entry');
+						res.status(500);
+	  					return;
+					}
+		  		},
+				(error) => {
+			  		console.log(`Error logging user in: ${error}`);
+			  		res.status(401).send('UNAUTHORIZED REQUEST!');
+			  		return;
+		  		});
 	  res.status(500);
 	  return;
 	} catch (error) {
@@ -82,11 +99,16 @@ router.post('/signup', async (req: Request, res: Response): Promise<void> => {
 		res.status(500).send('Missing Fields on sign up.')
 		return;
 	}
+
 	try {
-		req.body.displayName = middle_name ? `${first_name.trim()} ${middle_name.trim()} ${last_name.trim()}` : `${first_name.trim()} ${last_name.trim()}`;
+		first_name.trim().toLowerCase();
+		req.body.displayName = first_name.charAt(0).toUpperCase() + first_name.slice(1);
 		const userRecord = await db.auth.createUser(req.body);
 		console.log("new user created with uuid: ");
 		console.log(userRecord);
+
+		db.user_profile.add({ user_id: userRecord.uid, onboarded: false });
+
 		res.status(200).send('Success!');
 		return;
 	} catch (err) {
@@ -96,8 +118,15 @@ router.post('/signup', async (req: Request, res: Response): Promise<void> => {
 				console.error(`${err.message} ${req.body.email}`);
 			}
 		}
+		console.error('Error when creating user account', err);
 		res.status(500).send('Error!');
 	}
+});
+
+router.get('/logout', async (req: Request, res: Response): Promise<void> => {
+	res.clearCookie('session');
+	res.status(200).json();
+	return;
 });
 
 router.get(('/verify-session'), async (req: Request, res: Response): Promise<void> => {

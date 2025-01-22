@@ -1,7 +1,7 @@
 import { FirestoreDataConverter } from 'firebase-admin/firestore';
 import admin from 'firebase-admin';
 import dotenv from 'dotenv';
-import User from '../types/User';
+import UserProfile from '../types/User';
 import { getAuth } from 'firebase-admin/auth';
 
 dotenv.config();
@@ -27,6 +27,6 @@ const dataPoint = <T>(collectionPath: string) => firestore.collection(collection
 
 const db = {
 	auth: auth,
-	users: dataPoint<User>('users')
+	user_profile: dataPoint<UserProfile>('user_profile')
 }
 export { db };
