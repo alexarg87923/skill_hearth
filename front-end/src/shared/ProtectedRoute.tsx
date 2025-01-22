@@ -4,8 +4,7 @@ import UserContext from "../provider/UserProvider";
 
 function ProtectedRoute() {
 	const { userContext, loading } = useContext(UserContext);
-	console.log(loading);
-	console.log(userContext);
+	console.log("in Protected Routes...", userContext);
 	if (loading) {
 		return <div>Loading session, please wait...</div>;
 	}

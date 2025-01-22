@@ -4,7 +4,7 @@ import UserContext from "../provider/UserProvider";
 
 function ProtectedRoute() {
 	const { userContext, loading } = useContext(UserContext);
-
+	console.log("in Authorized Protected Routes...", userContext);
 	if (loading) {
 		return <div>checking session...</div>;
 	}

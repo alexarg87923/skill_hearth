@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import CsrfContext from '../provider/CsrfProvider';
@@ -12,6 +12,10 @@ function Login() {
 		email: '',
 		password: '',
 	});
+
+	useEffect(() => {
+		console.log("in login!!");
+	}, []);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setFormData({
