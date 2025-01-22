@@ -29,6 +29,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 		let isMounted = true;
 
 		const verifyAndDecodeCookie = async () => {
+			console.log("Entering User Provider...");
 			try {
 				console.log(userContext);
 				if (!userContext) {

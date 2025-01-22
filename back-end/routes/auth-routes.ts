@@ -123,12 +123,6 @@ router.post('/signup', async (req: Request, res: Response): Promise<void> => {
 	}
 });
 
-router.get('/logout', async (req: Request, res: Response): Promise<void> => {
-	res.clearCookie('session');
-	res.status(200).json();
-	return;
-});
-
 router.get(('/verify-session'), async (req: Request, res: Response): Promise<void> => {
 	const sessionCookie = req.cookies.session;
 	if (sessionCookie === null || sessionCookie === undefined || sessionCookie === 'undefined')

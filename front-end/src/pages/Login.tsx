@@ -34,7 +34,7 @@ function Login() {
 			console.log(response);
 			if (response.status === 200) {
 				console.log(response.data)
-				setUserContext(response.data.user);
+				setUserContext(response.data);
 				navigate('/dashboard');
 				alert('Success!');
 			}

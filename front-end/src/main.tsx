@@ -19,7 +19,7 @@ import AuthProtectedRoute from './shared/AuthProtectedRoute';
 
 import { CsrfProvider } from './provider/CsrfProvider';
 import { UserProvider } from './provider/UserProvider';
-import Footer from './pages/footer';
+import Footer from './shared/Footer';
 
 
 
@@ -46,7 +46,7 @@ createRoot(document.getElementById('root')!).render(
 					<Route path="/logout" element={<Logout />} />
 					<Route path="*" element={<PageNotFound />} />
 				</Routes>
-				<Footer></Footer>
+				<Footer />
 			</UserProvider>
 		</CsrfProvider>
     </BrowserRouter>
