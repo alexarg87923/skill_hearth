@@ -99,8 +99,10 @@ router.post('/signup', async (req: Request, res: Response): Promise<void> => {
 		res.status(500).send('Missing Fields on sign up.')
 		return;
 	}
+
 	try {
-		req.body.displayName = middle_name ? `${first_name.trim()} ${middle_name.trim()} ${last_name.trim()}` : `${first_name.trim()} ${last_name.trim()}`;
+		first_name.trim().toLowerCase();
+		req.body.displayName = first_name.charAt(0).toUpperCase() + first_name.slice(1);
 		const userRecord = await db.auth.createUser(req.body);
 		console.log("new user created with uuid: ");
 		console.log(userRecord);
@@ -116,6 +118,7 @@ router.post('/signup', async (req: Request, res: Response): Promise<void> => {
 				console.error(`${err.message} ${req.body.email}`);
 			}
 		}
+		console.error('Error when creating user account', err);
 		res.status(500).send('Error!');
 	}
 });
