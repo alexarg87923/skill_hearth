@@ -10,16 +10,13 @@ const Logout: React.FC = () => {
 	useEffect(() => {
 		const logout = async () => {
 			try {
-				const response = await axios.post('/api/logout', {
+				await axios.post('/api/logout', {
 					headers: {
 						'CSRF-Token': csrfToken
 					}
 				});
-	
-				if (response.status === 200) {
-					localStorage.removeItem('skill-hearth');
-					setUserContext(null);
-				}
+				setUserContext(null);
+				localStorage.removeItem('skill-hearth');
 			} catch (err) {
 				console.error("There was an error hitting the logout endpoint", err);
 				alert('There was an error logging you out');

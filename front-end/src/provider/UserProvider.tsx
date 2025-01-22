@@ -31,13 +31,20 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 		const verifyAndDecodeCookie = async () => {
 			console.log("Entering User Provider...");
 			try {
-				console.log(userContext);
+				if (userContext && Object.keys(userContext).length > 0) {
+					localStorage.setItem("skill-hearth", JSON.stringify(userContext));
+				} else {
+					localStorage.removeItem("skill-hearth");
+				}
+
+				console.log("checking user context...", userContext);
+
 				if (!userContext) {
 					const response = await axios.get('/api/auth/verify-session', { withCredentials: true });
 					if (isMounted) {
 						if (response.data && Object.keys(response.data).length > 0) {
 							setUserContext(response.data);
-							localStorage.setItem("skill-hearth", response.data);
+							localStorage.setItem("skill-hearth", JSON.stringify(response.data));
 						  	console.log("user: ", response.data);
 						} else {
 							setUserContext(null);

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import UserContext from "../provider/UserProvider";
 
 interface userProfile {
@@ -15,6 +15,9 @@ interface chatUser {
 
 const dashboard: React.FC = () => {
 	const { userContext } = useContext(UserContext);
+	useEffect(() => {
+		console.log("in dashboard!!...");
+	}, []);
     const currentUser = {
         name: userContext?.name || '',
         skillset: userContext?.skillset || [],
