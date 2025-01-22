@@ -4,6 +4,8 @@ import axios from 'axios';
 interface User {
 	name: string;
 	profile_picture?: string;
+	bio: string;
+	skillset: [];
 }
 
 interface UserContextProps {
