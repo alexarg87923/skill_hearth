@@ -6,7 +6,7 @@ import UserContext from '../provider/UserProvider';
 
 function Login() {
 	const csrfToken = useContext(CsrfContext);
-	const { setUserContext } = useContext(UserContext);
+	const { setUserContext, userContext } = useContext(UserContext);
 	const navigate = useNavigate();
 	const [formData, setFormData] = useState({
 		email: '',
@@ -14,7 +14,9 @@ function Login() {
 	});
 
 	useEffect(() => {
-		console.log("in login!!");
+		if (userContext) {
+			navigate('/dashboard');
+		}
 	}, []);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

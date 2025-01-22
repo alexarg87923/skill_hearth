@@ -15,7 +15,6 @@ import Profile from './pages/Profile';
 
 import Nav from './shared/Nav';
 import ProtectedRoute from './shared/ProtectedRoute';
-import AuthProtectedRoute from './shared/AuthProtectedRoute';
 
 import { CsrfProvider } from './provider/CsrfProvider';
 import { UserProvider } from './provider/UserProvider';
@@ -31,11 +30,8 @@ createRoot(document.getElementById('root')!).render(
 				<Nav />
 				<Routes>
 					<Route path="/" element={<Landing />} />
-
-					<Route element={<AuthProtectedRoute />}>
-						<Route path="/login" element={<Login />} />
-						<Route path="/signup" element={<Signup />} />
-					</Route>
+					<Route path="/login" element={<Login />} />
+					<Route path="/signup" element={<Signup />} />
 
 					<Route element={<ProtectedRoute />}>
 						<Route path="/dashboard" element={<Dashboard />} />

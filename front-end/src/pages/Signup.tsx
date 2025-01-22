@@ -1,11 +1,15 @@
 "use client";
 
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import CsrfContext from '../provider/CsrfProvider';
+import UserContext from '../provider/UserProvider';
 
 function Signup() {
 	const csrfToken = useContext(CsrfContext);
+	const { userContext } = useContext(UserContext);
+	const navigate = useNavigate();
 
 	const [formData, setFormData] = useState({
 		first_name: '',
@@ -14,6 +18,12 @@ function Signup() {
 		email: '',
 		password: '',
 	});
+
+	useEffect(() => {
+		if (userContext) {
+			navigate('/dashboard');
+		}
+	}, []);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setFormData({
