@@ -51,19 +51,19 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 							localStorage.setItem("skill-hearth", JSON.stringify(response.data));
 						} else {
 							setUserContext(null);
-						  	console.log("empty user data response from server");
+						  	console.log("User Provider: empty user data response from server");
 						}
 					}
 				}
 			} catch (err) {
 				if (isMounted) {
 					setUserContext(null);
-					console.log("failed to verify session, user set to null");
+					console.log("User Provider failed to verify session, user set to null...");
 				}
 			} finally {
 				if (isMounted) {
 					setLoading(false);
-					console.log("loading set to false");
+					console.log("User loading set to false...");
 				}
 			}
 		}
