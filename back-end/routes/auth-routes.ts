@@ -68,7 +68,7 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
 						res.cookie('session', sessionCookie, cookieOptions);
 
 						if (userProfileData) {
-							res.status(200).send({ name: data.name, onboarded: userProfileData.onboarded });
+							res.status(200).send({ name: data.displayName, onboarded: userProfileData.onboarded });
 							return;
 						} else {
 							res.status(400).send({ error: "User profile data is undefined." });
