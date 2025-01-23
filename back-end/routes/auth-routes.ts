@@ -62,6 +62,7 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
 
 					if (!userProfileSnapshot.empty && userProfileSnapshot !== undefined) {
 						console.log(userProfileSnapshot.docs);
+						console.log(data);
 						const userProfileData = userProfileSnapshot.docs[0].data();
 
 						res.cookie('session', sessionCookie, cookieOptions);
