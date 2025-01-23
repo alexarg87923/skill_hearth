@@ -19,6 +19,7 @@ import ProtectedRoute from './shared/ProtectedRoute';
 import { CsrfProvider } from './provider/CsrfProvider';
 import { UserProvider } from './provider/UserProvider';
 import Footer from './shared/Footer';
+import ProfileWizard from './pages/profile_wizard/ProfileWizard';
 
 
 
@@ -37,6 +38,7 @@ createRoot(document.getElementById('root')!).render(
 						<Route path="/dashboard" element={<Dashboard />} />
 						<Route path="/settings" element={<Settings />} />
 						<Route path="/profile" element={<Profile />} />
+						<Route path="/setupwizard" element={<ProfileWizard />} />
 					</Route>
 
 					<Route path="/logout" element={<Logout />} />
