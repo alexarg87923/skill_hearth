@@ -22,7 +22,7 @@ const UserContext = React.createContext<UserContextProps>({
 });
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
-	const [userContext, setUserContext] = useState<any | null>(localStorage.getItem("skill-hearth") || null);
+	const [userContext, setUserContext] = useState<any | null>(JSON.parse(localStorage.getItem("skill-hearth")) || null);
 	const [loading, setLoading] = useState<boolean>(true);
 
 	useEffect(() => {
