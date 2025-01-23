@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -20,7 +18,9 @@ function Signup() {
 	});
 
 	useEffect(() => {
+		console.log('Sign up page loaded...');
 		if (userContext) {
+			console.log('User is being redirected to dashboard...');
 			navigate('/dashboard');
 		}
 	}, []);
@@ -54,7 +54,7 @@ function Signup() {
 			}
 			);
 			if (response.status == 200) {
-			alert('Success!');
+			console.log('Successfully created user account!');
 			clearInput();
 			}
 		} catch (error) {

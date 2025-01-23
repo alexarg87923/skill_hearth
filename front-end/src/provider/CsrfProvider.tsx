@@ -9,12 +9,15 @@ export const CsrfProvider =  ({ children }: { children: any }) => {
 	const navigate = useNavigate();
 
     useEffect(() => {
+		console.log('Entering CSRF Provider...');
+
 		const fetchCSRFToken = async () => {
 			try { 
 				const result = await axios.get('/api/auth/get_token', { withCredentials: true });
 				setCsrfToken(result.data.csrfToken);
+				console.log('Users csrf token was placed...');
 			} catch (err) {
-				console.error('Error in protected page:', err);
+				console.error('Error in protected page, redirecting user to login:', err);
 				navigate('/login');
 			}
 		};
@@ -23,9 +26,11 @@ export const CsrfProvider =  ({ children }: { children: any }) => {
     }, []);
 
     if (!csrfToken) {
-      return <div>Loading...</div>;
+		console.log('CSRF Loading...');
+		return <div>Loading...</div>;
     }
 
+	console.log('Returning CSRF Provider children component');
     return (
 		<CsrfContext.Provider value={csrfToken}>
 			{children}

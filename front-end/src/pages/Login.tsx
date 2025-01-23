@@ -14,8 +14,10 @@ function Login() {
 	});
 
 	useEffect(() => {
+		console.log('Loaded login page...')
 		if (userContext) {
-			navigate('/dashboard');
+			console.log('Redirecting user to dashboard due to being logged in...')
+			// navigate('/dashboard');
 		}
 	}, []);
 
@@ -56,29 +58,29 @@ function Login() {
 			<h1 className="text-4xl font-bold mb-8">Login</h1>
 			<form onSubmit={handleSubmit} method="POST" className="flex flex-col gap-4">
 				<input
-				className="text-white rounded-sm bg-gray-800 focus-visible:outline-none h-10 min-w-80 p-4"
-				type="email"
-				name="email"
-				placeholder="Email"
-				value={formData.email}
-				onChange={handleChange}
-				required
+					className="text-white rounded-sm bg-gray-800 focus-visible:outline-none h-10 min-w-80 p-4"
+					type="email"
+					name="email"
+					placeholder="Email"
+					value={formData.email}
+					onChange={handleChange}
+					required
 				/>
 				<input
-				className="text-white rounded-sm bg-gray-800 focus-visible:outline-none h-10 min-w-80 p-4"
-				type="password"
-				name="password"
-				placeholder="Password"
-				value={formData.password}
-				onChange={handleChange}
-				required
+					className="text-white rounded-sm bg-gray-800 focus-visible:outline-none h-10 min-w-80 p-4"
+					type="password"
+					name="password"
+					placeholder="Password"
+					value={formData.password}
+					onChange={handleChange}
+					required
 				/>
 				<button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-400 hover:text-white">
-				Log in!
+					Log in!
 				</button>
 			</form>
 		</main>
-    );
-  }
+	);
+};
 
   export default Login;
