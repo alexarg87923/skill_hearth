@@ -12,7 +12,8 @@ router.post('/logout', (req: Request, res: Response) => {
 	try {
 		res.clearCookie('session');
 		res.clearCookie('_csrf');
-		res.status(200).send('Logged out successfully');
+		console.log('Logged out successfully...');
+		res.status(200).send();
 	} catch (err) {
 		console.error('Error logging out', err);
 		res.status(500).send('Failed to log out');

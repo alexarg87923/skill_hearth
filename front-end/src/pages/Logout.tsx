@@ -17,6 +17,7 @@ const Logout: React.FC = () => {
 				});
 				setUserContext(null);
 				localStorage.removeItem('skill-hearth');
+				console.log('Successfully logged user out...');
 			} catch (err) {
 				console.error("There was an error hitting the logout endpoint", err);
 				alert('There was an error logging you out');
@@ -29,6 +30,6 @@ const Logout: React.FC = () => {
 	return (
 		<div>You have been successfully logged out</div>
 	)
-}
+};
 
 export default Logout;

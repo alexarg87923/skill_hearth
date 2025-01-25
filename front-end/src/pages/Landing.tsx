@@ -1,4 +1,9 @@
+import { useEffect } from 'react';
 function Landing() {
+	useEffect(() => {
+		console.log("Loaded dashboard page...");
+	}, []);
+
 	return (
 		<>
 			<main className="flex min-h-screen flex-col items-center justify-top p-12 mt-8">
