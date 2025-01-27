@@ -53,9 +53,9 @@ function Signup() {
 				}
 			}
 			);
-			if (response.status == 200) {
-			console.log('Successfully created user account!');
-			clearInput();
+			if (response.status == 201) {
+			    console.log('Successfully created user account!');
+			    clearInput();
 			}
 		} catch (error) {
 			console.error('Error signing up:', error);
