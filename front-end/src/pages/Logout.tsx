@@ -1,20 +1,15 @@
 import React, { useContext, useEffect } from "react"
 import UserContext from "../provider/UserProvider";
 import axios from 'axios';
-import CsrfContext from '../provider/CsrfProvider';
 
 const Logout: React.FC = () => {
 	const { setUserContext } = useContext(UserContext);
-	const csrfToken = useContext(CsrfContext);
 
 	useEffect(() => {
+        console.log("Entered logout...");
 		const logout = async () => {
 			try {
-				await axios.post('/api/logout', {
-					headers: {
-						'CSRF-Token': csrfToken
-					}
-				});
+				await axios.post('/api/auth/logout');
 				setUserContext(null);
 				localStorage.removeItem('skill-hearth');
 				console.log('Successfully logged user out...');
