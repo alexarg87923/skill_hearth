@@ -1,10 +1,9 @@
 {
   "name": "back-end",
   "version": "1.0.0",
-  "description": "A scalable backend application built with TypeScript",
-  "main": "dist/index.js",
+  "description": "The back-end API for skillhearth",
   "scripts": {
-    "start": "nodemon --watch src --watch config --ext ts index.ts",
+    "start": "nodemon src/index.ts",
     "prod": "node dist/index.ts",
     "build": "tsc -b",
     "lint": "eslint './src/**/*.{ts,tsx}'",

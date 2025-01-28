@@ -1,7 +1,8 @@
 
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 
 export interface IUser {
+    _id?: Types.ObjectId;
     first_name: string;
     middle_name?: string | null;
     last_name: string;

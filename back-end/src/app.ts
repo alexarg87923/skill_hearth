@@ -1,5 +1,5 @@
 import express from "express";
-import { connectDatabase, initDatabase } from "./config/database";
+import { connectDatabase } from "./config/database";
 import { MainRouter } from "./routes";
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
@@ -8,16 +8,17 @@ import { ENV } from './config/env';
 import redisStore from './config/redis';
 import session from 'express-session';
 
-const app = express();
-var corsOptions;
-
 declare module 'express-session' {
     export interface SessionData {
       user: { [key: string]: any };
     }
 }
 
-  
+const app = express();
+var corsOptions;
+var sessionOptions;
+
+
 if (ENV.ENV_MODE === 'development') {
 	corsOptions = {
 		origin: 'http://localhost:5173',
@@ -25,19 +26,32 @@ if (ENV.ENV_MODE === 'development') {
 		methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
 		allowedHeaders: ['Content-Type', 'Authorization', '*']
 	};
-	console.log('CORS in development mode: allowing all origins');
+
+    sessionOptions = {
+        store: redisStore,
+        resave: false,
+        saveUninitialized: false,
+        secret: ENV.REDIS_SECRET,
+        cookie: { secure: false, maxAge: 60000, httpOnly: false }
+    };
+	console.log('CORS and session set up in development mode');
   } else {
 	corsOptions = {
 		origin: 'http://localhost',
 	};
-	console.log('CORS in production mode: allowing only http://localhost');
+
+    sessionOptions = {
+        store: redisStore,
+        resave: false,
+        saveUninitialized: false,
+        secret: ENV.REDIS_SECRET,
+        cookie: { secure: true, maxAge: 60000, httpOnly: true }
+    };
+	console.log('CORS and session in production mode');
 }
 
 // Connects to DB
 connectDatabase();
-
-// Init for dev purposes
-initDatabase();
 
 // Middleware
 app.use(express.json());
@@ -45,14 +59,7 @@ app.use(cookieParser());
 app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
-app.use(
-    session({
-      store: redisStore,
-      resave: false,
-      saveUninitialized: true,
-      secret: ENV.REDIS_SECRET
-    })
-  );
+app.use(session(sessionOptions));
 
 // Routes
 app.use("/api/", MainRouter);

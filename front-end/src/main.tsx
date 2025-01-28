@@ -2,7 +2,10 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
-import './styles/index.css';
+import './index.css';
+import 'react-toastify/dist/ReactToastify.css';
+
+import { ToastContainer } from 'react-toastify';
 
 // definig more elegant way to import files (look ./pages/index.ts)
 import { Landing, Login, Signup, Dashboard, PageNotFound, Logout, Settings, Profile } from './pages';
@@ -33,12 +36,13 @@ createRoot(document.getElementById('root')!).render(
 							<Route path="/profile" element={<Profile />} />
 						</Route>
 
-						<Route path="/logout" element={<Logout />} />
-						<Route path="*" element={<PageNotFound />} />
-					</Routes>
-					<Footer />
-				</UserProvider>
-			</CsrfProvider>
-		</BrowserRouter>
-	</StrictMode>
+					<Route path="/logout" element={<Logout />} />
+					<Route path="*" element={<PageNotFound />} />
+				</Routes>
+				<Footer />
+                <ToastContainer />
+			</UserProvider>
+		</CsrfProvider>
+    </BrowserRouter>
+  </StrictMode>
 )

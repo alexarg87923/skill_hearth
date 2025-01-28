@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import CsrfContext from '../provider/CsrfProvider';
 import UserContext from '../provider/UserProvider';
+import { toast } from 'react-toastify';
 
 function Signup() {
 	const csrfToken = useContext(CsrfContext);
@@ -54,64 +55,74 @@ function Signup() {
 			}
 			);
 			if (response.status == 201) {
-			    console.log('Successfully created user account!');
+			    toast.success('Successfuly registed your account!');
 			    clearInput();
+                navigate('/login');
 			}
 		} catch (error) {
-			console.error('Error signing up:', error);
-			alert('Failed to sign up. Please try again.');
+			toast.error('There was an error creating your account.');
+			console.log(error);
 		}
 	};
   
 
 	return (
-		<main className="flex min-h-screen flex-col items-center justify-center p-24">
-			<h1 className="text-4xl font-bold mb-8">Sign Up</h1>
-			<form onSubmit={handleSubmit} className="flex flex-col gap-4">
-			<input
-				type="text"
-				name="first_name"
-				placeholder="First Name"
-				value={formData.first_name}
-				onChange={handleChange}
-				required
-			/>
-			<input
-				type="text"
-				name="middle_name"
-				placeholder="Middle Name"
-				value={formData.middle_name}
-				onChange={handleChange}
-			/>
-			<input
-				type="text"
-				name="last_name"
-				placeholder="Last Name"
-				value={formData.last_name}
-				onChange={handleChange}
-				required
-			/>
-			<input
-				type="email"
-				name="email"
-				placeholder="Email"
-				value={formData.email}
-				onChange={handleChange}
-				required
-			/>
-			<input
-				type="password"
-				name="password"
-				placeholder="Password"
-				value={formData.password}
-				onChange={handleChange}
-				required
-			/>
-			<button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded">
-				Sign Up
-			</button>
-			</form>
-		</main>
+        <main className="flex min-h-screen flex-col items-center justify-center p-24">
+            <h1 className="text-4xl font-bold mb-8">Sign Up</h1>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                <label>First name*</label>
+                <input
+                    className="text-white rounded-sm bg-gray-800 focus-visible:outline-none h-10 min-w-80 p-4"
+                    type="text"
+                    name="first_name"
+                    placeholder="First Name"
+                    value={formData.first_name}
+                    onChange={handleChange}
+                    required
+                />
+                <label>Middle name</label>
+                <input
+                    className="text-white rounded-sm bg-gray-800 focus-visible:outline-none h-10 min-w-80 p-4"
+                    type="text"
+                    name="middle_name"
+                    placeholder="Middle Name"
+                    value={formData.middle_name}
+                    onChange={handleChange}
+                />
+                <label>Last name*</label>
+                <input
+                    className="text-white rounded-sm bg-gray-800 focus-visible:outline-none h-10 min-w-80 p-4"
+                    type="text"
+                    name="last_name"
+                    placeholder="Last Name"
+                    value={formData.last_name}
+                    onChange={handleChange}
+                    required
+                />
+                <label>Email*</label>
+                <input
+                    className="text-white rounded-sm bg-gray-800 focus-visible:outline-none h-10 min-w-80 p-4"
+                    type="email"
+                    name="email"
+                    placeholder="Email"
+                    value={formData.email}
+                    onChange={handleChange}
+                />
+                <label>Password*</label>
+                <input
+                    className="text-white rounded-sm bg-gray-800 focus-visible:outline-none h-10 min-w-80 p-4"
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                />
+                <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded">
+                    Sign Up
+                </button>
+            </form>
+        </main>
   	);
 };
 

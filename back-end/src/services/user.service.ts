@@ -51,24 +51,23 @@ export class UserService {
     }
 
     async signup(formData: ISignUpData): Promise<Partial<IUser> | null | undefined> {
-        const { error } = validateSignUp(formData);
+        const result = validateSignUp(formData);
 
-        if (error)
+        if (result.error)
         {
-            logger.error(`${CONSTANTS.ERRORS.INVALID_INPUT}: ${error.message}`);
+            logger.error(`${CONSTANTS.ERRORS.INVALID_INPUT}: ${result.error.message}`);
             return;
         }
 
         const existingUserRecord = await this.userRepository.findUserByEmail(formData.email);
-        logger.info(existingUserRecord);
         if (existingUserRecord) {
             logger.error(CONSTANTS.ERRORS.EMAIL_ALREADY_IN_USE);
             return;
         }
 
-        const hashPassword = await bcrypt.hash(formData.password, CONSTANTS.SALT_ROUNDS);
+        const hashPassword = await bcrypt.hash(result.value.password, CONSTANTS.SALT_ROUNDS);
         const newUser: IUser = {
-            ...formData,
+            ...result.value,
             password: hashPassword,
             onboarded: false
         } as IUser;
