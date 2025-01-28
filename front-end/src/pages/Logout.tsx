@@ -9,9 +9,9 @@ const Logout: React.FC = () => {
         console.log("Entered logout...");
 		const logout = async () => {
 			try {
-				await axios.post('/api/auth/logout');
-				setUserContext(null);
 				localStorage.removeItem('skill-hearth');
+				setUserContext(null);
+				await axios.post('/api/auth/logout');
 				console.log('Successfully logged user out...');
 			} catch (err) {
 				console.error("There was an error hitting the logout endpoint", err);

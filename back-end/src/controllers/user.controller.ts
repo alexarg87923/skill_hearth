@@ -54,6 +54,13 @@ export class UserController {
     async logout(req: Request, res: Response): Promise<void> {
         logger.info('Entered logout API endpoint...');
         try {
+            req.session.destroy(err => {
+                if (err) {
+                  res.clearCookie('connect.sid');
+                  return res.status(500).send('Could not log out');
+                }
+            });
+
             res.clearCookie('_csrf');
             res.clearCookie('connect.sid');
             res.sendStatus(200);
