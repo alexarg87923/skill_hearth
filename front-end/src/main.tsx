@@ -1,23 +1,26 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { ToastContainer } from 'react-toastify';
 
 import './index.css';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { ToastContainer } from 'react-toastify';
-
-// definig more elegant way to import files (look ./pages/index.ts)
-import { Landing, Login, Signup, Dashboard, PageNotFound, Logout, Settings, Profile } from './pages';
-
-import Nav from './components/Nav';
-import ProtectedRoute from './components/ProtectedRoute';
+import Landing from './pages/Landing';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import Dashboard from './pages/Dashboard';
+import PageNotFound from './pages/PageNotFound';
+import Logout from './pages/Logout';
+import Settings from './pages/Settings';
+import Profile from './pages/Profile';
 
 import { CsrfProvider } from './provider/CsrfProvider';
-import { UserProvider } from './provider/UserProvider';
+import { UserProvider } from './provider/UserProvider'
+
+import ProtectedRoute from './components/ProtectedRoute';
 import Footer from './components/Footer';
-
-
+import Nav from './components/Nav';
 
 createRoot(document.getElementById('root')!).render(
 	<StrictMode>
