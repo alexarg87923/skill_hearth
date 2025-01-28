@@ -3,7 +3,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ToastContainer } from 'react-toastify';
 
-import './index.css';
+import './assets/index.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 import Landing from './pages/Landing';
@@ -48,4 +48,4 @@ createRoot(document.getElementById('root')!).render(
 		</CsrfProvider>
     </BrowserRouter>
   </StrictMode>
-)
+);

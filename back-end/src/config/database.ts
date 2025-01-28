@@ -11,11 +11,3 @@ export const connectDatabase = async () => {
         process.exit(1);
     }
 };
-
-export const initDatabase = async () => {
-    try {
-
-    } catch (error) {
-        console.error('Error initializing the database.')
-    }
-}

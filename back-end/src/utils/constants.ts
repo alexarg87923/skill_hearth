@@ -16,12 +16,12 @@ export const CONSTANTS = {
         CATASTROPHIC: "Catastrophic Error"
     },
     ROUTES: {
-      USERS: "/api/users",
-      AUTH: "/api/auth",
+        USERS: "/api/users",
+        AUTH: "/api/auth",
     },
     PAGINATION: {
-      DEFAULT_PAGE: 1,
-      DEFAULT_LIMIT: 10,
+        DEFAULT_PAGE: 1,
+        DEFAULT_LIMIT: 10,
     },
     SALT_ROUNDS: 10
-  };
+};

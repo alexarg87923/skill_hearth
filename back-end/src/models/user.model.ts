@@ -9,7 +9,7 @@ export interface IUser {
     email: string;
     password: string;
     onboarded: boolean;
-}
+};
 
 const userSchema = new mongoose.Schema({
     first_name: { type: String, required: true },

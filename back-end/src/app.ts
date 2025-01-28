@@ -12,7 +12,7 @@ declare module 'express-session' {
     export interface SessionData {
       user: { [key: string]: any };
     }
-}
+};
 
 const app = express();
 var corsOptions;
@@ -48,7 +48,7 @@ if (ENV.ENV_MODE === 'development') {
         cookie: { secure: true, maxAge: 60000, httpOnly: true }
     };
 	console.log('CORS and session in production mode');
-}
+};
 
 // Connects to DB
 connectDatabase();

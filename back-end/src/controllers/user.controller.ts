@@ -15,7 +15,7 @@ export class UserController {
                 logger.error(CONSTANTS.ERRORS.PREFIX.LOGIN + CONSTANTS.ERRORS.COOKIE_EXISTS);
                 res.sendStatus(500);
                 return;
-            }
+            };
             
             const userRecord = await this.userService.login(req.body);
             
@@ -23,7 +23,7 @@ export class UserController {
                 req.session.user = { id: userRecord._id, name:userRecord.first_name, onboarded: userRecord.onboarded };
                 res.status(200).json({ user: {name:userRecord.first_name}, onboarded: {status: userRecord.onboarded} });
                 return;
-            }
+            };
 
             logger.error(CONSTANTS.ERRORS.PREFIX.LOGIN + CONSTANTS.ERRORS.CATASTROPHIC);
             res.sendStatus(500);
