@@ -1,14 +1,27 @@
 {
   "name": "back-end",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "A scalable backend application built with TypeScript",
+  "main": "dist/index.js",
   "scripts": {
-    "start": "nodemon index.ts"
+    "start": "node dist/index.js",
+    "dev": "nodemon src/index.ts",
+    "build": "tsc",
+    "lint": "eslint './src/**/*.{ts,tsx}'",
+    "lint:fix": "eslint './src/**/*.{ts,tsx}' --fix",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "clean": "rm -rf dist",
+    "prestart": "npm run build",
+    "prepare": "husky",
+    "docs": "swagger-jsdoc -d swaggerDef.js -o ./swagger.json",
+    "precommit": "npm run lint && npm run test",
+    "commitlint": "commitlint --edit"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "body-parser": "^1.20.3",
     "cookie-parser": "^1.4.7",
@@ -17,20 +30,31 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "firebase": "^11.1.0",
-    "firebase-admin": "^13.0.2"
+    "firebase-admin": "^13.0.2",
+    "mongoose": "^8.9.5",
+    "supertest": "^7.0.0",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.6.1",
+    "@commitlint/config-conventional": "^19.6.0",
+    "@eslint/js": "^9.19.0",
     "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.17",
     "@types/csurf": "^1.11.5",
     "@types/express": "^5.0.0",
+    "@types/jest": "^29.5.14",
     "@types/node": "^22.10.6",
-    "eslint": "^9.18.0",
+    "@types/supertest": "^6.0.2",
+    "eslint": "^9.19.0",
     "eslint-config-prettier": "^10.0.1",
-    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-prettier": "^5.2.3",
+    "globals": "^15.14.0",
+    "husky": "^9.1.7",
     "nodemon": "^3.1.9",
     "prettier": "^3.4.2",
     "ts-node": "^10.9.2",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.21.0"
   }
 }
