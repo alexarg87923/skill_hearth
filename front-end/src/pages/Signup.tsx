@@ -16,6 +16,7 @@ function Signup() {
 		last_name: '',
 		email: '',
 		password: '',
+        confirm_password: ''
 	});
 
 	useEffect(() => {
@@ -40,12 +41,17 @@ function Signup() {
 			last_name: '',
 			email: '',
 			password: '',
+            confirm_password: ''
 		});
 	}
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		try {
+            if (formData.password != formData.confirm_password) {
+                
+            }
+
 			const response = await axios.post('/api/auth/signup', 
 			formData,
 			{
@@ -118,6 +124,16 @@ function Signup() {
                     onChange={handleChange}
                     required
                 />
+                <input
+                    className="text-white rounded-sm bg-gray-800 focus-visible:outline-none h-10 min-w-80 p-4"
+                    type="password"
+                    name="confirm_password"
+                    placeholder="Confirm Password"
+                    value={formData.confirm_password}
+                    onChange={handleChange}
+                    required
+                />
+                <label className="text-red-700">Passwords do not match!</label>
                 <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded">
                     Sign Up
                 </button>

@@ -72,6 +72,7 @@ export class UserController {
 
             res.clearCookie('_csrf');
             res.clearCookie('connect.sid');
+            res.clearCookie('admin_cookie');
             res.sendStatus(200);
         } catch (err) {
             logger.error(`${CONSTANTS.ERRORS.PREFIX.LOGOUT + CONSTANTS.ERRORS.CATASTROPHIC}: ` + err);
