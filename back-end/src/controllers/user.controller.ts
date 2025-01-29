@@ -102,7 +102,7 @@ export class UserController {
                 return;
             };
     
-            res.status(200).json({name: userSession.name});
+            res.status(200).json({ user: {name: userSession.name} });
         } catch (err) {
             logger.error(`${CONSTANTS.ERRORS.PREFIX.VERIFY_SESSION + CONSTANTS.ERRORS.CATASTROPHIC}: ` + err);
             res.sendStatus(500);

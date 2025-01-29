@@ -27,10 +27,10 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 	const [userContext, setUserContext] = useState<any | null>(local_storage ? JSON.parse(local_storage) : null);
 	const [loading, setLoading] = useState<boolean>(true);
     const navigate = useNavigate();
-
+    
+    console.log("Local Storage: ", local_storage);
     console.log("Entering User Provider...");
     console.log("User context: ", userContext);
-    console.log("Local Storage: ", local_storage);
 
 	useEffect(() => {
 		let isMounted = true;
@@ -42,16 +42,16 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
                     const response = await axios.get('/api/auth/verify-session', { withCredentials: true });
                     console.log(response);
-                    if (!response.data || Object.keys(response.data).length === 0) {
+                    if (!response.data.user || Object.keys(response.data.user).length === 0) {
                         console.log("Session came back empty: ", response.data);
                         setUserContext(null);
                         localStorage.removeItem("skill-hearth");
                         return;
                     } else {
-                        console.log("API returned successful request with data: ", response.data);
+                        console.log("API returned successful request with data: ", response.data.user);
                         setUserContext(response.data.user);
                         localStorage.setItem("skill-hearth", JSON.stringify(response.data.user));
-                        if (!response.data.onboarded.status) {
+                        if (response.data.onboarded !== undefined && !response.data?.onboarded?.status) {
                             navigate('/wizard');
                         }
                     }
