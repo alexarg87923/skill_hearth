@@ -9,7 +9,7 @@ function Signup() {
 	const csrfToken = useContext(CsrfContext);
 	const { userContext } = useContext(UserContext);
 	const navigate = useNavigate();
-
+    const [doPassMatch, setDoPassMatch] = useState(true);
 	const [formData, setFormData] = useState({
 		first_name: '',
 		middle_name: '',
@@ -28,6 +28,10 @@ function Signup() {
 	}, []);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.name === 'confirm_password') {
+            setDoPassMatch(e.target.value === formData.password);
+        }
+
 		setFormData({
 			...formData,
 			[e.target.name]: e.target.value,
@@ -48,8 +52,14 @@ function Signup() {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		try {
-            if (formData.password != formData.confirm_password) {
-                
+            if (!formData.first_name || !formData.last_name || !formData.email || !formData.password || !formData.confirm_password) {
+                toast.error('Missing fields...');
+                return;
+            }
+
+            if (formData.password !== formData.confirm_password) {
+                toast.error('Passwords do not match!');
+                return;
             }
 
 			const response = await axios.post('/api/auth/signup', 
@@ -123,7 +133,8 @@ function Signup() {
                     value={formData.password}
                     onChange={handleChange}
                     required
-                />
+                    />
+                <label>Confirm Password*</label>
                 <input
                     className="text-white rounded-sm bg-gray-800 focus-visible:outline-none h-10 min-w-80 p-4"
                     type="password"
@@ -133,7 +144,7 @@ function Signup() {
                     onChange={handleChange}
                     required
                 />
-                <label className="text-red-700">Passwords do not match!</label>
+                <label className={`text-red-700 ${doPassMatch ? 'hidden' : ''}`}>Passwords do not match!</label>
                 <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded">
                     Sign Up
                 </button>
