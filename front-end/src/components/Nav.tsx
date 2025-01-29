@@ -54,10 +54,10 @@ const Nav: React.FC = () => {
 									onClick={() => setOptionsOpen(!optionsOpen)}
 								>
 									{
-										userContext?.profile_picture
+										true
 										?
 										<img
-											src={userContext.profile_picture}
+											src={'/api/profile_picture.jpeg'}
 											alt={`${userContext.name}'s profile`}
 											width="40"
 											height="40"

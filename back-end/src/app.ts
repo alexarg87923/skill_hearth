@@ -7,6 +7,7 @@ import bodyParser from 'body-parser';
 import { ENV } from './config/env';
 import redisStore from './config/redis';
 import session from 'express-session';
+import path from 'path';
 
 declare module 'express-session' {
     export interface SessionData {
@@ -61,9 +62,9 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(session(sessionOptions));
 
-// Routes
+// Route
+app.use('/api', express.static(path.join(__dirname, 'assets')));
 app.use("/api/", MainRouter);
-
 app.use((error: any, req: any, res: any, next: any) => {
   res.status(error.status || 500).json({ message: error.message });
 });
