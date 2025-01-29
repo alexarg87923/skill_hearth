@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { UserService } from "../services/user.service";
 import { CONSTANTS } from "../utils/constants";
 import { logger } from '../utils/logger';
-
+import { ENV } from '../config/env';
 export class UserController {
     private userService: UserService;
 
@@ -11,14 +11,23 @@ export class UserController {
     async login(req: Request, res: Response): Promise<void> {
         logger.info('Entered login API endpoint...');
         try {
+            if (ENV.ENV_MODE === 'development') {
+                if (req.body.email == 'admin@admin.com' && req.body.password == 'admin') {
+                    const options = { maxAge: 60 * 60 * 24 * 5 * 1000, httpOnly: false, secure: false };
+                    res.cookie('admin_cookie',{ user: { id: 'test', name:'Alex', onboarded: true }}, options);
+                    res.status(200).json({ user: {name:'Admin'}, onboarded: {status: true} });
+                    return; 
+                }   
+            }
+
             if (req.session.user) {
                 logger.error(CONSTANTS.ERRORS.PREFIX.LOGIN + CONSTANTS.ERRORS.COOKIE_EXISTS);
                 res.sendStatus(500);
                 return;
             };
-            
+
             const userRecord = await this.userService.login(req.body);
-            
+
             if (userRecord) {
                 req.session.user = { id: userRecord._id, name:userRecord.first_name, onboarded: userRecord.onboarded };
                 res.status(200).json({ user: {name:userRecord.first_name}, onboarded: {status: userRecord.onboarded} });
@@ -85,10 +94,18 @@ export class UserController {
     async verifySession (req: Request, res: Response): Promise<void> {
         logger.info('Entered verifySession API endpoint...');
         try {
+            if (ENV.ENV_MODE === 'development') {
+                if (req.cookies.admin_cookie) {
+                    logger.info(req.cookies.admin_cookie)
+                    res.status(200).json(req.cookies.admin_cookie);
+                    return;
+                }
+            }
+
             const userSession = req.session.user;
 
             console.log(userSession);
-            
+
             if (userSession === null || userSession === undefined)
             {
                 logger.info('User does not have a session...');
