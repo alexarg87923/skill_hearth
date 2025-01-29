@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 interface User {
 	name: string;
@@ -26,6 +26,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 	const local_storage = localStorage.getItem("skill-hearth");
 	const [userContext, setUserContext] = useState<any | null>(local_storage ? JSON.parse(local_storage) : null);
 	const [loading, setLoading] = useState<boolean>(true);
+    const location = useLocation();
     const navigate = useNavigate();
     
     console.log("Local Storage: ", local_storage);
@@ -36,6 +37,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 		let isMounted = true;
 
 		const verifyAndDecodeCookie = async () => {
+            if (location.pathname === '/logout') return;
 			try {
                 if (isMounted) {
                     console.log("User Provider is mounted...");
@@ -46,7 +48,6 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
                         console.log("Session came back empty: ", response.data);
                         setUserContext(null);
                         localStorage.removeItem("skill-hearth");
-                        return;
                     } else {
                         console.log("API returned successful request with data: ", response.data.user);
                         setUserContext(response.data.user);
@@ -74,7 +75,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 		return () => {
 			isMounted = false;
 		};
-	}, []);
+	}, [location.pathname]);
 
 	console.log("Returning Provider children component...");
 	return (

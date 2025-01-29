@@ -69,7 +69,6 @@ export class UserController {
                   return res.status(500).send('Could not log out');
                 }
             });
-
             res.clearCookie('_csrf');
             res.clearCookie('connect.sid');
             res.clearCookie('admin_cookie');

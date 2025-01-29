@@ -7,12 +7,13 @@ const Logout: React.FC = () => {
 
 	useEffect(() => {
         console.log("Entered logout...");
+        localStorage.removeItem('skill-hearth');
+        setUserContext(null);
+        console.log('Cleared Local Storage...');
 		const logout = async () => {
 			try {
-				localStorage.removeItem('skill-hearth');
-				setUserContext(null);
 				await axios.post('/api/auth/logout');
-				console.log('Successfully logged user out...');
+				console.log('Successfully hit logout api...');
 			} catch (err) {
 				console.error("There was an error hitting the logout endpoint", err);
 				alert('There was an error logging you out');
