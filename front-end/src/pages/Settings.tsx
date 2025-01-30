@@ -33,15 +33,15 @@ const Settings: React.FC = () => {
                     <p className="text-sm">to log out of your other sessions across all of your devices.</p>
                 </div>
                 <div className="grid grid-row-2 mx-auto">
-                    <input placeholder="New Password" className="mb-5 focus-visible:outline-none py-2 rounded w-80 px-5 text-white bg-gray-800" />
-                    <div className="">
+                    <input placeholder="Password" className="mb-5 focus-visible:outline-none py-2 rounded w-80 px-5 text-white bg-gray-800" />
+                    <div>
                         <button type="submit" className="text-white rounded px-4 py-2 bg-indigo-500 hover:bg-indigo-400">
                             Log out of other sessions
                         </button>
                     </div>
                 </div>
             </div>
-            <div className="py-52 grid grid-cols-2 text-center items-center">
+            <div className="py-32 grid grid-cols-2 text-center items-center">
                 <div className="grid grid-rows-3">
                     <h1 className="text-2xl">Delete Account</h1>
                     <p className="text-sm">No longer want to use our service? You can delete your account here. This action is not reversible.</p>
