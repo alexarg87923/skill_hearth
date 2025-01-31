@@ -38,7 +38,7 @@ createRoot(document.getElementById('root')!).render(
 						<Route path="/dashboard" element={<Dashboard />} />
 						<Route path="/settings" element={<Settings />} />
 						<Route path="/profile" element={<Profile />} />
-						<Route path="/wizard" element={<ProfileWizard />} />
+						<Route path="/setupwizard" element={<ProfileWizard />} />
 					</Route>
 
 					<Route path="/logout" element={<Logout />} />
