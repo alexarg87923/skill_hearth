@@ -11,7 +11,7 @@ function Login() {
 	const navigate = useNavigate();
 	const [formData, setFormData] = useState({
 		email: '',
-		password: '',
+		password: ''
 	});
 
 	useEffect(() => {
@@ -25,7 +25,7 @@ function Login() {
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setFormData({
 			...formData,
-			[e.target.name]: e.target.value,
+			[e.target.name]: e.target.value
 		});
 	};
 
@@ -42,15 +42,13 @@ function Login() {
 			);
 
 			if (response.status === 200) {
-
-				console.log(response.data)
+				console.log(response.data);
 				setUserContext(response.data);
-				if(response.data.onboarding == false)
-					navigate('/setupwizard')
-				else
-					navigate('/dashboard');
-				//alert('Success!');
-
+				if(response.data.onboarding == false) {
+					navigate('/setupwizard');
+                } else {
+					navigate('/dashboard');   
+                }
 			}
 		} catch (error) {
 			console.error('Error logging in:', error);

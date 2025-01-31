@@ -89,7 +89,7 @@ const dashboard: React.FC = () => {
 				</div>
 			</div> */}
 
-			<div className="flex h-screen bg-gray-900 text-gray-200">
+			<div className="flex h-screen bg-gray-900 text-gray-200 pt-16">
 			{/* Left Sidebar */}
 			<div className="w-1/4 bg-gray-800 p-6 shadow-md">
 				{/* Profile Section */}

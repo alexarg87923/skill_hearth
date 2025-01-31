@@ -1,9 +1,50 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useContext, useState } from "react"
+import { toast } from 'react-toastify';
+import CsrfContext from "../provider/CsrfProvider";
+import axios from 'axios';
 
 const Settings: React.FC = () => {
+    const csrfToken = useContext(CsrfContext);
+    const [changePassFormData, setChangePassFormData] = useState({
+        password: '',
+        newPassword: '',
+        confirmNewPass: ''
+    });
+    
+    const changePasswordHandleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        console.log(`Target ${e.target.name}, Value: ${e.target.value}`);
+        setChangePassFormData({
+            ...changePassFormData,
+            [e.target.name]: e.target.value
+        });
+    };
+
+    const changePassword = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            const response = await axios.post('/api/user/changepassword',
+                changePassFormData,
+                {
+                    headers: {
+                        'CSRF-Token': csrfToken
+                    }
+                }
+            );
+
+            if (response.status === 200) {
+                console.log(response.data);
+                toast.success('Successfully changed your password!');
+            }
+        } catch (err) {
+            console.error(err);
+            toast.error('There was an error changing your password!');
+        };
+    };
+
 	useEffect(() => {
 		console.log("Settings page loaded...");
 	}, []);
+
 	return (
 		<div>
             <div className=" pt-52 grid grid-cols-2">
@@ -15,16 +56,18 @@ const Settings: React.FC = () => {
                         Update your password associated with your account.
                     </p>
                 </div>
-                <div className="grid grid-rows-3 mx-auto items-center">
-                    <input placeholder="Current Password" className="mb-5 focus-visible:outline-none py-2 rounded w-80 px-5 text-white bg-gray-800" />
-                    <input placeholder="New Password" className="mb-5 focus-visible:outline-none py-2 rounded w-80 px-5 text-white bg-gray-800" />
-                    <input placeholder="Confirm New Password" className="mb-5 focus-visible:outline-none py-2 w-80 rounded px-5 text-white bg-gray-800" />
-                    <div>
-                        <button type="submit" className="text-white rounded px-4 py-2 bg-indigo-500 hover:bg-indigo-400">
-                            Submit
-                        </button>
+                <form method="POST" onSubmit={changePassword}>
+                    <div className="grid grid-rows-3 mx-auto items-center">
+                        <input type='password' onChange={changePasswordHandleChange} name="password" value={changePassFormData.password} placeholder="Current Password" className="mb-5 focus-visible:outline-none py-2 rounded w-80 px-5 text-white bg-gray-800" />
+                        <input type='password' onChange={changePasswordHandleChange} name="newPassword" value={changePassFormData.newPassword} placeholder="New Password" className="mb-5 focus-visible:outline-none py-2 rounded w-80 px-5 text-white bg-gray-800" />
+                        <input type='password' onChange={changePasswordHandleChange} name="confirmNewPass" value={changePassFormData.confirmNewPass} placeholder="Confirm New Password" className="mb-5 focus-visible:outline-none py-2 w-80 rounded px-5 text-white bg-gray-800" />
+                        <div>
+                            <button type="submit" className="text-white rounded px-4 py-2 bg-indigo-500 hover:bg-indigo-400">
+                                Submit
+                            </button>
+                        </div>
                     </div>
-                </div>
+                </form>
             </div>
             <div className="grid grid-cols-2 py-32">
                 <div className="grid grid-row-2 text-center">

@@ -1,4 +1,4 @@
-import React from 'react';
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -12,34 +12,34 @@ const Footer = () => {
           <a href="/terms" className="text-gray-400 hover:text-white transition duration-300">Terms of Service</a>
         </div>
         <div className="flex justify-center space-x-4 mb-4">
-          <a
-            href="#"
+          <Link
+            to="#"
             className="text-gray-400 hover:text-white transition duration-300"
             aria-label="Twitter"
           >
             <i className="fab fa-twitter"></i>
-          </a>
-          <a
-            href="#"
+          </Link>
+          <Link
+            to="#"
             className="text-gray-400 hover:text-white transition duration-300"
             aria-label="LinkedIn"
           >
             <i className="fab fa-linkedin-in"></i>
-          </a>
-          <a
-            href="#"
+          </Link>
+          <Link
+            to="#"
             className="text-gray-400 hover:text-white transition duration-300"
             aria-label="Instagram"
           >
             <i className="fab fa-instagram"></i>
-          </a>
-          <a
-            href="#"
+          </Link>
+          <Link
+            to="#"
             className="text-gray-400 hover:text-white transition duration-300"
             aria-label="Facebook"
           >
             <i className="fab fa-facebook-f"></i>
-          </a>
+          </Link>
         </div>
         <div className="mb-4">
           <p className="text-gray-400 text-sm">
