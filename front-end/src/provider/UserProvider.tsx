@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 interface User {
 	name: string;
@@ -25,54 +26,58 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 	const local_storage = localStorage.getItem("skill-hearth");
 	const [userContext, setUserContext] = useState<any | null>(local_storage ? JSON.parse(local_storage) : null);
 	const [loading, setLoading] = useState<boolean>(true);
+    const location = useLocation();
+    const navigate = useNavigate();
+    
+    console.log("Local Storage: ", local_storage);
+    console.log("Entering User Provider...");
+    console.log("User context: ", userContext);
 
 	useEffect(() => {
 		let isMounted = true;
 
 		const verifyAndDecodeCookie = async () => {
-			console.log("Entering User Provider...");
+            if (location.pathname === '/logout') return;
 			try {
-				if (userContext && Object.keys(userContext).length > 0) {
-					localStorage.setItem("skill-hearth", JSON.stringify(userContext));
-				} else {
-					localStorage.removeItem("skill-hearth");
-				}
+                if (isMounted) {
+                    console.log("User Provider is mounted...");
 
-				console.log("checking user context...", userContext);
-
-				if (!userContext) {
-					const response = await axios.get('/api/auth/verify-session', { withCredentials: true });
-					if (isMounted) {
-						if (response.data && Object.keys(response.data).length > 0) {
-							setUserContext(response.data);
-							localStorage.setItem("skill-hearth", JSON.stringify(response.data));
-						  	console.log("user: ", response.data);
-						} else {
-							setUserContext(null);
-						  	console.log("empty user data response from server");
-						}
-					}
-				}
+                    const response = await axios.get('/api/auth/verify-session', { withCredentials: true });
+                    console.log(response);
+                    if (!response.data.user || Object.keys(response.data.user).length === 0) {
+                        console.log("Session came back empty: ", response.data);
+                        setUserContext(null);
+                        localStorage.removeItem("skill-hearth");
+                    } else {
+                        console.log("API returned successful request with data: ", response.data.user);
+                        setUserContext(response.data.user);
+                        localStorage.setItem("skill-hearth", JSON.stringify(response.data.user));
+                        if (response.data.onboarded !== undefined && !response.data?.onboarded?.status) {
+                            navigate('/wizard');
+                        }
+                    }
+                }
 			} catch (err) {
 				if (isMounted) {
 					setUserContext(null);
-					console.log("failed to verify session, user set to null");
+                    localStorage.removeItem("skill-hearth");
+					console.log("User Provider failed to verify session, user set to null...", err);
 				}
 			} finally {
 				if (isMounted) {
 					setLoading(false);
-					console.log("loading set to false");
+					console.log("User loading set to false...");
 				}
 			}
 		}
 		
 		verifyAndDecodeCookie();
-
 		return () => {
 			isMounted = false;
 		};
-	}, [userContext]);
+	}, [location.pathname]);
 
+	console.log("Returning Provider children component...");
 	return (
 		<UserContext.Provider value={{userContext, loading, setUserContext}}>
 			{children}

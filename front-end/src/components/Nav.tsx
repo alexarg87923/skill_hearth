@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
 import UserContext from '../provider/UserProvider';
+import { Link } from "react-router-dom";
 
 const Nav: React.FC = () => {
 	const { userContext } = useContext(UserContext);
@@ -23,27 +24,27 @@ const Nav: React.FC = () => {
 					{!userContext || Object.keys(userContext).length === 0 ?
 							<>
 								<li>
-									<a href="/" className="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white md:dark:text-blue-500" aria-current="page">Home</a>
+									<Link to="/" className="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white md:dark:text-blue-500" aria-current="page">Home</Link>
 								</li>
 								<li>
-									<a href="#" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">About</a>
+									<Link to="#" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">About</Link>
 								</li>
 								<li>
-									<a href="#" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Services</a>
+									<Link to="#" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Services</Link>
 								</li>
 							</>
 							:
 							<li>
-								<a href="/dashboard" className="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white md:dark:text-blue-500" aria-current="page">Dashboard</a>
+								<Link to="/dashboard" className="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white md:dark:text-blue-500" aria-current="page">Dashboard</Link>
 							</li>
 						}
 						{!userContext || Object.keys(userContext).length === 0 ?
 							<>
 								<li>
-									<a href="/login" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Login</a>
+									<Link to="/login" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Login</Link>
 								</li>
 								<li>
-									<a href="/signup" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Sign up</a>
+									<Link to="/signup" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Sign up</Link>
 								</li> 
 							</> 
 							:
@@ -54,10 +55,10 @@ const Nav: React.FC = () => {
 									onClick={() => setOptionsOpen(!optionsOpen)}
 								>
 									{
-										userContext?.profile_picture
+										true
 										?
 										<img
-											src={userContext.profile_picture}
+											src={'/api/profile_picture.jpeg'}
 											alt={`${userContext.name}'s profile`}
 											width="40"
 											height="40"
@@ -80,28 +81,28 @@ const Nav: React.FC = () => {
 										<div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 shadow-lg rounded-md z-10">
 											<ul>
 												<li>
-													<a
-													href="/profile"
-													className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white"
+													<Link
+                                                        to="/profile"
+                                                        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white"
 													>
 													Profile
-													</a>
+													</Link>
 												</li>
 												<li>
-													<a
-													href="/settings"
-													className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white"
+													<Link
+                                                        to="/settings"
+                                                        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white"
 													>
 													Settings
-													</a>
+													</Link>
 												</li>
 												<li>
-													<a
-													href="/logout"
-													className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white"
+													<Link
+                                                        to="/logout"
+                                                        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white"
 													>
 													Logout
-													</a>
+													</Link>
 												</li>
 											</ul>
 										</div>
