@@ -14,8 +14,6 @@ const StepOne: React.FC = () => {
         location: '',
     })
 
-
-
     const handleChange = (e: any) => {
         setInput({
                 ...input,
@@ -124,7 +122,7 @@ const StepOne: React.FC = () => {
                             <p className="font-normal text-gray-400">If checked, your email will be visible to other users.</p>
                         </div>
                     </div>
-                    <button type='submit' className="px-8 p-1 border-b-4 border-blue-400 text-xl font-bold transition-colors hover:text-green-400">Next</button>
+                    <button type='submit' className="px-8 p-1 border-b-4 border-blue-400 text-xl font-bold transition-colors hover:text-green-400">Save</button>
                 </form>
             </div>
         </div>

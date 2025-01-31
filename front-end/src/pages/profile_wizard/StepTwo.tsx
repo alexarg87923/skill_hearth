@@ -11,7 +11,7 @@ const StepTwo: React.FC = () => {
         <div className="h-screen">
             <div className="h-full flex flex-col items-center justify-center text-center">
                 <div>
-                    <h1 className="text-4xl font-bold mb-8">Add Some Skills</h1>
+                    <h1 className="text-4xl font-bold mb-8">Add Some <span className="text-green-400">Skills</span></h1>
                     <h2 className="text-2xl font-bold mb-4">What would you like to share?</h2>
                 </div>
                 <div className="w-1/2">
