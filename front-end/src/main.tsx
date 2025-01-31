@@ -12,6 +12,7 @@ import PageNotFound from './pages/PageNotFound';
 import Logout from './pages/Logout';
 import Settings from './pages/Settings';
 import Profile from './pages/Profile';
+import ProfileWizard from './pages/wizard/ProfileWizard';
 
 import Nav from './shared/Nav';
 import ProtectedRoute from './shared/ProtectedRoute';
@@ -41,6 +42,7 @@ createRoot(document.getElementById('root')!).render(
 						<Route path="/dashboard" element={<Dashboard />} />
 						<Route path="/settings" element={<Settings />} />
 						<Route path="/profile" element={<Profile />} />
+						<Route path="/setupwizard" element={<ProfileWizard />} />
 					</Route>
 
 					<Route path="/logout" element={<Logout />} />

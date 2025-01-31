@@ -34,9 +34,12 @@ function Login() {
 			console.log(response);
 			if (response.status === 200) {
 				console.log(response.data)
-				setUserContext(response.data.user);
-				navigate('/dashboard');
-				alert('Success!');
+				setUserContext(response.data);
+				if(response.data.onboarding == false)
+					navigate('/setupwizard')
+				else
+					navigate('/dashboard');
+				//alert('Success!');
 			}
 		} catch (error) {
 			navigate('/dashboard');
