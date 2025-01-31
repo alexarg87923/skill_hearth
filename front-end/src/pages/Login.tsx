@@ -42,15 +42,15 @@ function Login() {
 			);
 
 			if (response.status === 200) {
-				setUserContext(response.data.user);
-                localStorage.setItem("skill-hearth", JSON.stringify(response.data.user));
-                if (response.data.onboarded.status) {
-                    navigate('/dashboard');
-                } else {
-                    navigate('/wizard')
-                }
 
-				toast.success('Success!');
+				console.log(response.data)
+				setUserContext(response.data);
+				if(response.data.onboarding == false)
+					navigate('/setupwizard')
+				else
+					navigate('/dashboard');
+				//alert('Success!');
+
 			}
 		} catch (error) {
 			console.error('Error logging in:', error);
