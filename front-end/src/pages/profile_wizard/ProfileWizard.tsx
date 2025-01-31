@@ -10,37 +10,7 @@ import { IconContext } from "react-icons"
 
 const ProfileWizard: React.FC = () => {
 
-    /* 
-
-        Form layout
-        Bio - text, no placeholder, large, screen width text space
-        pic - upload, no placeholder, large, screen width prompt
-        contact: one line
-        phone - text, no placeholder
-        shareemail - checkbox, w/ disclaimer text, default unchecked
-        location (city) - text, no placeholder
-        next button
-    */
-
-    /* 
-        Flow:
-            -state variable for step #
-            -hide step and show next as user progresses
-            -save progress and keep track of inputs per step
-                -if they timeout/logout after completing a step, start them off on the next incomplete step
-            -validate form inputs before moving on to next step, update profile if valid
-    */
-
-    //console.log('from setupwizard: ' + userContext)
-
     const[step, setStep] = useState(1)
-    const [inputs, setInputs] = useState({
-        bio: '',
-        pic: '',
-        phone: '',
-        shareEmail: false,
-        location: '',
-    })
 
     const handleNext = () => {
         setStep(step+1)
