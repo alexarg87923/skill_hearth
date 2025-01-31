@@ -14,10 +14,10 @@ import PageNotFound from './pages/PageNotFound';
 import Logout from './pages/Logout';
 import Settings from './pages/Settings';
 import Profile from './pages/Profile';
-import ProfileWizard from './pages/wizard/ProfileWizard';
 
 import { CsrfProvider } from './provider/CsrfProvider';
-import { UserProvider } from './provider/UserProvider'
+import { UserProvider } from './provider/UserProvider';
+import ProfileWizard from './pages/profile_wizard/ProfileWizard';
 
 import ProtectedRoute from './components/ProtectedRoute';
 import Footer from './components/Footer';
@@ -33,7 +33,6 @@ createRoot(document.getElementById('root')!).render(
 						<Route path="/" element={<Landing />} />
 						<Route path="/login" element={<Login />} />
 						<Route path="/signup" element={<Signup />} />
-
 
 					<Route element={<ProtectedRoute />}>
 						<Route path="/dashboard" element={<Dashboard />} />

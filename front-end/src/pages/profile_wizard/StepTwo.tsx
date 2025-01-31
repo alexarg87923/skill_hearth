@@ -1,10 +1,9 @@
 import { useContext, useState } from "react"
 import UserContext from "../../provider/UserProvider"
-
 const skills = [
     'sewing', '2d art', '3d art', 'digital art', 'guitar', 'programming', 'carpentry', 'cooking', 'ceramics', 'songwriting', 'singing'
 ]
-const StepThree: React.FC = () => {
+const StepTwo: React.FC = () => {
     const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   
     const toggleSelection = (skill: string) => {
@@ -18,7 +17,7 @@ const StepThree: React.FC = () => {
         <div className="h-screen">
             <div className="h-full flex flex-col items-center justify-center text-center">
                 <div>
-                    <h1 className="text-4xl font-bold mb-8">Add Some Skills</h1>
+                    <h1 className="text-4xl font-bold mb-8">Add Some <span className="text-green-400">Skills</span></h1>
                     <h2 className="text-2xl font-bold mb-4">What would you like to share?</h2>
                 </div>
                 <div className="w-1/2">
@@ -59,10 +58,10 @@ const StepThree: React.FC = () => {
                         // You can replace the above line with an actual API call
                     }}
                 >
-                    Next
+                    Save
                 </button>
             </div>
         </div>
     )
 }
-export default StepThree
+export default StepTwo

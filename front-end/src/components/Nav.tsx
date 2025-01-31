@@ -48,7 +48,7 @@ const Nav: React.FC = () => {
 								</li> 
 							</> 
 							:
-							<div className=' relative'>
+							<div className='relative'>
 								<button
 									type="button"
 									className="flex items-center space-x-2 text-gray-900 dark:text-white focus:outline-none"
@@ -78,7 +78,7 @@ const Nav: React.FC = () => {
 								</button>
 								<div className='absolute'>
 									{optionsOpen &&
-										<div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 shadow-lg rounded-md z-10">
+										<div className="absolute -right-10 mt-2 w-48 bg-white dark:bg-gray-800 shadow-lg rounded-md z-10">
 											<ul>
 												<li>
 													<Link
