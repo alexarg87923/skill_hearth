@@ -14,5 +14,9 @@
   "description": "",
   "devDependencies": {
     "concurrently": "^9.1.2"
+  },
+  "dependencies": {
+    "@headlessui/react": "^2.2.0",
+    "react-icons": "^5.4.0"
   }
 }
