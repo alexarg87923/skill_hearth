@@ -1,8 +1,10 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { ToastContainer } from 'react-toastify';
 
-import './index.css';
+import './assets/index.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 import Landing from './pages/Landing';
 import Login from './pages/Login';
@@ -14,29 +16,24 @@ import Settings from './pages/Settings';
 import Profile from './pages/Profile';
 import ProfileWizard from './pages/wizard/ProfileWizard';
 
-import Nav from './shared/Nav';
-import ProtectedRoute from './shared/ProtectedRoute';
-import AuthProtectedRoute from './shared/AuthProtectedRoute';
-
 import { CsrfProvider } from './provider/CsrfProvider';
-import { UserProvider } from './provider/UserProvider';
-import Footer from './pages/footer';
+import { UserProvider } from './provider/UserProvider'
 
-
+import ProtectedRoute from './components/ProtectedRoute';
+import Footer from './components/Footer';
+import Nav from './components/Nav';
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-	<BrowserRouter>
-		<CsrfProvider>
-			<UserProvider>
-				<Nav />
-				<Routes>
-					<Route path="/" element={<Landing />} />
-
-					<Route element={<AuthProtectedRoute />}>
+	<StrictMode>
+		<BrowserRouter>
+			<CsrfProvider>
+				<UserProvider>
+					<Nav />
+					<Routes>
+						<Route path="/" element={<Landing />} />
 						<Route path="/login" element={<Login />} />
 						<Route path="/signup" element={<Signup />} />
-					</Route>
+
 
 					<Route element={<ProtectedRoute />}>
 						<Route path="/dashboard" element={<Dashboard />} />
@@ -48,9 +45,10 @@ createRoot(document.getElementById('root')!).render(
 					<Route path="/logout" element={<Logout />} />
 					<Route path="*" element={<PageNotFound />} />
 				</Routes>
-				<Footer></Footer>
+				<Footer />
+                <ToastContainer />
 			</UserProvider>
 		</CsrfProvider>
     </BrowserRouter>
   </StrictMode>
-)
+);

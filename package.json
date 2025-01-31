@@ -6,7 +6,7 @@
     "install:back-end": "cd back-end/ && npm install",
     "install:front-end": "cd front-end/ && npm install",
     "postinstall": "npm run install:back-end && npm run install:front-end",
-    "start": "concurrently -n \"Back-end,Front-end\" -c \"cyan,green\" \"npm start --prefix back-end\" \"npm run dev --prefix front-end\""
+    "start": "concurrently -n \"Front-end,Back-end\" -c \"green,cyan\" \"npm run dev --prefix front-end\" \"npm start --prefix back-end\""
   },
   "keywords": [],
   "author": "",
