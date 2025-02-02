@@ -53,7 +53,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
                         setUserContext(response.data.user);
                         localStorage.setItem("skill-hearth", JSON.stringify(response.data.user));
                         if (response.data.onboarded !== undefined && !response.data?.onboarded?.status) {
-                            navigate('/wizard');
+                            navigate('/setupwizard');
                         }
                     }
                 }

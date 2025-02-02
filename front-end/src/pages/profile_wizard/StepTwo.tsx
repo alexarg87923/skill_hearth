@@ -1,9 +1,11 @@
-import { useContext, useState } from "react"
-import UserContext from "../../provider/UserProvider"
+import React, { useState } from "react"
+import { iFormData } from "./ProfileWizard";
+
 const skills = [
     'sewing', '2d art', '3d art', 'digital art', 'guitar', 'programming', 'carpentry', 'cooking', 'ceramics', 'songwriting', 'singing'
-]
-const StepTwo: React.FC = () => {
+];
+
+const StepTwo: React.FC<Props> = ({ leftArrow, rightArrow, formData, setFormData }) => {
     const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   
     const toggleSelection = (skill: string) => {
@@ -13,8 +15,15 @@ const StepTwo: React.FC = () => {
           : [...prevSelectedSkills, skill] 
       );
     };
+
+    const handleNextPage = () => {
+        setFormData({...formData, stepTwo: selectedSkills});
+    };
+
     return(
-        <div className="h-screen">
+        <div className="h-screen pt-16">
+            {React.cloneElement(leftArrow, { changeFunc: handleNextPage })}
+            {React.cloneElement(rightArrow, { changeFunc: handleNextPage })}
             <div className="h-full flex flex-col items-center justify-center text-center">
                 <div>
                     <h1 className="text-4xl font-bold mb-8">Add Some <span className="text-green-400">Skills</span></h1>
@@ -38,7 +47,7 @@ const StepTwo: React.FC = () => {
                         }
                     </ul>
                 </div>
-                <div className="mt-6">
+                {/* <div className="mt-6">
                     <h2 className="text-2xl font-bold mb-4">Selected Skills:</h2>
                     <ul>
                         {selectedSkills.length > 0 ? (
@@ -49,19 +58,17 @@ const StepTwo: React.FC = () => {
                         <p>No skills selected</p>
                     )}
                     </ul>
-                </div>
-                <button 
-                    className="px-8 py-2 bg-gray-700 rounded-full text-xl font-bold mt-4"
-                    onClick={() => {
-                        // Example of sending the selectedSkills to the backend
-                        console.log("Selected skills to send to backend:", selectedSkills);
-                        // You can replace the above line with an actual API call
-                    }}
-                >
-                    Save
-                </button>
+                </div> */}
             </div>
         </div>
-    )
-}
-export default StepTwo
+    );
+};
+
+export default StepTwo;
+
+interface Props {
+    rightArrow: any;
+    leftArrow: any;
+    formData: iFormData;
+    setFormData: React.Dispatch<React.SetStateAction<iFormData>>;
+};

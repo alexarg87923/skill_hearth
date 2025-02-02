@@ -1,11 +1,12 @@
-import { useContext, useState } from "react"
-import UserContext from "../../provider/UserProvider"
+import React, { useState } from "react";
+import { iFormData } from "./ProfileWizard";
 
 const skills = [
     'sewing', '2d art', '3d art', 'digital art', 'guitar', 'programming', 'carpentry', 'cooking', 'ceramics', 'songwriting', 'singing'
-]
-const StepThree: React.FC = () => {
-    const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+];
+
+const StepThree: React.FC<Props> = ({ leftArrow, formData, setFormData, handleSubmit }) => {
+    const [selectedSkills, setSelectedSkills] = useState<string[]>(formData.stepThree);
   
     const toggleSelection = (skill: string) => {
       setSelectedSkills((prevSelectedSkills) =>
@@ -14,8 +15,14 @@ const StepThree: React.FC = () => {
           : [...prevSelectedSkills, skill] 
       );
     };
+
+    const handleNextPage = () => {
+        setFormData({...formData, stepThree: selectedSkills});
+    };
+
     return(
-        <div className="h-screen">
+        <div className="h-screen pt-16">
+            {React.cloneElement(leftArrow, { changeFunc: handleNextPage })}
             <div className="h-full flex flex-col items-center justify-center text-center">
                 <div>
                     <h1 className="text-4xl font-bold mb-8">Add Some <span className="text-blue-400">Interests</span></h1>
@@ -39,7 +46,7 @@ const StepThree: React.FC = () => {
                         }
                     </ul>
                 </div>
-                <div className="mt-6">
+                {/* <div className="mt-6">
                     <h2 className="text-2xl font-bold mb-4">Selected Skills:</h2>
                     <ul>
                         {selectedSkills.length > 0 ? (
@@ -50,22 +57,18 @@ const StepThree: React.FC = () => {
                         <p>No skills selected</p>
                     )}
                     </ul>
-                </div>
-                <div>
-                    <button 
-                        className="px-8 py-2 bg-gray-700 rounded-full text-xl font-bold mt-4 mx-8"
-                        onClick={() => {
-                            // Example of sending the selectedSkills to the backend
-                            console.log("Selected skills to send to backend:", selectedSkills);
-                            // You can replace the above line with an actual API call
-                        }}
-                        >
-                        Save
-                    </button>
-                    <button className="px-8 p-1 border-b-4 border-blue-400 text-xl font-bold transition-colors hover:text-green-400">Finish and Onboard!</button>
-                </div>
+                </div> */}
+                <button onClick={handleSubmit} className="px-8 mt-3 p-1 border-b-4 border-blue-400 text-xl font-bold transition-colors hover:text-green-400">Finish and Onboard!</button>
             </div>
         </div>
-    )
-}
-export default StepThree
+    );
+};
+
+export default StepThree;
+
+interface Props {
+    leftArrow: any;
+    formData: iFormData;
+    setFormData: React.Dispatch<React.SetStateAction<iFormData>>;
+    handleSubmit: any;
+};
