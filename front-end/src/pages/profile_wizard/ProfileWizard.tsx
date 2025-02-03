@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Transition } from "@headlessui/react";
 import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
 import { IconContext } from "react-icons";
-import axios from 'axios';
+// import axios from 'axios';
 
 import StepOne from "./StepOne";
 import StepTwo from "./StepTwo";
@@ -35,7 +35,7 @@ const ProfileWizard: React.FC = () => {
     });
 
     const handleSubmit = () => {
-
+        console.log(formData);
     };
 
     return (
@@ -114,7 +114,7 @@ const StepArrow: React.FC<ArrowProps> = ({ orientation, setStep, sendDataUp }) =
     };
   
     return (
-        <div className={`absolute ${orientation}-5 top-1/2 -translate-y-1/2`}>
+        <div className={`absolute ${orientation}-5 top-[calc(50%)]`}>
             <IconContext.Provider value={{ size: "2rem", color: "black" }}>
                 <button
                     className="bg-gray-500 rounded-full p-2 text-white hover:bg-gray-600 transition"

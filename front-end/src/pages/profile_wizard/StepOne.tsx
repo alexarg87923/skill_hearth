@@ -8,11 +8,11 @@ const StepOne: React.FC<Props> = ({ rightArrow, formData, setFormData }) => {
 
     const {userContext} = useContext(UserContext)
     const [input, setInput] = useState({
-        bio: '',
-        pic: '',
-        phone: '',
-        shareEmail: false,
-        location: ''
+        bio: formData.stepOne.bio ? formData.stepOne.bio : '',
+        pic: formData.stepOne.pic ? formData.stepOne.pic : '',
+        phone: formData.stepOne.phone ? formData.stepOne.phone : '',
+        shareEmail: formData.stepOne.shareEmail ? formData.stepOne.shareEmail : false,
+        location: formData.stepOne.location ? formData.stepOne.location : ''
     });
 
     const handleChange = (e: any) => {
@@ -31,7 +31,7 @@ const StepOne: React.FC<Props> = ({ rightArrow, formData, setFormData }) => {
             <div className="my-2">
                 <label className="font-normal">
                     Select A Location
-                    <select value={formData.stepOne.location} 
+                    <select value={input.location} 
                         onChange={e=> setInput({...input, location: e.target.value})} 
                         className="text-black mx-4 rounded-xl px-2 py-2 border-b-4 border-blue-400"
                     >
@@ -50,11 +50,11 @@ const StepOne: React.FC<Props> = ({ rightArrow, formData, setFormData }) => {
 
     return(
         <div className="min-h-screen flex pt-16">
-            {React.cloneElement(rightArrow, { changeFunc: handleNextPage })}
             <div className="w-1/2 flex flex-col items-center justify-center">
                 <img src='https://images.unsplash.com/photo-1523745962530-340c0eeb7e7d?q=80&w=1965&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' alt='' className=""/>
             </div>
             <div className="w-1/2 mx-auto my-auto p-8 px-20">
+            {React.cloneElement(rightArrow, { changeFunc: handleNextPage })}
                 <h1 className="text-4xl mb-4 font-bold">Welcome {userContext ? userContext.name : ''}, Let's Get Acquainted!</h1>
                 <h2 className="text-2xl mb-8">Fill out some details about yourself.</h2>
 
@@ -67,7 +67,7 @@ const StepOne: React.FC<Props> = ({ rightArrow, formData, setFormData }) => {
                                 placeholder="Write a thought..."
                                 rows={4}
                                 name='bio'
-                                value={formData.stepOne.bio}
+                                value={input.bio}
                                 onChange={handleChange}
                                 className="rounded-2xl text-base font-normal text-black px-3 py-2 w-3/4 border-b-4 border-blue-400"
                             />
@@ -80,7 +80,7 @@ const StepOne: React.FC<Props> = ({ rightArrow, formData, setFormData }) => {
                             <input
                                 placeholder=""
                                 type="file"
-                                value={formData.stepOne.pic}
+                                value={input.pic}
                                 onChange={handleChange}
                                 className="text-black bg-white rounded-lg"
                             />
@@ -96,7 +96,7 @@ const StepOne: React.FC<Props> = ({ rightArrow, formData, setFormData }) => {
                                     <input
                                     type="text"
                                     name='phone'
-                                    value={formData.stepOne.phone}
+                                    value={input.phone}
                                     onChange={handleChange}
                                     className="block font-normal my-2 text-black rounded-lg px-4 py-1 border-b-4 border-blue-400"
                                     />
@@ -115,7 +115,7 @@ const StepOne: React.FC<Props> = ({ rightArrow, formData, setFormData }) => {
                                 <input
                                 name='share-email'
                                 type='checkbox'
-                                checked={formData.stepOne.shareEmail}
+                                checked={input.shareEmail}
                                 onChange={() => setInput((prev) => ({ ...prev, shareEmail: !prev.shareEmail }))}
                                 className="text-black size-5 mx-4"
                                 />

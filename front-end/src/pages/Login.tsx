@@ -43,8 +43,8 @@ function Login() {
 
 			if (response.status === 200) {
 				console.log(response.data);
-				setUserContext(response.data);
-				if(response.data.onboarding == false) {
+				setUserContext(response.data.user);
+				if(!response?.data?.onboarded?.status) {
 					navigate('/setupwizard');
                 } else {
 					navigate('/dashboard');   

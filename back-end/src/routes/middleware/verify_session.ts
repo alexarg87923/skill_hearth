@@ -34,8 +34,19 @@ export const verify_session = async (
 
     try {
         if (ENV.ENV_MODE === 'development' && req.cookies.admin_cookie) {
+            const adminCookie = req.cookies.admin_cookie;
             logger.info(req.cookies.admin_cookie);
-            return returnStatusOrNext({ res, status: 200, data: req.cookies.admin_cookie, next });
+
+            if (!adminCookie.onboarded) {
+                return returnStatusOrNext({ res, status: 200, data: {
+                    user: {name: adminCookie.name}
+                }, next });
+            }
+
+            return returnStatusOrNext({ res, status: 200, data: {
+                user: {name: adminCookie.name},
+                onboarded: { status: adminCookie.onboarded }
+            }, next });
         }
 
         const userSession = req.session.user;

@@ -14,7 +14,14 @@ export class UserController {
         logger.info('Entered login API endpoint...');
         try {
             if (ENV.ENV_MODE === 'development') {
-                if (req.body.email == 'admin@admin.com' && req.body.password == 'admin') {
+                if (req.body.email == 'admin@admin.com' && req.body.password == 'unboarded') {
+                    const options = { maxAge: 60 * 60 * 24 * 5 * 1000, httpOnly: false, secure: false };
+                    res.cookie('admin_cookie',{ user: { id: 'test', name:'Alex', onboarded: false }}, options);
+                    res.status(200).json({ user: {name:'Admin'}, onboarded: {status: false} });
+                    return; 
+                };
+
+                if (req.body.email == 'admin@admin.com' && req.body.password == 'onboarded') {
                     const options = { maxAge: 60 * 60 * 24 * 5 * 1000, httpOnly: false, secure: false };
                     res.cookie('admin_cookie',{ user: { id: 'test', name:'Alex', onboarded: true }}, options);
                     res.status(200).json({ user: {name:'Admin'}, onboarded: {status: true} });
@@ -31,7 +38,8 @@ export class UserController {
             const userRecord = await this.userService.login(req.body);
 
             if (userRecord) {
-                req.session.user = { id: userRecord._id, name:userRecord.first_name, onboarded: userRecord.onboarded };
+                const userInfo = {name:userRecord.first_name, onboarded: userRecord.onboarded};
+                req.session.user = { id: userRecord._id, ...userInfo };
                 res.status(200).json({ user: {name:userRecord.first_name}, onboarded: {status: userRecord.onboarded} });
                 return;
             };
