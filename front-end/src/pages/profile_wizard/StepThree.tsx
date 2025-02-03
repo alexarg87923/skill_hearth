@@ -6,7 +6,7 @@ const skills = [
 ];
 
 const StepThree: React.FC<Props> = ({ leftArrow, formData, setFormData, handleSubmit }) => {
-    const [selectedSkills, setSelectedSkills] = useState<string[]>(formData.stepThree);
+    const [selectedSkills, setSelectedSkills] = useState<string[]>(formData.stepThree ? formData.stepThree : []);
   
     const toggleSelection = (skill: string) => {
       setSelectedSkills((prevSelectedSkills) =>
@@ -22,7 +22,7 @@ const StepThree: React.FC<Props> = ({ leftArrow, formData, setFormData, handleSu
 
     return(
         <div className="h-screen pt-16">
-            {React.cloneElement(leftArrow, { changeFunc: handleNextPage })}
+            {React.cloneElement(leftArrow, { sendDataUp: handleNextPage })}
             <div className="h-full flex flex-col items-center justify-center text-center">
                 <div>
                     <h1 className="text-4xl font-bold mb-8">Add Some <span className="text-blue-400">Interests</span></h1>

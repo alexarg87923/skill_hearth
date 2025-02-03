@@ -50,11 +50,11 @@ const StepOne: React.FC<Props> = ({ rightArrow, formData, setFormData }) => {
 
     return(
         <div className="min-h-screen flex pt-16">
+            {React.cloneElement(rightArrow, { sendDataUp: handleNextPage })}
             <div className="w-1/2 flex flex-col items-center justify-center">
                 <img src='https://images.unsplash.com/photo-1523745962530-340c0eeb7e7d?q=80&w=1965&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' alt='' className=""/>
             </div>
             <div className="w-1/2 mx-auto my-auto p-8 px-20">
-            {React.cloneElement(rightArrow, { changeFunc: handleNextPage })}
                 <h1 className="text-4xl mb-4 font-bold">Welcome {userContext ? userContext.name : ''}, Let's Get Acquainted!</h1>
                 <h2 className="text-2xl mb-8">Fill out some details about yourself.</h2>
 

@@ -14,32 +14,32 @@ export class UserController {
         logger.info('Entered login API endpoint...');
         try {
             if (ENV.ENV_MODE === 'development') {
-                if (req.body.email == 'admin@admin.com' && req.body.password == 'unboarded') {
+                if (req.body.email === 'admin@admin.com' && req.body.password === 'unboarded') {
                     const options = { maxAge: 60 * 60 * 24 * 5 * 1000, httpOnly: false, secure: false };
-                    res.cookie('admin_cookie',{ user: { id: 'test', name:'Alex', onboarded: false }}, options);
+                    res.cookie('admin_cookie', { id: 'adminUser', name:'Admin', onboarded: false }, options);
                     res.status(200).json({ user: {name:'Admin'}, onboarded: {status: false} });
                     return; 
                 };
 
                 if (req.body.email == 'admin@admin.com' && req.body.password == 'onboarded') {
                     const options = { maxAge: 60 * 60 * 24 * 5 * 1000, httpOnly: false, secure: false };
-                    res.cookie('admin_cookie',{ user: { id: 'test', name:'Alex', onboarded: true }}, options);
+                    res.cookie('admin_cookie', { id: 'adminUser', name:'Admin', onboarded: true }, options);
                     res.status(200).json({ user: {name:'Admin'}, onboarded: {status: true} });
                     return; 
                 };
             };
-
+            
             if (req.session.user) {
                 logger.error(CONSTANTS.ERRORS.PREFIX.LOGIN + CONSTANTS.ERRORS.COOKIE_EXISTS);
                 res.sendStatus(500);
                 return;
             };
-
+            
             const userRecord = await this.userService.login(req.body);
-
+            
             if (userRecord) {
-                const userInfo = {name:userRecord.first_name, onboarded: userRecord.onboarded};
-                req.session.user = { id: userRecord._id, ...userInfo };
+                logger.info('Signing in user...');
+                req.session.user = { id: userRecord._id, name:userRecord.first_name, onboarded: userRecord.onboarded };
                 res.status(200).json({ user: {name:userRecord.first_name}, onboarded: {status: userRecord.onboarded} });
                 return;
             };
@@ -58,6 +58,7 @@ export class UserController {
             const userRecord = await this.userService.signup(req.body);
 
             if (userRecord) {
+                logger.info(`User was successfully made! ${userRecord}`);
                 res.sendStatus(201);
                 return;
             };
@@ -82,6 +83,7 @@ export class UserController {
             res.clearCookie('_csrf');
             res.clearCookie('connect.sid');
             res.clearCookie('admin_cookie');
+            logger.info('Successfully cleared all user data...');
             res.sendStatus(200);
         } catch (err) {
             logger.error(`${CONSTANTS.ERRORS.PREFIX.LOGOUT + CONSTANTS.ERRORS.CATASTROPHIC}: ` + err);
@@ -92,6 +94,7 @@ export class UserController {
     async getToken(req: Request, res: Response): Promise<void> {
         logger.info('Entered GetCSRFToken API endpoint...');
         try {
+            logger.info('Returning CSRF Token...');
             res.status(200).send({ csrfToken: req.csrfToken() });
             return;
         } catch (err) {
@@ -105,8 +108,13 @@ export class UserController {
         verify_session(req, res);
     };
     
+    async onboardUser (req: Request, res: Response): Promise<void> {
+        logger.info('Entered wizard API endpoint...');
+    };
+    
     async changepassword (req: Request, res: Response): Promise<void> {
         logger.info('Entered changepassword API endpoint...');
+        logger.info('Not implemented...');
         logger.info(req.body);
         try {
             res.status(200).json();
