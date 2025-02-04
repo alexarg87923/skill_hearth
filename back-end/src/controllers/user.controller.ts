@@ -14,14 +14,14 @@ export class UserController {
         logger.info('Entered login API endpoint...');
         try {
             if (ENV.ENV_MODE === 'development') {
-                if (req.body.email === 'admin@admin.com' && req.body.password === 'unboarded') {
+                if (req.body.email === 'admin@unboarded.com' && req.body.password === 'admin') {
                     const options = { maxAge: 60 * 60 * 24 * 5 * 1000, httpOnly: false, secure: false };
                     res.cookie('admin_cookie', { id: '67a1848b08c4b2e9283735dd', name:'Admin', onboarded: false }, options);
                     res.status(200).json({ user: {name:'Admin', onboarded: false} });
                     return; 
                 };
 
-                if (req.body.email == 'admin@admin.com' && req.body.password == 'onboarded') {
+                if (req.body.email == 'admin@onboarded.com' && req.body.password == 'admin') {
                     const options = { maxAge: 60 * 60 * 24 * 5 * 1000, httpOnly: false, secure: false };
                     res.cookie('admin_cookie', { id: '67a184c2883a10f0133e35c1', name:'Admin', onboarded: true }, options);
                     res.status(200).json({ user: {name:'Admin', onboarded: true} });

@@ -84,16 +84,19 @@ export class UserService {
         logger.error(CONSTANTS.ERRORS.CATASTROPHIC);
         return;
     }
-
-    async onboard_user(formData: IProfileData, userID: string): Promise<Partial<IProfileData> | null | undefined> {
+    
+    async onboard_user(formData: IProfileData, userID: string): Promise<boolean | null | undefined> {
         const result = validateWizard(formData);
 
+        console.log(result);
+        console.log(formData);
+        
         if (result.error) {
             logger.error(`Form data is incorrect... ${result.error}`);
             return;
-        }
+        };
         logger.error('No error when validating wizard form data...');
         
-        return;
+        return await this.userRepository.addProfile(formData, userID);
     };
 }
