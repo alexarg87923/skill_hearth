@@ -1,6 +1,5 @@
 import { UserRepository } from '../repositories/user.repository';
 import { IUser } from '../models/user.model';
-import { IProfileData } from '../models/profile.model';
 import { validateSignUp, validateLogin, validateWizard } from '../validation/userValidation';
 import bcrypt from 'bcryptjs';
 import { CONSTANTS } from '../utils/constants';
@@ -34,8 +33,7 @@ export class UserService {
             return;
         };
         logger.info('Login form data appears to be valid...');
-        
-        
+
         var userRecord = await this.userRepository.findUserByEmail(formData.email!);
         if (userRecord === null || userRecord === undefined || !userRecord) {
             logger.error(CONSTANTS.ERRORS.USER_NOT_FOUND);
@@ -85,18 +83,15 @@ export class UserService {
         return;
     }
     
-    async onboard_user(formData: IProfileData, userID: string): Promise<boolean | null | undefined> {
+    async onboard_user(formData: Partial<IUser>, userID: string): Promise<Partial<IUser> | null | undefined> {
         const result = validateWizard(formData);
 
-        console.log(result);
-        console.log(formData);
-        
         if (result.error) {
             logger.error(`Form data is incorrect... ${result.error}`);
             return;
         };
-        logger.error('No error when validating wizard form data...');
+        logger.info('No error when validating wizard form data...');
         
-        return await this.userRepository.addProfile(formData, userID);
+        return (await this.userRepository.addProfile(formData, userID));
     };
 }

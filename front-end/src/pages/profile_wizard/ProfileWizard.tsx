@@ -4,10 +4,12 @@ import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
 import { IconContext } from "react-icons";
 import apiAxios from "../../components/apiAxios";
 import CsrfContext from '../../provider/CsrfProvider';
+import { toast } from 'react-toastify';
 
 import StepOne from "./StepOne";
 import StepTwo from "./StepTwo";
 import StepThree from "./StepThree";
+import { useNavigate } from "react-router-dom";
 
 export interface iFormData {
     stepOne: {
@@ -24,6 +26,7 @@ export interface iFormData {
 const ProfileWizard: React.FC = () => {
     const [step, setStep] = useState(1);
     const { csrfToken } = useContext(CsrfContext);
+    const navigate = useNavigate();
     const [formData, setFormData] = useState<iFormData>({
         stepOne: {
             bio: '',
@@ -36,13 +39,26 @@ const ProfileWizard: React.FC = () => {
         stepThree: []
     });
 
-    const handleSubmit = () => {
-        apiAxios.post('/user/wizard', 
-            formData,
+    const handleSubmit = async () => {
+        const result = await apiAxios.post('/user/wizard', 
+            {
+                bio: formData.stepOne.bio,
+                profile_picture: formData.stepOne.pic,
+                phone_number: formData.stepOne.phone,
+                share_email: formData.stepOne.shareEmail,
+                location: formData.stepOne.location,
+                skills: formData.stepTwo,
+                interests: formData.stepThree
+            },
             {
                 headers: { 'CSRF-Token': csrfToken }
             }
         );
+
+        if (result.status === 200) {
+            toast.success('Successfuly created your profile!');
+            navigate('/dashboard');
+        }
     };
 
     return (
@@ -82,7 +98,7 @@ interface StepTransitionProps {
     step: number;
     stepNum: number;
     children: React.ReactNode;
-}
+};
 
 const StepTransition: React.FC<StepTransitionProps> = ({ step, stepNum, children }) => {
     return (
@@ -105,7 +121,7 @@ interface ArrowProps {
     orientation: 'left' | 'right';
     setStep: React.Dispatch<React.SetStateAction<number>>;
     sendDataUp?: () => void;
-}
+};
   
 const StepArrow: React.FC<ArrowProps> = ({ orientation, setStep, sendDataUp }) => {
     const handleClick = () => {

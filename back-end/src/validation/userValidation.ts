@@ -1,7 +1,6 @@
 import Joi from 'joi';
 import passwordComplexity from "joi-password-complexity";
 import { IUser } from '../models/user.model';
-import { IProfileData } from '../models/profile.model';
 
 const capitalizeFirstLetter = (value: string) => {
     if (typeof value === 'string') {
@@ -31,12 +30,12 @@ export const validateSignUp = (formData: Partial<IUser>) => {
     return schema.validate(formData);  
 };
 
-export const validateWizard = (formData: Partial<IProfileData>) => {
+export const validateWizard = (formData: Partial<IUser>) => {
     const schema = Joi.object({
         bio: Joi.string().required(),
-        profile_picture: Joi.string(),
+        profile_picture: Joi.string().allow(null).empty('').optional(),
         phone_number: Joi.string().required(),
-        loction: Joi.string().required(),
+        location: Joi.string().required(),
         share_email: Joi.boolean().required(),
         skills: Joi.array().required(),
         interests: Joi.array().required()

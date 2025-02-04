@@ -116,12 +116,12 @@ export class UserController {
 
                 if (userProfile) {
                     logger.info('Successfully created user profile...');
-                    res.status(200).json();
+                    res.sendStatus(200);
                     return;
                 };
             };
             
-            logger.info('User does not have a session');
+            logger.info('Was not able to update user profile...');
             res.sendStatus(403);
         } catch (error) {
             logger.error(`${CONSTANTS.ERRORS.PREFIX.LOGIN + CONSTANTS.ERRORS.CATASTROPHIC}: ` + error);
