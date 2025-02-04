@@ -9,11 +9,11 @@ const StepTwo: React.FC<Props> = ({ leftArrow, rightArrow, formData, setFormData
     const [selectedSkills, setSelectedSkills] = useState<string[]>(formData.stepTwo ? formData.stepTwo : []);
   
     const toggleSelection = (skill: string) => {
-      setSelectedSkills((prevSelectedSkills) =>
-        prevSelectedSkills.includes(skill)
-          ? prevSelectedSkills.filter((s) => s !== skill) 
-          : [...prevSelectedSkills, skill] 
-      );
+        setSelectedSkills((prevSelectedSkills) =>
+            prevSelectedSkills.includes(skill)
+                ? prevSelectedSkills.filter((s) => s !== skill) 
+                : [...prevSelectedSkills, skill] 
+        );
     };
 
     const handleNextPage = () => {
@@ -36,7 +36,7 @@ const StepTwo: React.FC<Props> = ({ leftArrow, rightArrow, formData, setFormData
                                 <li key={index}>
                                     <button
                                         className={`px-6 py-2 rounded-full m-2 my-3 ${
-                                            selectedSkills.includes(skill) ? 'bg-blue-500' : 'bg-gray-700'
+                                            selectedSkills.includes(skill) ? 'bg-green-600' : 'bg-gray-700'
                                         }`}
                                         onClick={() => toggleSelection(skill)}
                                     >                    

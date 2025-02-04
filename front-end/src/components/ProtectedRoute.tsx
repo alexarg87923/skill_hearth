@@ -18,7 +18,7 @@ function ProtectedRoute() {
 	};
 
     if (!userContext.onboarded && location.pathname !== '/setupwizard') {
-		console.log('User is being sent to the wizard');	
+		console.log(`User is being sent to the wizard:\nOnboarded:${userContext.onboarded}, Pathname: ${location.pathname}`);	
 		return <Navigate to="/setupwizard" replace />;
 	};
 

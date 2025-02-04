@@ -9,11 +9,11 @@ const StepThree: React.FC<Props> = ({ leftArrow, formData, setFormData, handleSu
     const [selectedSkills, setSelectedSkills] = useState<string[]>(formData.stepThree ? formData.stepThree : []);
   
     const toggleSelection = (skill: string) => {
-      setSelectedSkills((prevSelectedSkills) =>
-        prevSelectedSkills.includes(skill)
-          ? prevSelectedSkills.filter((s) => s !== skill) 
-          : [...prevSelectedSkills, skill] 
-      );
+        setSelectedSkills((prevSelectedSkills) =>
+            prevSelectedSkills.includes(skill)
+                ? prevSelectedSkills.filter((s) => s !== skill) 
+                : [...prevSelectedSkills, skill] 
+        );
     };
 
     const handleNextPage = () => {
@@ -21,8 +21,7 @@ const StepThree: React.FC<Props> = ({ leftArrow, formData, setFormData, handleSu
     };
 
     const sendDataUpandSubmit = () => {
-        setFormData({...formData, stepThree: selectedSkills});
-        handleSubmit();
+        handleSubmit({...formData, stepThree: selectedSkills});
     };
 
     return(

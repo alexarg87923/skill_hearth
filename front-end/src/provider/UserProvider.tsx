@@ -18,7 +18,7 @@ function useUserContextState(init?: User | null) {
         setUserContext(null);
         localStorage.removeItem('skill-hearth');
         setCsrfToken(null);
-    }
+    };
 
     return [userContext, Login, Logout]
 };
@@ -49,7 +49,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 	const [loading, setLoading] = useState<boolean>(true);
     const location = useLocation();
     const navigate = useNavigate();
-    
+
 	useEffect(() => {
         console.log("Entering User Provider...");
         console.log("User context: ", userContext);
@@ -71,6 +71,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
                     console.log("API returned successful request with data: ", response.data.user);
                     Login(response.data.user);
                     if (response.data.user.onboarded !== undefined && !response.data?.user?.onboarded) {
+                        console.log('Verify session shows that user is not onbaorded, redirecting...')
                         navigate('/setupwizard');
                     };
                 }

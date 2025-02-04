@@ -116,11 +116,14 @@ export class UserController {
 
                 if (userProfile) {
                     logger.info('Successfully created user profile...');
-                    res.sendStatus(200);
-                    return;
+                    if (req.session?.user) {
+                        req.session.user.onboarded = { id: userProfile._id, name:userProfile.first_name, onboarded: userProfile.onboarded };
+                        res.status(200).json({ user: {name:userProfile.first_name, onboarded: userProfile.onboarded} });
+                        return;
+                    }                    
                 };
             };
-            
+
             logger.info('Was not able to update user profile...');
             res.sendStatus(403);
         } catch (error) {

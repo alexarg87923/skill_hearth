@@ -5,11 +5,12 @@ import { IconContext } from "react-icons";
 import apiAxios from "../../components/apiAxios";
 import CsrfContext from '../../provider/CsrfProvider';
 import { toast } from 'react-toastify';
+import { useNavigate } from "react-router-dom";
+import UserContext from "../../provider/UserProvider";
 
 import StepOne from "./StepOne";
 import StepTwo from "./StepTwo";
 import StepThree from "./StepThree";
-import { useNavigate } from "react-router-dom";
 
 export interface iFormData {
     stepOne: {
@@ -21,10 +22,11 @@ export interface iFormData {
     },
     stepTwo: Array<string>,
     stepThree: Array<string>
-}
+};
 
 const ProfileWizard: React.FC = () => {
     const [step, setStep] = useState(1);
+    const { Login } = useContext(UserContext);
     const { csrfToken } = useContext(CsrfContext);
     const navigate = useNavigate();
     const [formData, setFormData] = useState<iFormData>({
@@ -39,16 +41,16 @@ const ProfileWizard: React.FC = () => {
         stepThree: []
     });
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (finalFormData: iFormData) => {
         const result = await apiAxios.post('/user/wizard', 
             {
-                bio: formData.stepOne.bio,
-                profile_picture: formData.stepOne.pic,
-                phone_number: formData.stepOne.phone,
-                share_email: formData.stepOne.shareEmail,
-                location: formData.stepOne.location,
-                skills: formData.stepTwo,
-                interests: formData.stepThree
+                bio: finalFormData.stepOne.bio,
+                profile_picture: finalFormData.stepOne.pic,
+                phone_number: finalFormData.stepOne.phone,
+                share_email: finalFormData.stepOne.shareEmail,
+                location: finalFormData.stepOne.location,
+                skills: finalFormData.stepTwo,
+                interests: finalFormData.stepThree
             },
             {
                 headers: { 'CSRF-Token': csrfToken }
@@ -56,9 +58,13 @@ const ProfileWizard: React.FC = () => {
         );
 
         if (result.status === 200) {
+            console.log(result);
             toast.success('Successfuly created your profile!');
-            navigate('/dashboard');
-        }
+            if (result.data?.user) {
+                Login(result.data?.user);
+                navigate('/dashboard');
+            };
+        };
     };
 
     return (
