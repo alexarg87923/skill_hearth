@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
-import axios from 'axios';
+import apiAxios from '../components/apiAxios';
 import { useNavigate } from 'react-router-dom';
 import CsrfContext from '../provider/CsrfProvider';
 import UserContext from '../provider/UserProvider';
 import { toast } from 'react-toastify';
 
 function Login() {
-	const csrfToken = useContext(CsrfContext);
-	const { setUserContext, userContext } = useContext(UserContext);
+	const { csrfToken } = useContext(CsrfContext);
+	const { Login, userContext } = useContext(UserContext);
 	const navigate = useNavigate();
 	const [formData, setFormData] = useState({
 		email: '',
@@ -17,22 +17,23 @@ function Login() {
 	useEffect(() => {
 		console.log('Loaded login page...')
 		if (userContext) {
-			console.log('Redirecting user to dashboard due to being logged in...')
+            console.log('Redirecting user to dashboard due to being logged in...')
 			navigate('/dashboard');
 		}
 	}, []);
-
+    
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setFormData({
-			...formData,
+        setFormData({
+            ...formData,
 			[e.target.name]: e.target.value
 		});
 	};
-
+    
 	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
+        e.preventDefault();
 		try {
-			const response = await axios.post('/api/auth/login', 
+            console.log(`Sending CSRF Token ${csrfToken} into api`)
+			const response = await apiAxios.post('/auth/login', 
 				formData,
 				{
 					headers: {
@@ -43,8 +44,8 @@ function Login() {
 
 			if (response.status === 200) {
 				console.log(response.data);
-				setUserContext(response.data);
-				if(response.data.onboarding == false) {
+				Login(response.data.user);
+				if(!response?.data?.user?.onboarded) {
 					navigate('/setupwizard');
                 } else {
 					navigate('/dashboard');   

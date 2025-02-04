@@ -31,39 +31,33 @@ export const verify_session = async (
     next?: NextFunction
 ): Promise<void> => {
     logger.info('Entered verifySession API endpoint...');
-
+    
     try {
         if (ENV.ENV_MODE === 'development' && req.cookies.admin_cookie) {
-            logger.info(req.cookies.admin_cookie);
-            return returnStatusOrNext({ res, status: 200, data: req.cookies.admin_cookie, next });
+            logger.info('User is an Admin...');
+            const adminCookie = req.cookies.admin_cookie;
+            logger.info(`JSON: ${JSON.stringify({ name: adminCookie.name, onboarded: adminCookie.onboarded })}`);
+            return returnStatusOrNext({ res, status: 200, data: {
+                user: { name: adminCookie.name, onboarded: adminCookie.onboarded }
+            }, next });
         }
-
+        
         const userSession = req.session.user;
-
+        
         console.log(userSession);
-
+        
         if (!userSession) {
             logger.info('User does not have a session...');
             return returnStatusOrNext({ res, status: 204, next });
         }
-
-        if (!userSession.onboarded) {
-            logger.info('User has not been onboarded...');
-            return returnStatusOrNext({
-                res,
-                status: 200,
-                data: {
-                    user: { name: userSession.name },
-                    onboarded: { status: userSession.onboarded }
-                },
-                next
-            });
-        }
-
+        logger.info('User is not an Admin...');
+        logger.info(`JSON: ${JSON.stringify({ user: { name: userSession.name, onboarded: userSession.onboarded } })}`);
         return returnStatusOrNext({
             res,
             status: 200,
-            data: { user: { name: userSession.name } },
+            data: {
+                user: { name: userSession.name, onboarded: userSession.onboarded }
+            },
             next
         });
     } catch (err) {

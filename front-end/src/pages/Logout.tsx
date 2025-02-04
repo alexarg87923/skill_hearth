@@ -1,18 +1,17 @@
 import React, { useContext, useEffect } from "react"
 import UserContext from "../provider/UserProvider";
-import axios from 'axios';
+import apiAxios from "../components/apiAxios";
 
 const Logout: React.FC = () => {
-	const { setUserContext } = useContext(UserContext);
+	const { Logout } = useContext(UserContext);
 
 	useEffect(() => {
         console.log("Entered logout...");
-        localStorage.removeItem('skill-hearth');
-        setUserContext(null);
-        console.log('Cleared Local Storage...');
+        Logout();
+        console.log('Ran userContext Logout function...');
 		const logout = async () => {
 			try {
-				await axios.post('/api/auth/logout');
+				await apiAxios.post('/auth/logout');
 				console.log('Successfully hit logout api...');
 			} catch (err) {
 				console.error("There was an error hitting the logout endpoint", err);
@@ -24,7 +23,7 @@ const Logout: React.FC = () => {
 	}, []);
 
 	return (
-		<div>You have been successfully logged out</div>
+		<div className='pt-16'>You have been successfully logged out</div>
 	)
 };
 

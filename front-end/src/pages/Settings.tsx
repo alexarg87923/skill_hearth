@@ -1,10 +1,11 @@
 import React, { useEffect, useContext, useState } from "react"
 import { toast } from 'react-toastify';
 import CsrfContext from "../provider/CsrfProvider";
-import axios from 'axios';
+import apiAxios from "../components/apiAxios";
+
 
 const Settings: React.FC = () => {
-    const csrfToken = useContext(CsrfContext);
+    const { csrfToken } = useContext(CsrfContext);
     const [changePassFormData, setChangePassFormData] = useState({
         password: '',
         newPassword: '',
@@ -22,7 +23,7 @@ const Settings: React.FC = () => {
     const changePassword = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const response = await axios.post('/api/user/changepassword',
+            const response = await apiAxios.post('/user/changepassword',
                 changePassFormData,
                 {
                     headers: {

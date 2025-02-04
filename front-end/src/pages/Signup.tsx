@@ -1,12 +1,12 @@
 import React, { useState, useContext, useEffect } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import CsrfContext from '../provider/CsrfProvider';
 import UserContext from '../provider/UserProvider';
 import { toast } from 'react-toastify';
+import apiAxios from '../components/apiAxios';
 
 function Signup() {
-	const csrfToken = useContext(CsrfContext);
+	const { csrfToken } = useContext(CsrfContext);
 	const { userContext } = useContext(UserContext);
 	const navigate = useNavigate();
     const [doPassMatch, setDoPassMatch] = useState(true);
@@ -98,7 +98,7 @@ function Signup() {
                 return;
             }
 
-			const response = await axios.post('/api/auth/signup', 
+			const response = await apiAxios.post('/auth/signup', 
 			formData,
 			{
 				headers: {

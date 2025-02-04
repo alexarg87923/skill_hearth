@@ -1,27 +1,30 @@
-import { useContext, useState } from "react"
-import UserContext from "../../provider/UserProvider"
+import React, { useContext, useState } from "react";
+import UserContext from "../../provider/UserProvider";
+import { iFormData } from "./ProfileWizard";
 
-const StepOne: React.FC = () => {
+const StepOne: React.FC<Props> = ({ rightArrow, formData, setFormData }) => {
 
     const testCities = ['sunrise', 'miami', 'weston', 'boca raton', 'gainesville', 'boston', 'new york city']
 
     const {userContext} = useContext(UserContext)
     const [input, setInput] = useState({
-        bio: '',
-        pic: '',
-        phone: '',
-        shareEmail: false,
-        location: '',
-    })
+        bio: formData.stepOne.bio ? formData.stepOne.bio : '',
+        pic: formData.stepOne.pic ? formData.stepOne.pic : '',
+        phone: formData.stepOne.phone ? formData.stepOne.phone : '',
+        shareEmail: formData.stepOne.shareEmail ? formData.stepOne.shareEmail : false,
+        location: formData.stepOne.location ? formData.stepOne.location : ''
+    });
 
     const handleChange = (e: any) => {
         setInput({
-                ...input,
-                [e.target.name]: e.target.value,
-            })   
+            ...input,
+            [e.target.name]: e.target.value,
+        });
+    };
 
-            console.log(input)
-    }
+    const handleNextPage = () => {
+        setFormData({...formData, stepOne: input});
+    };
 
     const Dropdown = () => {
         return(
@@ -42,11 +45,12 @@ const StepOne: React.FC = () => {
                     </select>
                 </label>
             </div>
-        )
-    }
+        );
+    };
 
     return(
-        <div className="min-h-screen flex">
+        <div className="min-h-screen flex pt-16">
+            {React.cloneElement(rightArrow, { sendDataUp: handleNextPage })}
             <div className="w-1/2 flex flex-col items-center justify-center">
                 <img src='https://images.unsplash.com/photo-1523745962530-340c0eeb7e7d?q=80&w=1965&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' alt='' className=""/>
             </div>
@@ -60,12 +64,12 @@ const StepOne: React.FC = () => {
                             Bio
                             <p className="text-base font-normal mb-2 text-gray-400">Tell us a little about yourself.</p>
                             <textarea
-                            placeholder="Write a thought..."
-                            rows={4}
-                            name='bio'
-                            value={input.bio}
-                            onChange={handleChange}
-                            className="rounded-2xl text-base font-normal text-black px-3 py-2 w-3/4 border-b-4 border-blue-400"
+                                placeholder="Write a thought..."
+                                rows={4}
+                                name='bio'
+                                value={input.bio}
+                                onChange={handleChange}
+                                className="rounded-2xl text-base font-normal text-black px-3 py-2 w-3/4 border-b-4 border-blue-400"
                             />
                         </label>
                     </div>
@@ -74,10 +78,11 @@ const StepOne: React.FC = () => {
                         <label className="font-bold">Profile Picture
                             <p className="font-normal text-gray-400 mb-2">Smile!</p>
                             <input
-                            placeholder=""
-                            type="file"
-                            onChange={handleChange}
-                            className="text-black bg-white rounded-lg"
+                                placeholder=""
+                                type="file"
+                                value={input.pic}
+                                onChange={handleChange}
+                                className="text-black bg-white rounded-lg"
                             />
                         </label>
                     </div>
@@ -89,7 +94,6 @@ const StepOne: React.FC = () => {
                             <div className="mb-7">
                                 <label className="text-base font-bold">Phone Number
                                     <input
-                                    placeholder=""
                                     type="text"
                                     name='phone'
                                     value={input.phone}
@@ -109,24 +113,26 @@ const StepOne: React.FC = () => {
                         <div className="mb-4">
                             <label className="font-bold flex items-center mb-1">Share Email?
                                 <input
-                                placeholder=""
                                 name='share-email'
-                                type="checkbox"
-                                onChange={(e) => {setInput({
-                                    ...input,
-                                    shareEmail: !input.shareEmail
-                                })}}
+                                type='checkbox'
+                                checked={input.shareEmail}
+                                onChange={() => setInput((prev) => ({ ...prev, shareEmail: !prev.shareEmail }))}
                                 className="text-black size-5 mx-4"
                                 />
                             </label>
                             <p className="font-normal text-gray-400">If checked, your email will be visible to other users.</p>
                         </div>
                     </div>
-                    <button type='submit' className="px-8 p-1 border-b-4 border-blue-400 text-xl font-bold transition-colors hover:text-green-400">Save</button>
                 </form>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default StepOne
+export default StepOne;
+
+interface Props {
+    rightArrow: any;
+    formData: iFormData;
+    setFormData: React.Dispatch<React.SetStateAction<iFormData>>;
+};
