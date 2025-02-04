@@ -2,7 +2,7 @@ import { useState, useContext } from "react";
 import { Transition } from "@headlessui/react";
 import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
 import { IconContext } from "react-icons";
-import axios from 'axios';
+import apiAxios from "../../components/apiAxios";
 import CsrfContext from '../../provider/CsrfProvider';
 
 import StepOne from "./StepOne";
@@ -23,7 +23,7 @@ export interface iFormData {
 
 const ProfileWizard: React.FC = () => {
     const [step, setStep] = useState(1);
-    const csrfToken = useContext(CsrfContext);
+    const { csrfToken } = useContext(CsrfContext);
     const [formData, setFormData] = useState<iFormData>({
         stepOne: {
             bio: '',
@@ -37,7 +37,7 @@ const ProfileWizard: React.FC = () => {
     });
 
     const handleSubmit = () => {
-        axios.post('/api/users/wizard', 
+        apiAxios.post('/users/wizard', 
             formData,
             {
                 headers: { 'CSRF-Token': csrfToken }
