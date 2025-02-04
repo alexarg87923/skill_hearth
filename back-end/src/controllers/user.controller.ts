@@ -119,7 +119,7 @@ export class UserController {
                     res.status(200).json();
                     return;
                 };
-            }
+            };
             
             logger.info('User does not have a session');
             res.sendStatus(403);

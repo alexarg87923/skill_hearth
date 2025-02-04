@@ -20,6 +20,11 @@ const StepThree: React.FC<Props> = ({ leftArrow, formData, setFormData, handleSu
         setFormData({...formData, stepThree: selectedSkills});
     };
 
+    const sendDataUpandSubmit = () => {
+        setFormData({...formData, stepThree: selectedSkills});
+        handleSubmit();
+    };
+
     return(
         <div className="h-screen pt-16">
             {React.cloneElement(leftArrow, { sendDataUp: handleNextPage })}
@@ -58,7 +63,7 @@ const StepThree: React.FC<Props> = ({ leftArrow, formData, setFormData, handleSu
                     )}
                     </ul>
                 </div> */}
-                <button onClick={handleSubmit} className="px-8 mt-3 p-1 border-b-4 border-blue-400 text-xl font-bold transition-colors hover:text-green-400">Finish and Onboard!</button>
+                <button onClick={sendDataUpandSubmit} className="px-8 mt-3 p-1 border-b-4 border-blue-400 text-xl font-bold transition-colors hover:text-green-400">Finish and Onboard!</button>
             </div>
         </div>
     );

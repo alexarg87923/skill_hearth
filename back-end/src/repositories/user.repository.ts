@@ -13,6 +13,6 @@ export class UserRepository {
 
     async addProfile(user_profile: IProfileData, user_id: string): Promise<boolean> {
         return ((await User.updateOne({ _id: user_id }, user_profile)).modifiedCount == 1);
-    }
+    };
 
 };
