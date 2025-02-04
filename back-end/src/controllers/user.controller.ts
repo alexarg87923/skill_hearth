@@ -16,14 +16,14 @@ export class UserController {
             if (ENV.ENV_MODE === 'development') {
                 if (req.body.email === 'admin@admin.com' && req.body.password === 'unboarded') {
                     const options = { maxAge: 60 * 60 * 24 * 5 * 1000, httpOnly: false, secure: false };
-                    res.cookie('admin_cookie', { id: 'adminUser', name:'Admin', onboarded: false }, options);
+                    res.cookie('admin_cookie', { id: '67a1848b08c4b2e9283735dd', name:'Admin', onboarded: false }, options);
                     res.status(200).json({ user: {name:'Admin', onboarded: false} });
                     return; 
                 };
 
                 if (req.body.email == 'admin@admin.com' && req.body.password == 'onboarded') {
                     const options = { maxAge: 60 * 60 * 24 * 5 * 1000, httpOnly: false, secure: false };
-                    res.cookie('admin_cookie', { id: 'adminUser', name:'Admin', onboarded: true }, options);
+                    res.cookie('admin_cookie', { id: '67a184c2883a10f0133e35c1', name:'Admin', onboarded: true }, options);
                     res.status(200).json({ user: {name:'Admin', onboarded: true} });
                     return; 
                 };
@@ -102,15 +102,35 @@ export class UserController {
             return;
         };
     };
-    
+
     async verifySession (req: Request, res: Response): Promise<void> {
         verify_session(req, res);
     };
-    
+
     async onboardUser (req: Request, res: Response): Promise<void> {
         logger.info('Entered wizard API endpoint...');
+        try {
+            const userSession = req.session.user;
+            if (userSession === undefined || !userSession) {
+                logger.info('User does not have a session');
+                res.sendStatus(403);
+            }
+            // const userProfile = await this.userService.onboard_user(req.body, userSession.id);
+
+            // if (userProfile) {
+            //     logger.info('Successfully created user profile...');
+            //     res.status(200).json();
+            //     return;
+            // };
+
+            logger.error(CONSTANTS.ERRORS.PREFIX.LOGIN + CONSTANTS.ERRORS.CATASTROPHIC);
+            res.sendStatus(500);
+        } catch (error) {
+            logger.error(`${CONSTANTS.ERRORS.PREFIX.LOGIN + CONSTANTS.ERRORS.CATASTROPHIC}: ` + error);
+            res.sendStatus(500);
+        };
     };
-    
+
     async changepassword (req: Request, res: Response): Promise<void> {
         logger.info('Entered changepassword API endpoint...');
         logger.info('Not implemented...');

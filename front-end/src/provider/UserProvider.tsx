@@ -77,11 +77,10 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 			} catch (err) {
                 if (axios.isCancel(err)) {
                     console.log("Request was aborted, ignoring error.");
-                    return;
-                }
-    
-                Logout();
-                console.log("User Provider failed to verify session, user set to null...", err);
+                } else {
+                    Logout();
+                    console.log("User Provider failed to verify session, user set to null...", err);
+                }    
 			} finally {
                 setLoading(false);
                 console.log("User loading set to false...");

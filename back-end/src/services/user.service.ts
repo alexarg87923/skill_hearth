@@ -1,6 +1,7 @@
 import { UserRepository } from '../repositories/user.repository';
 import { IUser } from '../models/user.model';
-import { validateSignUp, validateLogin } from '../validation/userValidation';
+import { IProfileData } from '../models/profile.model';
+import { validateSignUp, validateLogin, validateWizard } from '../validation/userValidation';
 import bcrypt from 'bcryptjs';
 import { CONSTANTS } from '../utils/constants';
 import { logger } from '../utils/logger';
@@ -19,15 +20,6 @@ interface ISignUpData {
     confirm_password: string;
 };
 
-interface IProfileData {
-    first_name: string;
-    middle_name?: string | null;
-    last_name: string;
-    email: string;
-    password: string;
-    confirm_password: string;
-};
-
 export class UserService {
     private userRepository: UserRepository;
 
@@ -37,8 +29,7 @@ export class UserService {
 
     async login(formData: ILoginData): Promise<Partial<IUser> | null | undefined> {
         const { error } = validateLogin(formData);
-        if (error)
-        {
+        if (error) {
             logger.error(`${CONSTANTS.ERRORS.INVALID_INPUT}: ${error.message}`);
             return;
         };
@@ -66,8 +57,7 @@ export class UserService {
     async signup(formData: ISignUpData): Promise<Partial<IUser> | null | undefined> {
         const result = validateSignUp(formData);
 
-        if (result.error)
-        {
+        if (result.error) {
             logger.error(`${CONSTANTS.ERRORS.INVALID_INPUT}: ${result.error.message}`);
             return;
         };
@@ -95,7 +85,14 @@ export class UserService {
         return;
     }
 
-    // async onboard_user(formData: IProfileData): Promise<Partial<IProfileData> | null | undefined> {
+    async onboard_user(formData: IProfileData, userID: string): Promise<Partial<IProfileData> | null | undefined> {
+        const result = validateWizard(formData);
 
-    // }
+        if (result.error) {
+            logger.error('Form data is incorrect...');
+            return;
+        }
+
+        return;
+    }
 }

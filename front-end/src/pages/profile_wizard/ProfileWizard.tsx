@@ -37,7 +37,7 @@ const ProfileWizard: React.FC = () => {
     });
 
     const handleSubmit = () => {
-        apiAxios.post('/users/wizard', 
+        apiAxios.post('/user/wizard', 
             formData,
             {
                 headers: { 'CSRF-Token': csrfToken }
