@@ -17,18 +17,18 @@ export class UserController {
                 if (req.body.email === 'admin@admin.com' && req.body.password === 'unboarded') {
                     const options = { maxAge: 60 * 60 * 24 * 5 * 1000, httpOnly: false, secure: false };
                     res.cookie('admin_cookie', { id: 'adminUser', name:'Admin', onboarded: false }, options);
-                    res.status(200).json({ user: {name:'Admin'}, onboarded: {status: false} });
+                    res.status(200).json({ user: {name:'Admin', onboarded: false} });
                     return; 
                 };
 
                 if (req.body.email == 'admin@admin.com' && req.body.password == 'onboarded') {
                     const options = { maxAge: 60 * 60 * 24 * 5 * 1000, httpOnly: false, secure: false };
                     res.cookie('admin_cookie', { id: 'adminUser', name:'Admin', onboarded: true }, options);
-                    res.status(200).json({ user: {name:'Admin'}, onboarded: {status: true} });
+                    res.status(200).json({ user: {name:'Admin', onboarded: true} });
                     return; 
                 };
             };
-            
+
             if (req.session.user) {
                 logger.error(CONSTANTS.ERRORS.PREFIX.LOGIN + CONSTANTS.ERRORS.COOKIE_EXISTS);
                 res.sendStatus(500);
@@ -40,7 +40,7 @@ export class UserController {
             if (userRecord) {
                 logger.info('Signing in user...');
                 req.session.user = { id: userRecord._id, name:userRecord.first_name, onboarded: userRecord.onboarded };
-                res.status(200).json({ user: {name:userRecord.first_name}, onboarded: {status: userRecord.onboarded} });
+                res.status(200).json({ user: {name:userRecord.first_name, onboarded: userRecord.onboarded} });
                 return;
             };
 

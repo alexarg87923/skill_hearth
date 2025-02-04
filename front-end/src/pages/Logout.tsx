@@ -23,7 +23,7 @@ const Logout: React.FC = () => {
 	}, []);
 
 	return (
-		<div>You have been successfully logged out</div>
+		<div className='pt-16'>You have been successfully logged out</div>
 	)
 };
 

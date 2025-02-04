@@ -45,7 +45,7 @@ function Login() {
 			if (response.status === 200) {
 				console.log(response.data);
 				Login(response.data.user);
-				if(!response?.data?.onboarded?.status) {
+				if(!response?.data?.user?.onboarded) {
 					navigate('/setupwizard');
                 } else {
 					navigate('/dashboard');   

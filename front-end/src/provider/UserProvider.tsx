@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import CsrfContext from './CsrfProvider';
 import apiAxios from '../components/apiAxios';
+import axios from 'axios';
 
 function useUserContextState(init?: User | null) {
     const local_storage = localStorage.getItem("skill-hearth");
@@ -25,8 +26,7 @@ function useUserContextState(init?: User | null) {
 interface User {
 	name: string;
 	profile_picture?: string;
-	bio: string;
-	skillset: [];
+	onboarded: boolean;
 };
 
 interface UserContextProps {
@@ -49,12 +49,13 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 	const [loading, setLoading] = useState<boolean>(true);
     const location = useLocation();
     const navigate = useNavigate();
-    const controller = new AbortController();
-    const signal = controller.signal;
-
+    
 	useEffect(() => {
         console.log("Entering User Provider...");
         console.log("User context: ", userContext);
+
+        const controller = new AbortController();
+        const signal = controller.signal;
 
 		const verifyAndDecodeCookie = async () => {
             if (location.pathname === '/logout') return;
@@ -69,11 +70,16 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
                 } else {
                     console.log("API returned successful request with data: ", response.data.user);
                     Login(response.data.user);
-                    if (response.data.onboarded !== undefined && !response.data?.onboarded?.status) {
+                    if (response.data.user.onboarded !== undefined && !response.data?.user?.onboarded) {
                         navigate('/setupwizard');
-                    }
+                    };
                 }
 			} catch (err) {
+                if (axios.isCancel(err)) {
+                    console.log("Request was aborted, ignoring error.");
+                    return;
+                }
+    
                 Logout();
                 console.log("User Provider failed to verify session, user set to null...", err);
 			} finally {
@@ -81,16 +87,23 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
                 console.log("User loading set to false...");
 			}
 		}
-		
+
 		verifyAndDecodeCookie();
         return () => {
             controller.abort();
-          };
+        };
 	}, []);
+
+    const providerValue = useMemo(() => ({
+        userContext, 
+        loading, 
+        Login, 
+        Logout
+    }), [userContext, loading]);
 
 	console.log("Returning Provider children component...");
 	return (
-		<UserContext.Provider value={{userContext, loading, Login, Logout}}>
+		<UserContext.Provider value={providerValue}>
 			{children}
 		</UserContext.Provider>
 	);

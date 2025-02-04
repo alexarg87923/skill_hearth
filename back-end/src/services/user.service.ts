@@ -19,6 +19,15 @@ interface ISignUpData {
     confirm_password: string;
 };
 
+interface IProfileData {
+    first_name: string;
+    middle_name?: string | null;
+    last_name: string;
+    email: string;
+    password: string;
+    confirm_password: string;
+};
+
 export class UserService {
     private userRepository: UserRepository;
 
@@ -85,4 +94,8 @@ export class UserService {
         logger.error(CONSTANTS.ERRORS.CATASTROPHIC);
         return;
     }
+
+    // async onboard_user(formData: IProfileData): Promise<Partial<IProfileData> | null | undefined> {
+
+    // }
 }

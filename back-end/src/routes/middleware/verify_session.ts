@@ -36,26 +36,9 @@ export const verify_session = async (
         if (ENV.ENV_MODE === 'development' && req.cookies.admin_cookie) {
             logger.info('User is an Admin...');
             const adminCookie = req.cookies.admin_cookie;
-            logger.info(adminCookie);
-
-            if (!adminCookie.onboarded) {
-                logger.info('User is not onboarded...');
-                logger.info(`JSON: ${JSON.stringify({
-                    user: {name: adminCookie.name}
-                })}`);
-                return returnStatusOrNext({ res, status: 200, data: {
-                    user: {name: adminCookie.name}
-                }, next });
-            }
-            
-            logger.info('User is onboarded...');
-            logger.info(`JSON: ${JSON.stringify({
-                user: {name: adminCookie.name},
-                onboarded: { status: adminCookie.onboarded }
-            })}`);
+            logger.info(`JSON: ${JSON.stringify({ name: adminCookie.name, onboarded: adminCookie.onboarded })}`);
             return returnStatusOrNext({ res, status: 200, data: {
-                user: {name: adminCookie.name},
-                onboarded: { status: adminCookie.onboarded }
+                user: { name: adminCookie.name, onboarded: adminCookie.onboarded }
             }, next });
         }
         
@@ -68,29 +51,13 @@ export const verify_session = async (
             return returnStatusOrNext({ res, status: 204, next });
         }
         logger.info('User is not an Admin...');
-        
-        if (!userSession.onboarded) {
-            logger.info('User has not been onboarded...');
-            logger.info(`JSON: ${JSON.stringify({
-                user: { name: userSession.name },
-                onboarded: { status: userSession.onboarded }
-            })}`);
-            return returnStatusOrNext({
-                res,
-                status: 200,
-                data: {
-                    user: { name: userSession.name },
-                    onboarded: { status: userSession.onboarded }
-                },
-                next
-            });
-        }
-        logger.info('User has been onboarded...');
-            logger.info(`JSON: ${JSON.stringify({ user: { name: userSession.name } })}`);
+        logger.info(`JSON: ${JSON.stringify({ user: { name: userSession.name, onboarded: userSession.onboarded } })}`);
         return returnStatusOrNext({
             res,
             status: 200,
-            data: { user: { name: userSession.name } },
+            data: {
+                user: { name: userSession.name, onboarded: userSession.onboarded }
+            },
             next
         });
     } catch (err) {

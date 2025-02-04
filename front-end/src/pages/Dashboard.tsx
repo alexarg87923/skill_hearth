@@ -24,8 +24,8 @@ const dashboard: React.FC = () => {
 
     const currentUser = {
         name: userContext?.name || '',
-        skillset: userContext?.skillset || [],
-        bio: userContext?.bio || ''
+        // skillset: userContext?.skillset || [],
+        // bio: userContext?.bio || ''
     };
 
     const suggestedProfiles: userProfile[] = [
@@ -96,15 +96,15 @@ const dashboard: React.FC = () => {
 				<div className="mb-6">
 				<h1 className="text-xl font-bold text-gray-100 mb-4">Profile</h1>
 				<h2 className="text-lg font-semibold">{currentUser.name}</h2>
-				<p className="text-gray-300">{currentUser.bio}</p>
+				{/* <p className="text-gray-300">{currentUser.bio}</p> */}
 				<h3 className="text-sm font-medium text-gray-300 mt-4 mb-2">
 					Skillset
 				</h3>
-				<ul className="list-disc ml-4 text-gray-300">
+				{/* <ul className="list-disc ml-4 text-gray-300">
 					{currentUser.skillset.map((skill, index) => (
 					<li key={index}>{skill}</li>
 					))}
-				</ul>
+				</ul> */}
 				</div>
 		
 				{/* Suggestions to Connect */}
