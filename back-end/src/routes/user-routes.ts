@@ -14,4 +14,6 @@ router.post('/changepassword', csrfProtect, verify_session, async (req: Request,
 
 router.post('/wizard', csrfProtect, verify_session, async (req: Request, res: Response): Promise<void> => userController.onboardUser(req, res));
 
+// router.post('/dashboard', csrfProtect, verify_session, async (req: Request, res: Response): Promise<void> => );
+
 export const UserRoutes: Router = router;

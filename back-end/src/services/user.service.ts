@@ -52,7 +52,7 @@ export class UserService {
             logger.error(CONSTANTS.ERRORS.PASSWORD_MISMATCH);
             return;
         }
-    }
+    };
 
     async signup(formData: ISignUpData): Promise<Partial<IUser> | null | undefined> {
         const result = validateSignUp(formData);
@@ -89,10 +89,11 @@ export class UserService {
         const result = validateWizard(formData);
 
         if (result.error) {
-            logger.error('Form data is incorrect...');
+            logger.error(`Form data is incorrect... ${result.error}`);
             return;
         }
-
+        logger.error('No error when validating wizard form data...');
+        
         return;
-    }
+    };
 }

@@ -111,20 +111,18 @@ export class UserController {
         logger.info('Entered wizard API endpoint...');
         try {
             const userSession = req.session.user;
-            if (userSession === undefined || !userSession) {
-                logger.info('User does not have a session');
-                res.sendStatus(403);
+            if (userSession !== undefined && userSession) {
+                const userProfile = await this.userService.onboard_user(req.body, userSession.id);
+
+                if (userProfile) {
+                    logger.info('Successfully created user profile...');
+                    res.status(200).json();
+                    return;
+                };
             }
-            // const userProfile = await this.userService.onboard_user(req.body, userSession.id);
-
-            // if (userProfile) {
-            //     logger.info('Successfully created user profile...');
-            //     res.status(200).json();
-            //     return;
-            // };
-
-            logger.error(CONSTANTS.ERRORS.PREFIX.LOGIN + CONSTANTS.ERRORS.CATASTROPHIC);
-            res.sendStatus(500);
+            
+            logger.info('User does not have a session');
+            res.sendStatus(403);
         } catch (error) {
             logger.error(`${CONSTANTS.ERRORS.PREFIX.LOGIN + CONSTANTS.ERRORS.CATASTROPHIC}: ` + error);
             res.sendStatus(500);
