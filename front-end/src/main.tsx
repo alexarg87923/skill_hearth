@@ -10,6 +10,7 @@ import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
+import Connect from './pages/Connect';
 import PageNotFound from './pages/PageNotFound';
 import Logout from './pages/Logout';
 import Settings from './pages/Settings';
@@ -36,6 +37,7 @@ createRoot(document.getElementById('root')!).render(
 
 					<Route element={<ProtectedRoute />}>
 						<Route path="/dashboard" element={<Dashboard />} />
+						<Route path="/connect" element={<Connect />} />
 						<Route path="/settings" element={<Settings />} />
 						<Route path="/profile" element={<Profile />} />
 						<Route path="/setupwizard" element={<ProfileWizard />} />

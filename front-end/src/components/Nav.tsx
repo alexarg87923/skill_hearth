@@ -9,7 +9,7 @@ const Nav: React.FC = () => {
   return (
     <nav className="fixed top-0 left-0 w-full bg-white border-gray-200 dark:bg-gray-900 shadow-lg z-10">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-        <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
+        <a href={`/${ !userContext || Object.keys(userContext).length === 0 ? '' : 'dashboard' }`} className="flex items-center space-x-3 rtl:space-x-reverse">
           <img src="https://flowbite.com/docs/images/logo.svg" className="h-8" alt="Flowbite Logo" />
           <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">SkillHearth</span>
         </a>
@@ -34,9 +34,11 @@ const Nav: React.FC = () => {
                 </li>
               </>
               :
-              <li>
-                <Link to="/dashboard" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent" aria-current="page">Dashboard</Link>
-              </li>
+              <>
+                <li>
+                    <Link className='bg-green-600 p-2 hover:bg-green-500 rounded-md' to='/connect'>Connect</Link>
+                </li>
+              </>
             }
             {!userContext || Object.keys(userContext).length === 0 ?
               <>
