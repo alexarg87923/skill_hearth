@@ -1,26 +1,54 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import UserContext from "../provider/UserProvider";
-// import { useState } from 'react';
+import { BiSolidSend } from "react-icons/bi";
 
-interface userProfile {
+interface IMessage {
     name: string;
-    skillset: string[];
-    bio: string;
+    message: string;
 }
 
 interface chatUser {
     name: string;
-    lastMessage: string;
+    lastMessage?: string;
     timeStamp: string;
-}
+    history: Array<IMessage>;
+};
 
 const dashboard: React.FC = () => {
 	const { userContext } = useContext(UserContext);
 	// const [hideEmailVer, setHideEmailVer] = useState(false);
+	const [selectedIndexChat, setSelectedIndexChat] = useState(0);
+    const chatHistoryRef = useRef(null);
 
 	useEffect(() => {
 		console.log("Loaded dashboard page...");
-	}, []);
+        if (chatHistoryRef.current) {
+            chatHistoryRef.current.innerHTML = connectedChats[selectedIndexChat].history?.map((chat, index) => {
+                return `
+                ${
+                chat.name === 'You' ? 
+                    `<div class="mt-5 flex flex-col items-end" key="${index}">
+                        <div class="text-gray-500 text-sm pr-2">
+                            ${chat.name}
+                        </div>
+                        <div class="bg-gray-200 text-gray-600 rounded-lg p-3 max-w-xs md:max-w-sm lg:max-w-md xl:max-w-lg inline-block">
+                            ${chat.message ? chat.message : 'Unknown sender'}
+                        </div>
+                    </div>`
+                    :
+                    `<div class="mt-5 flex flex-col items-start" key="${index}">
+                        <div class="text-gray-500 text-sm pl-2">
+                            ${chat.name}
+                        </div>
+                        <div class="bg-blue-600 text-white rounded-lg p-3 max-w-xs md:max-w-sm lg:max-w-md xl:max-w-lg inline-block">
+                            ${chat.message ? chat.message : 'Unknown sender'}
+                        </div>
+                    </div>`
+
+                }`;
+            }).join('');
+        };
+	}, [selectedIndexChat]);
 
     const currentUser = {
         name: userContext?.name || '',
@@ -28,35 +56,36 @@ const dashboard: React.FC = () => {
         // bio: userContext?.bio || ''
     };
 
-    const suggestedProfiles: userProfile[] = [
+    const connectedChats: chatUser[] = [
         {
-          name: "Jane Smith",
-          skillset: ["Art", "Photoshop", "Dancing"],
-          bio: "I love doing theater in my free time! Dance with me!.",
+            name: "Maria Garcia",
+            timeStamp: "2:45 PM",
+            history: [
+                {name: 'You', message: 'hey' },
+                {name: 'Maria', message: 'hi' },
+                {name: 'You', message: 'hows the project going' },
+                {name: 'Maria', message: 'good good ive been stuck on this one bug' },
+                {name: 'You', message: 'oh really can i take a look' },
+            ]
         },
         {
-          name: "Alex Johnson",
-          skillset: ["Hardware", "Repair man", "Microservices"],
-          bio: "Computer engineer with a passion for building and fixing PC.",
-        }
-      ];
-      const connectedChats: chatUser[] = [
-        {
-          name: "Maria Garcia",
-          lastMessage: "Hey! How’s the project going?",
-          timeStamp: "2:45 PM",
+            name: "Michael Brown",
+            lastMessage: "Looking forward to our next meeting.",
+            timeStamp: "1:30 PM",
+            history: []
         },
         {
-          name: "Michael Brown",
-          lastMessage: "Looking forward to our next meeting.",
-          timeStamp: "1:30 PM",
+            name: "Sarah Lee",
+            lastMessage: "Can you share the design file?",
+            timeStamp: "12:15 PM",
+            history: []
         },
-        {
-          name: "Sarah Lee",
-          lastMessage: "Can you share the design file?",
-          timeStamp: "12:15 PM",
-        },
-      ];
+    ];
+
+    const selectChat = (index: number) => {
+        alert(`Selected ${index}th chat!`);
+        setSelectedIndexChat(index);
+    };
 
 	//   const clipPathValue = "polygon(74.8% 41.9%, 97.2% 73.2%, 100% 34.9%, 92.5% 0.4%, 87.5% 0%, 75% 28.6%, 58.5% 54.6%, 50.1% 56.8%, 46.9% 44%, 48.3% 17.4%, 24.7% 53.9%, 0% 27.9%, 11.9% 74.2%, 24.9% 54.1%, 68.6% 100%, 74.8% 41.9%)";
 
@@ -89,7 +118,7 @@ const dashboard: React.FC = () => {
 				</div>
 			</div> */}
 
-			<div className="flex h-screen bg-gray-900 text-gray-200 pt-16">
+			<div className="flex h-screen bg-gray-900 text-gray-200 pt-16 mb-36">
 			{/* Left Sidebar */}
 			<div className="w-1/4 bg-gray-800 p-6 shadow-md">
 				{/* Profile Section */}
@@ -109,42 +138,36 @@ const dashboard: React.FC = () => {
 		
 				{/* Suggestions to Connect */}
 				<h2 className="text-lg font-bold text-gray-100 mb-4">
-				Suggestions to Connect
+				    Chats
 				</h2>
-				{suggestedProfiles.map((profile, index) => (
-				<div
-					key={index}
-					className="mb-4 p-4 bg-gray-700 rounded-lg shadow-md"
-				>
-					<h3 className="text-sm font-semibold text-gray-100">{profile.name}</h3>
-					<p className="text-sm text-gray-400">{profile.bio}</p>
-					<button className="mt-2 bg-blue-600 text-white py-1 px-3 rounded hover:bg-blue-700">
-					Connect
-					</button>
-				</div>
-				))}
+                {connectedChats.map((chat, index) => (
+                    <div
+                    key={index}
+                    onClick={() => selectChat(index)}
+                    className={`flex items-center justify-between mb-4 p-4 rounded-lg hover:cursor-pointer ${index === selectedIndexChat ? 'bg-blue-600' : 'bg-gray-700' }`}
+                    >
+                    <div>
+                        <h3 className="text-lg font-semibold text-gray-100">
+                        {chat.name}
+                        </h3>
+                        <p className={`text-sm truncate ${ index === selectedIndexChat ? 'text-gray-100' : 'text-gray-500' }`}>
+                        {chat.lastMessage ? chat.lastMessage : chat?.history[chat?.history?.length-1 !== undefined ? chat?.history?.length-1 : 0].message ? chat?.history[chat?.history?.length-1].message : ''}
+                        </p>
+                    </div>
+                    <span className={`text-sm ${ index === selectedIndexChat ? 'text-gray-100' : 'text-gray-500' } `}>{chat.timeStamp}</span>
+                    </div>
+                ))}
 			</div>
 		
 			{/* Main Content */}
 			<div className="flex-grow p-6">
 				<h1 className="text-2xl font-bold text-gray-100 mb-6">Chats</h1>
 				<div className="bg-gray-800 shadow-md p-6 rounded-lg">
-				{connectedChats.map((chat, index) => (
-					<div
-					key={index}
-					className="flex items-center justify-between mb-4 p-4 bg-gray-700 rounded-lg"
-					>
-					<div>
-						<h3 className="text-lg font-semibold text-gray-100">
-						{chat.name}
-						</h3>
-						<p className="text-sm text-gray-400 truncate">
-						{chat.lastMessage}
-						</p>
-					</div>
-					<span className="text-sm text-gray-500">{chat.timeStamp}</span>
-					</div>
-				))}
+                    <div ref={chatHistoryRef}></div>
+                    <div className='flex justify-end'>
+                        <input className='py-3 mt-6 px-5 w-full bg-gray-600 focus-visible:outline-none'></input>
+                        <button className=" ms-4 text-4xl text-blue-600"><BiSolidSend /></button>
+                    </div>
 				</div>
 			</div>
 			</div>
