@@ -65,7 +65,7 @@ const dashboard: React.FC = () => {
                 {name: 'Maria', message: 'hi' },
                 {name: 'You', message: 'hows the project going' },
                 {name: 'Maria', message: 'good good ive been stuck on this one bug' },
-                {name: 'You', message: 'oh really can i take a look' },
+                {name: 'You', message: 'oh really can i take a look' }
             ]
         },
         {
