@@ -24,7 +24,7 @@ export const validateSignUp = (formData: Partial<IUser>) => {
         middle_name: Joi.string().allow(null).empty('').optional().custom((v, h) => {return capitalizeFirstLetter(v)}),
         last_name: Joi.string().min(3).required().custom((v, h) => {return capitalizeFirstLetter(v)}),
         email: Joi.string().email().required(),
-        password: Joi.required(),
+        password: passwordComplexity().required(),
         confirm_password: Joi.string().valid(Joi.ref('password')).required()
     });
     return schema.validate(formData);  
