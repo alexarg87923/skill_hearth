@@ -190,9 +190,9 @@ function Signup() {
                 />
                 <label className={`text-red-700 ${doPassMatch ? 'hidden' : ''}`}>Passwords do not match!</label>
                 <button disabled={
-                    (formData.password.length >= 9 && passContents.cCase && passContents.lCase && passContents.num && passContents.symbol) && 
-                    (!doPassMatch || formEmpty) || 
-                    (!formData.first_name || !formData.last_name || !formData.email || !formData.password || !formData.confirm_password)} type="submit" className="bg-blue-500 text-white py-2 px-4 rounded">
+                    !((formData.password.length >= 9 && passContents.cCase && passContents.lCase && passContents.num && passContents.symbol) && 
+                    ((!doPassMatch || formEmpty) || 
+                    (!formData.first_name || !formData.last_name || !formData.email || !formData.password || !formData.confirm_password)))} type="submit" className="bg-blue-500 text-white py-2 px-4 rounded">
                         Sign Up
                 </button>
             </form>
