@@ -12,7 +12,7 @@ const capitalizeFirstLetter = (value: string) => {
 export const validateLogin = (formData: Partial<IUser>) => {
     const schema = Joi.object({
         email: Joi.string().email().required(),
-        password: Joi.string().min(8).required()
+        password: Joi.string().required()
     });
     return schema.validate(formData);  
 };
@@ -24,7 +24,7 @@ export const validateSignUp = (formData: Partial<IUser>) => {
         middle_name: Joi.string().allow(null).empty('').optional().custom((v, h) => {return capitalizeFirstLetter(v)}),
         last_name: Joi.string().min(3).required().custom((v, h) => {return capitalizeFirstLetter(v)}),
         email: Joi.string().email().required(),
-        password: passwordComplexity().required(),
+        password: Joi.required(),
         confirm_password: Joi.string().valid(Joi.ref('password')).required()
     });
     return schema.validate(formData);  

@@ -16,7 +16,7 @@ interface ISignUpData {
     last_name: string;
     email: string;
     password: string;
-    confirm_password: string;
+    confirm_password?: string;
 };
 
 export class UserService {
@@ -42,7 +42,7 @@ export class UserService {
         logger.info('A user record does exist with this email');
         
         const isMatch = await bcrypt.compare(formData.password, userRecord.password!);
-        
+
         if (isMatch) {
             logger.info('Passwords match!!');
             return userRecord;
@@ -60,6 +60,8 @@ export class UserService {
             return;
         };
         logger.info('No error when validating sign up form data...');
+        delete formData.confirm_password;
+        logger.info('Deleting confirm_password field because not required in the database...');
         
         const existingUserRecord = await this.userRepository.findUserByEmail(formData.email);
         if (existingUserRecord) {
@@ -94,4 +96,9 @@ export class UserService {
         
         return (await this.userRepository.addProfile(formData, userID));
     };
-}
+
+    async get_new_batch(userID: string): Promise<Array<Partial<IUser>> | null | undefined> {
+        // this.userRepository.getUsers
+        return;
+    };
+};

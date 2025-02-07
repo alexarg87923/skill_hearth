@@ -10,10 +10,11 @@ const csrfProtect = csrf({cookie: true});
 const router = Router();
 
 
-router.post('/changepassword', csrfProtect, verify_session, async (req: Request, res: Response): Promise<void> => userController.changepassword(req, res));
+router.post('/changepassword', csrfProtect, verify_session, async (req: Request, res: Response): Promise<void> => userController.change_password(req, res));
 
-router.post('/wizard', csrfProtect, verify_session, async (req: Request, res: Response): Promise<void> => userController.onboardUser(req, res));
+router.post('/wizard', csrfProtect, verify_session, async (req: Request, res: Response): Promise<void> => userController.onboard_user(req, res));
+router.get('/wizard', csrfProtect, verify_session, async (req: Request, res: Response): Promise<void> => userController.get_cities(req, res));
 
-// router.post('/dashboard', csrfProtect, verify_session, async (req: Request, res: Response): Promise<void> => );
+router.post('/connect', csrfProtect, verify_session, async (req: Request, res: Response): Promise<void> => userController.get_new_batch(req, res));
 
 export const UserRoutes: Router = router;

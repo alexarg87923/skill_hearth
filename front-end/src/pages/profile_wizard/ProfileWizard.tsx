@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Transition } from "@headlessui/react";
 import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
 import { IconContext } from "react-icons";
@@ -26,6 +26,7 @@ export interface iFormData {
 
 const ProfileWizard: React.FC = () => {
     const [step, setStep] = useState(1);
+    const [cities, setCities] = useState([]);
     const { Login } = useContext(UserContext);
     const { csrfToken } = useContext(CsrfContext);
     const navigate = useNavigate();
@@ -40,6 +41,18 @@ const ProfileWizard: React.FC = () => {
         stepTwo: [],
         stepThree: []
     });
+
+    useEffect(() => {
+        const fetch_and_populate_cities = async () => {
+            const result = await apiAxios.get('/user/wizard');
+    
+            if (result.status === 200) {
+                console.log(`Fetched cities: ${JSON.stringify(result.data)}`);
+                setCities(result.data);
+            };
+        };
+        fetch_and_populate_cities();
+    }, []);
 
     const handleSubmit = async (finalFormData: iFormData) => {
         const result = await apiAxios.post('/user/wizard', 
@@ -71,6 +84,7 @@ const ProfileWizard: React.FC = () => {
         <>
             <StepTransition step={step} stepNum={1}>
                 <StepOne
+                    cities={cities}
                     rightArrow={<StepArrow setStep={setStep} orientation="right" />}
                     formData={formData}
                     setFormData={setFormData}

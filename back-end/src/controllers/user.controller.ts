@@ -4,28 +4,26 @@ import { CONSTANTS } from "../utils/constants";
 import { logger } from '../utils/logger';
 import { ENV } from '../config/env';
 import { verify_session } from "../routes/middleware/verify_session";
+import { CityService } from "../services/city.service";
 
 export class UserController {
     private userService: UserService;
+    private cityService: CityService;
 
-    constructor() { this.userService = new UserService() };
+    constructor() { this.userService = new UserService(), this.cityService = new CityService() };
 
     async login(req: Request, res: Response): Promise<void> {
         logger.info('Entered login API endpoint...');
         try {
             if (ENV.ENV_MODE === 'development') {
-                if (req.body.email === 'admin@unboarded.com' && req.body.password === 'admin') {
-                    const options = { maxAge: 60 * 60 * 24 * 5 * 1000, httpOnly: false, secure: false };
-                    res.cookie('admin_cookie', { id: '67a1848b08c4b2e9283735dd', name:'Admin', onboarded: false }, options);
-                    res.status(200).json({ user: {name:'Admin', onboarded: false} });
-                    return; 
-                };
-
-                if (req.body.email == 'admin@onboarded.com' && req.body.password == 'admin') {
-                    const options = { maxAge: 60 * 60 * 24 * 5 * 1000, httpOnly: false, secure: false };
-                    res.cookie('admin_cookie', { id: '67a184c2883a10f0133e35c1', name:'Admin', onboarded: true }, options);
-                    res.status(200).json({ user: {name:'Admin', onboarded: true} });
-                    return; 
+                if (req.body.email === 'admin@unboarded.com' || req.body.email === 'admin@onboarded.com') {
+                    const adminRecord = await this.userService.login(req.body);
+                    if(adminRecord) {
+                        const options = { maxAge: 60 * 60 * 24 * 5 * 1000, httpOnly: false, secure: false };
+                        res.cookie('admin_cookie', { id: adminRecord._id, name:adminRecord.first_name, onboarded: adminRecord.onboarded }, options);
+                        res.status(200).json({ user: {name:adminRecord.first_name, onboarded: adminRecord.onboarded} });
+                        return;
+                    };
                 };
             };
 
@@ -52,7 +50,7 @@ export class UserController {
         };
     };
 
-    async signup(req: Request, res: Response): Promise<void> {
+    async sign_up(req: Request, res: Response): Promise<void> {
         logger.info('Entered signup API endpoint...');
         try {
             const userRecord = await this.userService.signup(req.body);
@@ -90,7 +88,7 @@ export class UserController {
         };
     };
 
-    async getToken(req: Request, res: Response): Promise<void> {
+    async get_token(req: Request, res: Response): Promise<void> {
         logger.info('Entered GetCSRFToken API endpoint...');
         try {
             logger.info('Returning CSRF Token...');
@@ -103,28 +101,43 @@ export class UserController {
         };
     };
 
-    async verifySession (req: Request, res: Response): Promise<void> {
+    async verify_session (req: Request, res: Response): Promise<void> {
         verify_session(req, res);
     };
 
-    async onboardUser (req: Request, res: Response): Promise<void> {
-        logger.info('Entered wizard API endpoint...');
+    async get_cities (req: Request, res: Response): Promise<void> {
+        logger.info('Entered /api/wizard GET');
         try {
-            const userSession = req.session.user;
-            if (userSession !== undefined && userSession) {
+            const cities = await this.cityService.get_cities();
+            res.status(200).send(cities)
+        } catch (error) {
+            logger.error(`${CONSTANTS.ERRORS.PREFIX.LOGIN + CONSTANTS.ERRORS.CATASTROPHIC}: ` + error);
+            res.sendStatus(500);
+        }
+    };
+
+    async onboard_user (req: Request, res: Response): Promise<void> {
+        logger.info('Entered /api/wizard POST');
+        try {
+            var userSession;
+            if (ENV.ENV_MODE === 'development' && req?.cookies?.admin_cookie) {
+                userSession = req?.cookies?.admin_cookie;
+            } else {
+                userSession = req.session;
+            }
+
+            if (userSession !== undefined) {
                 const userProfile = await this.userService.onboard_user(req.body, userSession.id);
 
                 if (userProfile) {
                     logger.info('Successfully created user profile...');
-                    if (req.session?.user) {
-                        req.session.user.onboarded = { id: userProfile._id, name:userProfile.first_name, onboarded: userProfile.onboarded };
-                        res.status(200).json({ user: {name:userProfile.first_name, onboarded: userProfile.onboarded} });
-                        return;
-                    }                    
+                    req.session.user = { id: userProfile._id, name:userProfile.first_name, onboarded: userProfile.onboarded };
+                    res.status(200).json({ user: {name:userProfile.first_name, onboarded: userProfile.onboarded} });
+                    return;
                 };
             };
 
-            logger.info('Was not able to update user profile...');
+            logger.info('Was not able to update user profile, user might not have a session');
             res.sendStatus(403);
         } catch (error) {
             logger.error(`${CONSTANTS.ERRORS.PREFIX.LOGIN + CONSTANTS.ERRORS.CATASTROPHIC}: ` + error);
@@ -132,7 +145,7 @@ export class UserController {
         };
     };
 
-    async changepassword (req: Request, res: Response): Promise<void> {
+    async change_password (req: Request, res: Response): Promise<void> {
         logger.info('Entered changepassword API endpoint...');
         logger.info('Not implemented...');
         logger.info(req.body);
@@ -143,5 +156,28 @@ export class UserController {
             res.sendStatus(500);
             return;
         }
+    };
+
+    async get_new_batch (req: Request, res: Response): Promise<void> {
+        logger.info('Entered get_new_batch API endpoint...');
+        // try {
+        //     const userSession = req.session.user;
+
+        //     if (userSession !== undefined) {
+        //         const new_batch = await this.userService.get_new_batch(userSession.id);
+        //         if (new_batch) {
+        //             res.status(200).json(new_batch);
+        //             return;
+        //         } else if (new_batch.length === 0) {
+        //             res.sendStatus(200);
+        //         }
+
+        //         res.sendStatus(403);
+        //     };
+        // } catch (err) {
+        //     logger.error(`${CONSTANTS.ERRORS.PREFIX.VERIFY_SESSION + CONSTANTS.ERRORS.CATASTROPHIC}: ` + err);
+        //     res.sendStatus(500);
+        //     return;
+        // }
     };
 };

@@ -2,10 +2,7 @@ import React, { useContext, useState } from "react";
 import UserContext from "../../provider/UserProvider";
 import { iFormData } from "./ProfileWizard";
 
-const StepOne: React.FC<Props> = ({ rightArrow, formData, setFormData }) => {
-
-    const testCities = ['sunrise', 'miami', 'weston', 'boca raton', 'gainesville', 'boston', 'new york city']
-
+const StepOne: React.FC<Props> = ({ cities, rightArrow, formData, setFormData }) => {
     const {userContext} = useContext(UserContext)
     const [input, setInput] = useState({
         bio: formData.stepOne.bio ? formData.stepOne.bio : '',
@@ -36,11 +33,15 @@ const StepOne: React.FC<Props> = ({ rightArrow, formData, setFormData }) => {
                         className="text-black mx-4 rounded-xl px-2 py-2 border-b-4 border-blue-400"
                     >
                     {
-                        testCities.map((city, index) => 
-                            <option value={city} key={index} className="text-black">
-                                {city}
+                        cities
+                        ?
+                        cities.map((city: {name: string}, index: number) => 
+                            <option value={city.name} key={index} className="text-black">
+                                {city.name}
                             </option>
                         )
+                        :
+                        <></>
                     }
                     </select>
                 </label>
@@ -132,6 +133,7 @@ const StepOne: React.FC<Props> = ({ rightArrow, formData, setFormData }) => {
 export default StepOne;
 
 interface Props {
+    cities: any;
     rightArrow: any;
     formData: iFormData;
     setFormData: React.Dispatch<React.SetStateAction<iFormData>>;
