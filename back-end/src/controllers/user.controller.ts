@@ -121,6 +121,10 @@ export class UserController {
         try {
             var userSession;
             if (ENV.ENV_MODE === 'development' && req?.cookies?.admin_cookie) {
+                if (req.cookies.admin_cookie.id === '67a68bedae7740b6345064ed') {
+                    logger.info('This user is not allowed to onboard...');
+                    res.sendStatus(403);
+                };
                 userSession = req?.cookies?.admin_cookie;
             } else {
                 userSession = req.session;
