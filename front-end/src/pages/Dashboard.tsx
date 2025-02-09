@@ -166,7 +166,7 @@ const dashboard: React.FC = () => {
                     <div ref={chatHistoryRef}></div>
                     <div className='flex justify-end'>
                         <input className='py-3 mt-6 px-5 w-full bg-gray-600 focus-visible:outline-none'></input>
-                        <button className=" ms-4 text-4xl text-blue-600"><BiSolidSend /></button>
+                        <button className=" ms-4 mt-6 text-4xl text-blue-600"><BiSolidSend /></button>
                     </div>
 				</div>
 			</div>

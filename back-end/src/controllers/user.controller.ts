@@ -119,17 +119,26 @@ export class UserController {
     async onboard_user (req: Request, res: Response): Promise<void> {
         logger.info('Entered /api/wizard POST');
         try {
-            var userSession;
             if (ENV.ENV_MODE === 'development' && req?.cookies?.admin_cookie) {
-                if (req.cookies.admin_cookie.id === '67a68bedae7740b6345064ed') {
+                const admin_cookie = req.cookies.admin_cookie;
+                console.log(admin_cookie);
+                if (admin_cookie.id === '67a815fba256a816908597ab') {
                     logger.info('This user is not allowed to onboard...');
                     res.sendStatus(403);
+                    return;
                 };
-                userSession = req?.cookies?.admin_cookie;
-            } else {
-                userSession = req.session;
-            }
 
+                const adminProfile = await this.userService.onboard_user(req.body, admin_cookie.id);
+                if (adminProfile) {
+                    logger.info('Onboarding admin account...');
+                    const options = { maxAge: 60 * 60 * 24 * 5 * 1000, httpOnly: false, secure: false };
+                    res.cookie('admin_cookie', { id: adminProfile._id, name:adminProfile.first_name, onboarded: adminProfile.onboarded }, options);
+                    res.status(200).json({ user: {name:adminProfile.first_name, onboarded: adminProfile.onboarded} });
+                    return;
+                };
+            };
+
+            const userSession = req.session;
             if (userSession !== undefined) {
                 const userProfile = await this.userService.onboard_user(req.body, userSession.id);
 

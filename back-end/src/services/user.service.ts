@@ -60,10 +60,10 @@ export class UserService {
             return;
         };
         logger.info('No error when validating sign up form data...');
-        delete formData.confirm_password;
+        delete result.value.confirm_password;
         logger.info('Deleting confirm_password field because not required in the database...');
-        
-        const existingUserRecord = await this.userRepository.findUserByEmail(formData.email);
+
+        const existingUserRecord = await this.userRepository.findUserByEmail(result.value.email);
         if (existingUserRecord) {
             logger.error(CONSTANTS.ERRORS.EMAIL_ALREADY_IN_USE);
             return;
