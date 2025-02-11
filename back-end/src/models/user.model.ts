@@ -34,5 +34,5 @@ const userSchema = new mongoose.Schema({
     interests: { type: Array }
 }, { strict: false });
 
-export const User = mongoose.model('User', userSchema);
+export const User = mongoose.model('user', userSchema);
 
