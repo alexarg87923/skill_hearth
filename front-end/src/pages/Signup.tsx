@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import CsrfContext from '../provider/CsrfProvider';
 import UserContext from '../provider/UserProvider';
 import { toast } from 'react-toastify';
-import apiAxios from '../components/apiAxios';
+import apiAxios from '../components/backend';
 
 function Signup() {
 	const { csrfToken } = useContext(CsrfContext);

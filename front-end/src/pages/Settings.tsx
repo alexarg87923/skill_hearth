@@ -1,7 +1,7 @@
 import React, { useEffect, useContext, useState } from "react"
 import { toast } from 'react-toastify';
 import CsrfContext from "../provider/CsrfProvider";
-import apiAxios from "../components/apiAxios";
+import apiAxios from "../components/backend";
 
 
 const Settings: React.FC = () => {

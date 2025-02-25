@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react"
 import UserContext from "../provider/UserProvider";
-import apiAxios from "../components/apiAxios";
+import apiAxios from "../components/backend";
 
 const Logout: React.FC = () => {
 	const { Logout } = useContext(UserContext);

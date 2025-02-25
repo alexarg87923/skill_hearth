@@ -4,6 +4,7 @@ import { validateSignUp, validateLogin, validateWizard } from '../validation/use
 import bcrypt from 'bcryptjs';
 import { CONSTANTS } from '../utils/constants';
 import { logger } from '../utils/logger';
+import { Types } from 'mongoose';
 
 interface ILoginData {
     email: string;
@@ -83,9 +84,9 @@ export class UserService {
 
         logger.error(CONSTANTS.ERRORS.CATASTROPHIC);
         return;
-    }
+    };
     
-    async onboard_user(formData: Partial<IUser>, userID: string): Promise<Partial<IUser> | null | undefined> {
+    async onboard_user(formData: Partial<IUser>, user_id: string): Promise<Partial<IUser> | null | undefined> {
         const result = validateWizard(formData);
 
         if (result.error) {
@@ -94,11 +95,15 @@ export class UserService {
         };
         logger.info('No error when validating wizard form data...');
         
-        return (await this.userRepository.addProfile(formData, userID));
+        return (await this.userRepository.addProfile(formData, user_id));
     };
 
-    async get_new_batch(userID: string): Promise<Array<Partial<IUser>> | null | undefined> {
-        // this.userRepository.getUsers
-        return;
+    async get_new_batch(user_id: string, interests: Types.ObjectId[], skills: Types.ObjectId[] ): Promise<string[] | null | undefined> {
+        const result = await this.userRepository.get_batch_of_users(user_id, interests, skills);
+        if (result !== null && result.length <= 3 && result.length >= 0) {
+            logger.info('Successfully fetched a new batch of users...');
+            return result;
+        };
+        logger.info('New batch of users came back undefined...');
     };
 };

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import apiAxios from '../components/apiAxios';
+import apiAxios from '../components/backend';
 
 const CsrfContext = React.createContext<{csrfToken: string | null, setCsrfToken: Function}>({csrfToken: '', setCsrfToken: () => {}});
 

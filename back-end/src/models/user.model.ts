@@ -14,8 +14,8 @@ export interface IUser {
     phone_number?: string | null;
     location?: string | null;
     share_email?: boolean | null;
-    skills?: Array<string> | null;
-    interests?: Array<string> | null;
+    skills?: Array<Types.ObjectId> | null;
+    interests?: Array<Types.ObjectId> | null;
 };
 
 const userSchema = new mongoose.Schema({

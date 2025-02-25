@@ -2,7 +2,7 @@ import { useState, useContext, useEffect } from "react";
 import { Transition } from "@headlessui/react";
 import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
 import { IconContext } from "react-icons";
-import apiAxios from "../../components/apiAxios";
+import apiAxios from "../../components/backend";
 import CsrfContext from '../../provider/CsrfProvider';
 import { toast } from 'react-toastify';
 import { useNavigate } from "react-router-dom";

@@ -20,7 +20,7 @@ export class UserController {
                     const adminRecord = await this.userService.login(req.body);
                     if(adminRecord) {
                         const options = { maxAge: 60 * 60 * 24 * 5 * 1000, httpOnly: false, secure: false };
-                        res.cookie('admin_cookie', { id: adminRecord._id, name:adminRecord.first_name, onboarded: adminRecord.onboarded }, options);
+                        res.cookie('admin_cookie', { id: adminRecord._id, name:adminRecord.first_name, onboarded: adminRecord.onboarded, interests: adminRecord.interests, skills: adminRecord.interests }, options);
                         res.status(200).json({ user: {name:adminRecord.first_name, onboarded: adminRecord.onboarded} });
                         return;
                     };
@@ -37,7 +37,7 @@ export class UserController {
             
             if (userRecord) {
                 logger.info('Signing in user...');
-                req.session.user = { id: userRecord._id, name:userRecord.first_name, onboarded: userRecord.onboarded };
+                req.session.user = { id: userRecord._id, name:userRecord.first_name, onboarded: userRecord.onboarded, interests: userRecord.interests, skills: userRecord.interests };
                 res.status(200).json({ user: {name:userRecord.first_name, onboarded: userRecord.onboarded} });
                 return;
             };
@@ -132,7 +132,7 @@ export class UserController {
                 if (adminProfile) {
                     logger.info('Onboarding admin account...');
                     const options = { maxAge: 60 * 60 * 24 * 5 * 1000, httpOnly: false, secure: false };
-                    res.cookie('admin_cookie', { id: adminProfile._id, name:adminProfile.first_name, onboarded: adminProfile.onboarded }, options);
+                    res.cookie('admin_cookie', { id: adminProfile._id, name:adminProfile.first_name, onboarded: adminProfile.onboarded, interests: adminProfile.interests, skills: adminProfile.interests }, options);
                     res.status(200).json({ user: {name:adminProfile.first_name, onboarded: adminProfile.onboarded} });
                     return;
                 };
@@ -144,7 +144,7 @@ export class UserController {
 
                 if (userProfile) {
                     logger.info('Successfully created user profile...');
-                    req.session.user = { id: userProfile._id, name:userProfile.first_name, onboarded: userProfile.onboarded };
+                    req.session.user = { id: userProfile._id, name:userProfile.first_name, onboarded: userProfile.onboarded, interests: userProfile.interests, skills: userProfile.interests };
                     res.status(200).json({ user: {name:userProfile.first_name, onboarded: userProfile.onboarded} });
                     return;
                 };
@@ -173,24 +173,25 @@ export class UserController {
 
     async get_new_batch (req: Request, res: Response): Promise<void> {
         logger.info('Entered get_new_batch API endpoint...');
-        // try {
-        //     const userSession = req.session.user;
+        try {
+            const userSession = req.session.user;
 
-        //     if (userSession !== undefined) {
-        //         const new_batch = await this.userService.get_new_batch(userSession.id);
-        //         if (new_batch) {
-        //             res.status(200).json(new_batch);
-        //             return;
-        //         } else if (new_batch.length === 0) {
-        //             res.sendStatus(200);
-        //         }
+            if (userSession !== undefined) {
+                const new_batch = await this.userService.get_new_batch(userSession.id, userSession.interests, userSession.skills);
+                if (new_batch !== undefined && new_batch !== null) {
+                    if (new_batch.length === 0) {
+                        res.sendStatus(200);
+                    };
+                    res.status(200).json(new_batch);
+                    return;
+                };
 
-        //         res.sendStatus(403);
-        //     };
-        // } catch (err) {
-        //     logger.error(`${CONSTANTS.ERRORS.PREFIX.VERIFY_SESSION + CONSTANTS.ERRORS.CATASTROPHIC}: ` + err);
-        //     res.sendStatus(500);
-        //     return;
-        // }
+                res.sendStatus(403);
+            };
+        } catch (err) {
+            logger.error(`${CONSTANTS.ERRORS.PREFIX.VERIFY_SESSION + CONSTANTS.ERRORS.CATASTROPHIC}: ` + err);
+            res.sendStatus(500);
+            return;
+        }
     };
 };
