@@ -138,8 +138,9 @@ export class UserController {
                 };
             };
 
-            const userSession = req.session;
+            const userSession = req.session.user;
             if (userSession !== undefined) {
+                console.log(userSession)
                 const userProfile = await this.userService.onboard_user(req.body, userSession.id);
 
                 if (userProfile) {
@@ -181,12 +182,14 @@ export class UserController {
                 if (new_batch !== undefined && new_batch !== null) {
                     if (new_batch.length === 0) {
                         res.sendStatus(200);
+                        return;
                     };
                     res.status(200).json(new_batch);
                     return;
                 };
 
                 res.sendStatus(403);
+                return;
             };
         } catch (err) {
             logger.error(`${CONSTANTS.ERRORS.PREFIX.VERIFY_SESSION + CONSTANTS.ERRORS.CATASTROPHIC}: ` + err);

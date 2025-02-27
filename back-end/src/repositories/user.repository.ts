@@ -46,7 +46,7 @@ export class UserRepository {
                 }
             ]);
 
-            return result[0].interests;
+            return result;
         } catch (err) {
             logger.error(`Failed to get new batch of users: ${err}`);
             return null;
@@ -54,30 +54,26 @@ export class UserRepository {
     };
 
     async addProfile(user_profile: Partial<IUser>, user_id: string): Promise<IUser | null> {
-        const session = await mongoose.startSession();
         try {
-            session.startTransaction();
-      
-            const { skills = [], interests = [], _id } = user_profile;
+            const { skills = [], interests = [] } = user_profile;
             var skills_ids = [];
             var interests_ids = [];
 
             if (skills) {
                 for (const skill of skills) {
-                    var skillDoc = await Matches.findOne({ name: skill }).session(session);
+                    var skillDoc = await Matches.findOne({ name: skill });
                     if (skillDoc) {
-                        skillDoc.has_interest.push(_id);
-                        await skillDoc.save({ session });
+                        skillDoc.has_interest.push(user_id);
+                        await skillDoc.save();
                     } else {
                         skillDoc = (await Matches.create(
                             [
                                 {
                                     name: skill,
-                                    has_interest: [_id],
+                                    has_interest: [user_id],
                                     looking_for: []
                                 }
-                            ],
-                            { session }
+                            ]
                         ))[0];
                     };
                     skills_ids.push(skillDoc._id);
@@ -86,20 +82,19 @@ export class UserRepository {
 
             if (interests) {
                 for (const interest of interests) {
-                    let interestDoc = await Matches.findOne({ name: interest }).session(session);
+                    let interestDoc = await Matches.findOne({ name: interest });
                     if (interestDoc) {
-                        interestDoc.looking_for.push(_id);
-                        await interestDoc.save({ session });
+                        interestDoc.looking_for.push(user_id);
+                        await interestDoc.save();
                     } else {
                         interestDoc = (await Matches.create(
                             [
                                 {
                                     name: interest,
                                     has_interest: [],
-                                    looking_for: [_id]
+                                    looking_for: [user_id]
                                 }
-                            ],
-                            { session }
+                            ]
                         ))[0];
                         interests_ids.push(interestDoc._id);
                     };
@@ -108,22 +103,18 @@ export class UserRepository {
 
             user_profile.interests = interests_ids;
             user_profile.skills = skills_ids;
-
+            console.log(user_id);
             const updatedUser = await User.findByIdAndUpdate(
-                user_id,
+                new Types.ObjectId(user_id),
                 { ...user_profile, onboarded: true },
-                { new: true, session }
+                { new: true }
             );
 
-            await session.commitTransaction();
             logger.info('Transaction committed successfully!');
             return updatedUser;
         } catch (err) {
-            await session.abortTransaction();
             logger.error(`Transaction aborted: ${err}`);
             return null;
-        } finally {
-            session.endSession();
         };
     };
 };
