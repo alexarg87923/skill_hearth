@@ -8,7 +8,7 @@ function Signup() {
     const { userContext } = useContext(UserContext);
     const navigate = useNavigate();
     const [doPassMatch, setDoPassMatch] = useState(true);
-    const [formEmpty, setFormEmpty] = useState(true);
+    const [isformEmpty, setIsFormEmpty] = useState(true);
     const [formData, setFormData] = useState({
         first_name: "",
         middle_name: "",
@@ -29,15 +29,15 @@ function Signup() {
         if (userContext) {
             console.log("User is being redirected to dashboard...");
             navigate("/dashboard");
-        }
+        };
     }, []);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.name !== "middle_name" && e.target.value === "") {
-            setFormEmpty(true);
+            setIsFormEmpty(true);
         } else {
-            setFormEmpty(false);
-        }
+            setIsFormEmpty(false);
+        };
 
         if (e.target.name === "password") {
             const { value } = e.target;
@@ -53,19 +53,18 @@ function Signup() {
                 else if (code >= 48 && code <= 57) tmp.num = true;
                 else if (code >= 97 && code <= 122) tmp.lCase = true;
                 else tmp.symbol = true;
-            }
+            };
             setPassContents(tmp);
-        }
+        };
 
-        if (formData.confirm_password) {
-            if (e.target.name === "confirm_password") {
-                setDoPassMatch(e.target.value === formData.password);
-            }
-            if (e.target.name === "password") {
-                setDoPassMatch(e.target.value === formData.confirm_password);
-            }
-        }
-
+        
+        if (e.target.name === "confirm_password") {
+            setDoPassMatch((e.target.value === formData.password));
+        };
+        if (e.target.name === "password") {
+            setDoPassMatch((e.target.value === formData.confirm_password));
+        };
+        
         setFormData({
             ...formData,
             [e.target.name]: e.target.value
@@ -85,6 +84,13 @@ function Signup() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        console.log(`length: ${formData.password.length}`)
+        console.log(`ccase: ${passContents.cCase}`)
+        console.log(`lcase: ${passContents.lCase}`)
+        console.log(`num: ${passContents.num}`)
+        console.log(`symb ${passContents.symbol}`)
+        console.log(`dopassmatch: ${doPassMatch}`)
+        console.log(`isFormEmpty: ${isformEmpty}`)
         try {
             if (
                 !formData.first_name ||
@@ -231,17 +237,13 @@ function Signup() {
                             passContents.lCase &&
                             passContents.num &&
                             passContents.symbol &&
-                            (doPassMatch ||
-                                formEmpty ||
-                                !formData.first_name ||
-                                !formData.last_name ||
-                                !formData.email ||
-                                !formData.password ||
-                                !formData.confirm_password)
+                            doPassMatch &&
+                            (!isformEmpty)
                         )
                     }
                     type="submit"
                     name="signup"
+                    id="signup"
                     className="bg-blue-500 text-white py-2 px-4 rounded"
                 >
                     Sign Up

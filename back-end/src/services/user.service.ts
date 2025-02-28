@@ -98,11 +98,11 @@ export class UserService {
         return (await this.userRepository.addProfile(formData, user_id));
     };
 
-    async get_new_batch(user_id: string, interests: Types.ObjectId[], skills: Types.ObjectId[] ): Promise<string[] | null | undefined> {
+    async get_new_batch(user_id: string, interests: Types.ObjectId[], skills: Types.ObjectId[] ): Promise<Array<Partial<IUser>> | undefined> {
         const result = await this.userRepository.get_batch_of_users(user_id, interests, skills);
-        if (result !== null && result.length <= 3 && result.length >= 0) {
+        if (result?.user_profiles !== undefined && result?.user_profiles !== null) {
             logger.info('Successfully fetched a new batch of users...');
-            return result;
+            return result.user_profiles;
         };
         logger.info('New batch of users came back undefined...');
     };

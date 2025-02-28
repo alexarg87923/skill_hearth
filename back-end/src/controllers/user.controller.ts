@@ -20,7 +20,7 @@ export class UserController {
                     const adminRecord = await this.userService.login(req.body);
                     if(adminRecord) {
                         const options = { maxAge: 60 * 60 * 24 * 5 * 1000, httpOnly: false, secure: false };
-                        res.cookie('admin_cookie', { id: adminRecord._id, name:adminRecord.first_name, onboarded: adminRecord.onboarded, interests: adminRecord.interests, skills: adminRecord.interests }, options);
+                        res.cookie('admin_cookie', { id: adminRecord._id, name:adminRecord.first_name, onboarded: adminRecord.onboarded, interests: adminRecord.interests, skills: adminRecord.skills }, options);
                         res.status(200).json({ user: {name:adminRecord.first_name, onboarded: adminRecord.onboarded} });
                         return;
                     };
@@ -37,7 +37,7 @@ export class UserController {
             
             if (userRecord) {
                 logger.info('Signing in user...');
-                req.session.user = { id: userRecord._id, name:userRecord.first_name, onboarded: userRecord.onboarded, interests: userRecord.interests, skills: userRecord.interests };
+                req.session.user = { id: userRecord._id, name:userRecord.first_name, onboarded: userRecord.onboarded, interests: userRecord.interests, skills: userRecord.skills };
                 res.status(200).json({ user: {name:userRecord.first_name, onboarded: userRecord.onboarded} });
                 return;
             };
@@ -132,7 +132,7 @@ export class UserController {
                 if (adminProfile) {
                     logger.info('Onboarding admin account...');
                     const options = { maxAge: 60 * 60 * 24 * 5 * 1000, httpOnly: false, secure: false };
-                    res.cookie('admin_cookie', { id: adminProfile._id, name:adminProfile.first_name, onboarded: adminProfile.onboarded, interests: adminProfile.interests, skills: adminProfile.interests }, options);
+                    res.cookie('admin_cookie', { id: adminProfile._id, name:adminProfile.first_name, onboarded: adminProfile.onboarded, interests: adminProfile.interests, skills: adminProfile.skills }, options);
                     res.status(200).json({ user: {name:adminProfile.first_name, onboarded: adminProfile.onboarded} });
                     return;
                 };
@@ -140,12 +140,11 @@ export class UserController {
 
             const userSession = req.session.user;
             if (userSession !== undefined) {
-                console.log(userSession)
                 const userProfile = await this.userService.onboard_user(req.body, userSession.id);
 
                 if (userProfile) {
                     logger.info('Successfully created user profile...');
-                    req.session.user = { id: userProfile._id, name:userProfile.first_name, onboarded: userProfile.onboarded, interests: userProfile.interests, skills: userProfile.interests };
+                    req.session.user = { id: userProfile._id, name:userProfile.first_name, onboarded: userProfile.onboarded, interests: userProfile.interests, skills: userProfile.skills };
                     res.status(200).json({ user: {name:userProfile.first_name, onboarded: userProfile.onboarded} });
                     return;
                 };
@@ -184,6 +183,7 @@ export class UserController {
                         res.sendStatus(200);
                         return;
                     };
+
                     res.status(200).json(new_batch);
                     return;
                 };

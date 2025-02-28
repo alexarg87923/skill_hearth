@@ -19,39 +19,14 @@ const Connect: React.FC = () => {
 
         const fetchBatch = async () => {
             const response = await backend.get("/user/connect");
-            console.log(response);
+            if (response.status === 200) {
+                setRecommendedUsers(response.data);
+            };
         };
-        fetchBatch();
 
-        // setRecommendedUsers([
-        //     {
-        //         name: "Alex Arguelles",
-        //         profile_picture: "/api/profile_picture.jpeg",
-        //         bio: "Im a gamer that likes to endulge in the development of software",
-        //         interests: ["chess", "drawing"],
-        //         skills: [
-        //             "front-end design",
-        //             "back-end development",
-        //             "valorant",
-        //             "league"
-        //         ]
-        //     },
-        //     {
-        //         name: "Roseline",
-        //         profile_picture: "/api/profile_picture.jpeg",
-        //         bio: "pokemon is my favorite game!!",
-        //         interests: ["elden ring"],
-        //         skills: ["backflips", "pokemon"]
-        //     },
-        //     {
-        //         name: "Mauricio",
-        //         profile_picture: "/api/profile_picture.jpeg",
-        //         bio: "i enjoy reading!!",
-        //         interests: ["statistics"],
-        //         skills: ["note taking"]
-        //     }
-        // ]);
+        fetchBatch();
     }, []);
+
     return (
         <div className="h-screen flex justify-center bg-gray-900 text-gray-100 pt-16 items-center p-4">
             <div className="w-full max-w-7xl">
