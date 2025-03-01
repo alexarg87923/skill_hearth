@@ -175,12 +175,32 @@ export class UserController {
         logger.info('Entered get_new_batch API endpoint...');
         try {
             const userSession = req.session.user;
+            const matchCache = req.session.match_cache;
 
             if (userSession !== undefined) {
+                if (matchCache) {
+                    if (matchCache.length > 3) {
+                        const [arr1, arr2] = [matchCache.slice(0, 3), matchCache.slice(3)]
+                        res.status(200).json(arr1)
+                        req.session.match_cache = arr2;
+                        return;
+                    } else {
+                        res.status(200).json(matchCache);
+                        return;
+                    };
+                };
+
                 const new_batch = await this.userService.get_new_batch(userSession.id, userSession.interests, userSession.skills);
                 if (new_batch !== undefined && new_batch !== null) {
-                    if (new_batch.length === 0) {
+                    if (new_batch.length <= 0) {
                         res.sendStatus(200);
+                        return;
+                    };
+
+                    if (new_batch.length > 3) {
+                        const [arr1, arr2] = [new_batch.slice(0, 3), new_batch.slice(3)]
+                        res.status(200).json(arr1)
+                        req.session.match_cache = arr2;
                         return;
                     };
 
@@ -195,6 +215,28 @@ export class UserController {
             logger.error(`${CONSTANTS.ERRORS.PREFIX.VERIFY_SESSION + CONSTANTS.ERRORS.CATASTROPHIC}: ` + err);
             res.sendStatus(500);
             return;
-        }
+        };
+    };
+
+    async interested (req: Request, res: Response): Promise<void> {
+        logger.info(`Entered interested API endpoint: ${JSON.stringify(req.body)}...`);
+        try {
+
+        } catch (err) {
+            logger.error(`${CONSTANTS.ERRORS.PREFIX.INTERESTED + CONSTANTS.ERRORS.CATASTROPHIC}: ` + err);
+            res.sendStatus(500);
+            return;
+        };
+    };
+    
+    async not_interested (req: Request, res: Response): Promise<void> {
+        logger.info(`Entered not interested API endpoint: ${JSON.stringify(req.body)}...`);
+        try {
+
+        } catch (err) {
+            logger.error(`${CONSTANTS.ERRORS.PREFIX.NOT_INTERESTED + CONSTANTS.ERRORS.CATASTROPHIC}: ` + err);
+            res.sendStatus(500);
+            return;
+        };
     };
 };

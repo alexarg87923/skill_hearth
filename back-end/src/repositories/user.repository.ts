@@ -1,7 +1,7 @@
 import { logger } from '../utils/logger';
 import { User, IUser } from '../models/user.model';
 import { Matches } from '../models/matches.model';
-import mongoose, { Types } from 'mongoose';
+import { Types } from 'mongoose';
 
 export class UserRepository {
     async findUserByEmail(email: string): Promise<Partial<IUser> | null> {
@@ -53,7 +53,7 @@ export class UserRepository {
                     }
                     }
                 },
-                
+
                 // -------------------------------------------------------
                 // 2) Lookup the user profiles in the "users" collection
                 // -------------------------------------------------------
@@ -65,7 +65,7 @@ export class UserRepository {
                     as: "user_profiles"
                     }
                 },
-                
+
                 // -------------------------------------------------------
                 // 3) Project only the needed fields
                 // -------------------------------------------------------

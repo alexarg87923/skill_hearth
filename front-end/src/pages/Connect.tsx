@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import backend from "../components/backend";
 
 interface IProfile {
-    name: string;
+    _id: string;
+    first_name: string;
     profile_picture: string;
     bio: string;
     interests: Array<string>;
@@ -18,14 +19,32 @@ const Connect: React.FC = () => {
         console.log("Loaded Connect Page....");
 
         const fetchBatch = async () => {
-            const response = await backend.get("/user/connect");
-            if (response.status === 200) {
-                setRecommendedUsers(response.data);
-            };
+            try {
+                console.log("🚀 Fetching data...");
+                const response = await backend.get("/user/connect");
+                console.log("✅ Response received:", response.data);
+    
+                if (response.status === 200) {
+                    console.log("📌 Setting state with data:", response.data);
+                    setRecommendedUsers(response.data);
+                } else {
+                    console.warn("⚠️ Unexpected response status:", response.status);
+                }
+            } catch (error) {
+                console.error("❌ API call failed:", error);
+            }
         };
 
         fetchBatch();
     }, []);
+
+    const handleNotInterested = async (uuid: string): Promise<void> => {
+        const response = await backend.post("/user/connect/not_interested", {user_id: uuid});
+    };
+    
+    const handleInterested = async (uuid: string): Promise<void> => {
+        const response = await backend.post("/user/connect/interested", {user_id: uuid});
+    };
 
     return (
         <div className="h-screen flex justify-center bg-gray-900 text-gray-100 pt-16 items-center p-4">
@@ -41,11 +60,11 @@ const Connect: React.FC = () => {
                                     <img
                                         className="mx-auto rounded-full border-4 border-gray-700 w-24 h-24 object-cover transition-transform duration-300 group-hover:scale-110"
                                         src={profile.profile_picture}
-                                        alt={`${profile.name}'s profile picture`}
+                                        alt={`${profile.first_name}'s profile picture`}
                                         width="96"
                                         height="96"
                                     />
-                                    <p className="text-3xl">{profile.name}</p>
+                                    <p className="text-3xl">{profile.first_name}</p>
                                     <p className="text-xl">{profile.bio}</p>
                                 </div>
                                 <div className="mt-4">
@@ -82,11 +101,11 @@ const Connect: React.FC = () => {
                                 </div>
 
                                 <div className="flex justify-between mt-10">
-                                    <button className="ms-10 bg-red-600 hover:bg-red-500 text-xl rouanded-sm p-1">
+                                    <button onClick={() => handleNotInterested(profile._id)} className="ms-10 bg-red-600 hover:bg-red-500 text-xl rouanded-sm p-1">
                                         Not Interested
                                     </button>
 
-                                    <button className="me-10 bg-green-600 hover:bg-green-500 text-xl rounded-sm p-1">
+                                    <button onClick={() => handleInterested(profile._id)} className="me-10 bg-green-600 hover:bg-green-500 text-xl rounded-sm p-1">
                                         Interested
                                     </button>
                                 </div>
