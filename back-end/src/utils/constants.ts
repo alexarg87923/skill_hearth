@@ -6,6 +6,8 @@ export const CONSTANTS = {
             SIGNUP: "SIGNUP: ",
             GET_TOKEN: "GET_TOKEN: ",
             VERIFY_SESSION: "VERIFY_SESSION: ",
+            INTERESTED: "INTERESTED: ",
+            NOT_INTERESTED: "NOT_INTERESTED: "
         },
         USER_NOT_FOUND: "User not found",
         NO_SESSION: "User does not have a session",
