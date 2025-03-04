@@ -4,10 +4,11 @@ export const CONSTANTS = {
             LOGOUT: "LOGOUT: ",
             LOGIN: "LOGIN: ",
             SIGNUP: "SIGNUP: ",
-            GET_TOKEN: "GET_TOKEN: ",
-            VERIFY_SESSION: "VERIFY_SESSION: ",
+            GET_TOKEN: "GET TOKEN: ",
+            VERIFY_SESSION: "VERIFY SESSION: ",
             INTERESTED: "INTERESTED: ",
-            NOT_INTERESTED: "NOT_INTERESTED: "
+            NOT_INTERESTED: "NOT INTERESTED: ",
+            VERIFY_EMAIL: "VERIFY EMAIL: "
         },
         USER_NOT_FOUND: "User not found",
         NO_SESSION: "User does not have a session",

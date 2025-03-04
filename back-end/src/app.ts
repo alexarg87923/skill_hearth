@@ -5,7 +5,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import { ENV } from './config/env';
-import redisStore from './config/redis';
+import { redisStore } from './config/redis';
 import session from 'express-session';
 import path from 'path';
 

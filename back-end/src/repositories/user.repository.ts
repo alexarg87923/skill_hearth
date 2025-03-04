@@ -186,6 +186,10 @@ export class UserRepository {
             return null;
         };
     };
+    
+    async match(user_id: string, match_id: string): Promise<undefined> {
+        return;
+    }
 
     async addProfile(user_profile: Partial<IUser>, user_id: string): Promise<IUser | null> {
         try {
@@ -250,5 +254,9 @@ export class UserRepository {
             logger.error(`Transaction aborted: ${err}`);
             return null;
         };
+    };
+
+    async verify_user(uuid: string): Promise<undefined> {
+        return;
     };
 };

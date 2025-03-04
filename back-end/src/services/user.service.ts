@@ -5,6 +5,8 @@ import bcrypt from 'bcryptjs';
 import { CONSTANTS } from '../utils/constants';
 import { logger } from '../utils/logger';
 import { Types } from 'mongoose';
+import { redisClient } from "../config/redis";
+import { v4 as uuidv4 } from 'uuid';
 
 interface ILoginData {
     email: string;
@@ -105,5 +107,31 @@ export class UserService {
             return result.user_profiles;
         };
         logger.info('New batch of users came back undefined...');
+    };
+
+    async handle_interested(user_id: string, match_id: string): Promise<Partial<IUser> | undefined> {
+        const response = await this.userRepository.match(user_id, match_id);
+        return;
+    };
+
+    async handle_not_interested(user_id: string, match_id: string): Promise<Partial<IUser> | undefined> {
+        return;
+    };
+
+    async send_email_verification(user_id: string): Promise<Partial<IUser> | undefined> {
+        await redisClient.setEx(`verify:${uuidv4()}`, 900, user_id);
+        return;
+    };
+
+    async verify_token(token: string): Promise<Boolean> {
+        const verified_user_id = await redisClient.get(`verify:${token}`);
+        if (verified_user_id === null) {
+            return false;
+        };
+        const response = await this.userRepository.verify_user(verified_user_id);
+        if (response === null) {
+            return false;
+        };
+        return true;
     };
 };

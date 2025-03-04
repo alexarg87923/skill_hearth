@@ -32,6 +32,7 @@ createRoot(document.getElementById("root")!).render(
                     <Route path="/" element={<Landing />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<Signup />} />
+                    <Route path="/verify/:token" element={<VerifyEmail />} />
 
                     <Route element={<ProtectedRoute />}>
                         <Route path="/dashboard" element={<Dashboard />} />
