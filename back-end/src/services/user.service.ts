@@ -7,6 +7,7 @@ import { logger } from '../utils/logger';
 import { Types } from 'mongoose';
 import { redisClient } from "../config/redis";
 import { v4 as uuidv4 } from 'uuid';
+import type { Session, SessionData } from 'express-session';
 
 interface ILoginData {
     email: string;
@@ -100,22 +101,50 @@ export class UserService {
         return (await this.userRepository.addProfile(formData, user_id));
     };
 
-    async get_new_batch(user_id: string, interests: Types.ObjectId[], skills: Types.ObjectId[] ): Promise<Array<Partial<IUser>> | undefined> {
+    async get_new_batch(user_id: string, interests: Types.ObjectId[], skills: Types.ObjectId[] ): Promise<Array<IUser>> {
         const result = await this.userRepository.get_batch_of_users(user_id, interests, skills);
-        if (result?.user_profiles !== undefined && result?.user_profiles !== null) {
+        if (result !== undefined && result !== null) {
             logger.info('Successfully fetched a new batch of users...');
-            return result.user_profiles;
+            return result;
+        } else {
+            throw Error('New batch of users came back undefined...');
         };
-        logger.info('New batch of users came back undefined...');
     };
 
-    async handle_interested(user_id: string, match_id: string): Promise<Partial<IUser> | undefined> {
-        const response = await this.userRepository.match(user_id, match_id);
-        return;
+    async handle_matching(session: Session & Partial<SessionData>, returning_num_of_users: number, expected_status: string, match_id: string): Promise<Array<IUser> | undefined>  {
+        const userSession = session.user;
+        if (userSession) {
+            await this.userRepository.handleStatusUpdate(userSession.id, match_id, expected_status);
+
+            return this.get_num_of_users(returning_num_of_users, session);
+        };
     };
 
-    async handle_not_interested(user_id: string, match_id: string): Promise<Partial<IUser> | undefined> {
-        return;
+    async get_num_of_users(num: number, session: Session & Partial<SessionData>): Promise<Array<IUser> | undefined> {
+        const matchCache = session.match_cache;
+        if (matchCache) { // check if we previously cached list of users so we don't repeat computation in this session
+            if (matchCache.length > num) {
+                const [arr1, arr2] = [matchCache.slice(0, num), matchCache.slice(num)]
+                session.match_cache = arr2;
+                return arr1;
+            };
+        };
+
+        const userSession = session.user;
+        const batch_of_users = await this.get_new_batch(userSession.id, userSession.interests, userSession.skills);
+        if (batch_of_users !== undefined && batch_of_users !== null) {
+            if (batch_of_users.length <= 0) { // if there are no more users to discover, return success with no list of users
+                return;
+            };
+
+            if (batch_of_users.length > num) { 
+                const [arr1, arr2] = [batch_of_users.slice(0, num), batch_of_users.slice(num)]
+                session.match_cache = arr2;
+                return arr1;
+            };
+
+            return batch_of_users;
+        };
     };
 
     async send_email_verification(user_id: string): Promise<Partial<IUser> | undefined> {
@@ -128,7 +157,7 @@ export class UserService {
         if (verified_user_id === null) {
             return false;
         };
-        const response = await this.userRepository.verify_user(verified_user_id);
+        const response = await this.userRepository.verify_user_email(verified_user_id);
         if (response === null) {
             return false;
         };

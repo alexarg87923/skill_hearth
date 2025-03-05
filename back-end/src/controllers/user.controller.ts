@@ -183,40 +183,13 @@ export class UserController {
     async get_new_batch (req: Request, res: Response): Promise<void> {
         logger.info('Entered get_new_batch API endpoint...');
         try {
-            const userSession = req.session.user;
-            const matchCache = req.session.match_cache;
-
-            if (userSession !== undefined) {
-                if (matchCache) { // check if we previously cached list of users so we don't repeat computation in this session
-                    if (matchCache.length > 3) {
-                        const [arr1, arr2] = [matchCache.slice(0, 3), matchCache.slice(3)]
-                        res.status(200).json(arr1)
-                        req.session.match_cache = arr2;
-                        return;
-                    };
-                };
-
-                const batch_of_users = await this.userService.get_new_batch(userSession.id, userSession.interests, userSession.skills);
-                if (batch_of_users !== undefined && batch_of_users !== null) {
-                    if (batch_of_users.length <= 0) { // if there are no more users to discover, return success with no list of users
-                        res.sendStatus(200);
-                        return;
-                    };
-
-                    if (batch_of_users.length > 3) { 
-                        const [arr1, arr2] = [batch_of_users.slice(0, 3), batch_of_users.slice(3)]
-                        res.status(200).json(arr1)
-                        req.session.match_cache = arr2;
-                        return;
-                    };
-
-                    res.status(200).json(batch_of_users); // return the batch if it's less than 3
-                    return;
-                };
-
-                res.sendStatus(403);
+            const users_arr = this.userService.get_num_of_users(3, req.session);
+            if (users_arr !== undefined && users_arr !== null) {
+                res.status(200).json(users_arr);
                 return;
             };
+            res.sendStatus(403);
+            return;
         } catch (err) {
             logger.error(`${CONSTANTS.ERRORS.PREFIX.VERIFY_SESSION + CONSTANTS.ERRORS.CATASTROPHIC}: ` + err);
             res.sendStatus(500);
@@ -227,15 +200,15 @@ export class UserController {
     async interested (req: Request, res: Response): Promise<void> {
         logger.info(`Entered interested API endpoint: ${JSON.stringify(req.body)}...`);
         try {
-            const userSession = req.session.user;
-            if (userSession) {
-                const replacement_user = await this.userService.handle_interested(userSession.id, req.body.user_id);
-                if (replacement_user !== undefined && replacement_user !== null) {
-                    res.send(200).json(replacement_user);
-                };
-                res.sendStatus(200);
+            const replacement_user = await this.userService.handle_matching(req.session, 1, "pending", req.body.user_id);
+
+            if (replacement_user !== undefined && replacement_user !== null) {
+                res.status(200).json(replacement_user);
                 return;
             };
+
+            res.sendStatus(200);
+            return;
         } catch (err) {
             logger.error(`${CONSTANTS.ERRORS.PREFIX.INTERESTED + CONSTANTS.ERRORS.CATASTROPHIC}: ` + err);
             res.sendStatus(500);
@@ -246,7 +219,15 @@ export class UserController {
     async not_interested (req: Request, res: Response): Promise<void> {
         logger.info(`Entered not interested API endpoint: ${JSON.stringify(req.body)}...`);
         try {
+            const replacement_user = await this.userService.handle_matching(req.session, 1, "not_interested", req.body.user_id);
 
+            if (replacement_user) {
+                res.status(200).json(replacement_user);
+                return;
+            };
+
+            res.sendStatus(200);
+            return;
         } catch (err) {
             logger.error(`${CONSTANTS.ERRORS.PREFIX.NOT_INTERESTED + CONSTANTS.ERRORS.CATASTROPHIC}: ` + err);
             res.sendStatus(500);
@@ -270,5 +251,4 @@ export class UserController {
             return;
         };
     };
-
 };
