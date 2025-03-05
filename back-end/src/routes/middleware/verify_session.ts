@@ -40,7 +40,7 @@ export const verify_session = async (
             return returnStatusOrNext({ res, status: 200, data: {
                 user: { name: adminCookie.name, onboarded: adminCookie.onboarded }
             }, next });
-        }
+        };
         
         const userSession = req.session.user;
         
@@ -49,7 +49,7 @@ export const verify_session = async (
         if (!userSession) {
             logger.info('User does not have a session...');
             return returnStatusOrNext({ res, status: 204, next });
-        }
+        };
         logger.info('User is not an Admin...');
         logger.info(`JSON: ${JSON.stringify({ user: { name: userSession.name, onboarded: userSession.onboarded } })}`);
         return returnStatusOrNext({
@@ -65,5 +65,5 @@ export const verify_session = async (
             `${CONSTANTS.ERRORS.PREFIX.VERIFY_SESSION + CONSTANTS.ERRORS.CATASTROPHIC}: ${err}`
         );
         return returnStatusOrNext({ res, status: 500, next });
-    }
+    };
 };

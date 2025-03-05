@@ -197,29 +197,10 @@ export class UserController {
         };
     };
 
-    async interested (req: Request, res: Response): Promise<void> {
+    async connect (req: Request, res: Response): Promise<void> {
         logger.info(`Entered interested API endpoint: ${JSON.stringify(req.body)}...`);
         try {
-            const replacement_user = await this.userService.handle_matching(req.session, 1, "pending", req.body.user_id);
-
-            if (replacement_user !== undefined && replacement_user !== null) {
-                res.status(200).json(replacement_user);
-                return;
-            };
-
-            res.sendStatus(200);
-            return;
-        } catch (err) {
-            logger.error(`${CONSTANTS.ERRORS.PREFIX.INTERESTED + CONSTANTS.ERRORS.CATASTROPHIC}: ` + err);
-            res.sendStatus(500);
-            return;
-        };
-    };
-    
-    async not_interested (req: Request, res: Response): Promise<void> {
-        logger.info(`Entered not interested API endpoint: ${JSON.stringify(req.body)}...`);
-        try {
-            const replacement_user = await this.userService.handle_matching(req.session, 1, "not_interested", req.body.user_id);
+            const replacement_user = await this.userService.handle_matching(req.session, 1, req.body);
 
             if (replacement_user) {
                 res.status(200).json(replacement_user);
@@ -229,7 +210,7 @@ export class UserController {
             res.sendStatus(200);
             return;
         } catch (err) {
-            logger.error(`${CONSTANTS.ERRORS.PREFIX.NOT_INTERESTED + CONSTANTS.ERRORS.CATASTROPHIC}: ` + err);
+            logger.error(`${CONSTANTS.ERRORS.PREFIX.INTERESTED + CONSTANTS.ERRORS.CATASTROPHIC}: ` + err);
             res.sendStatus(500);
             return;
         };

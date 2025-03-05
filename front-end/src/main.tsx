@@ -15,6 +15,7 @@ import PageNotFound from "./pages/PageNotFound";
 import Logout from "./pages/Logout";
 import Settings from "./pages/Settings";
 import Profile from "./pages/Profile";
+import VerifyEmail from "./pages/VerifyEmail";
 
 import { UserProvider } from "./provider/UserProvider";
 import ProfileWizard from "./pages/profile_wizard/ProfileWizard";

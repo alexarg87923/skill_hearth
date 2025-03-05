@@ -111,10 +111,10 @@ export class UserService {
         };
     };
 
-    async handle_matching(session: Session & Partial<SessionData>, returning_num_of_users: number, expected_status: string, match_id: string): Promise<Array<IUser> | undefined>  {
+    async handle_matching(session: Session & Partial<SessionData>, returning_num_of_users: number, status_result: {user_id: string, status: string}): Promise<Array<IUser> | undefined>  {
         const userSession = session.user;
         if (userSession) {
-            await this.userRepository.handleStatusUpdate(userSession.id, match_id, expected_status);
+            await this.userRepository.handleStatusUpdate(userSession.id, status_result.user_id, status_result.status);
 
             return this.get_num_of_users(returning_num_of_users, session);
         };
