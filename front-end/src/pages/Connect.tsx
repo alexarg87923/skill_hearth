@@ -42,11 +42,11 @@ const Connect: React.FC = () => {
     }, []);
 
     const handleNotInterested = async (uuid: string): Promise<void> => {
-        const response = await backend.post("/user/connect/not_interested", {user_id: uuid, status: "not_interested"});
+        const response = await backend.post("/user/connect", {user_id: uuid, status: "not_interested"});
     };
     
     const handleInterested = async (uuid: string): Promise<void> => {
-        const response = await backend.post("/user/connect/interested", {user_id: uuid, status: "pending"});
+        const response = await backend.post("/user/connect", {user_id: uuid, status: "pending"});
     };
 
     return (
