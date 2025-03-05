@@ -27,7 +27,7 @@ const Connect: React.FC = () => {
     
                 if (response.status === 200) {
                     console.log("📌 Setting state with data:", response.data);
-                    if (response.data === typeof Array) {
+                    if (Object.keys(response.data).length !== 0 || response.data !== undefined) {
                         setRecommendedUsers(response.data);
                     };
                 } else {
