@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import backend from "../components/backend";
+import { array } from "prop-types";
 
 interface IProfile {
     _id: string;
@@ -26,7 +27,9 @@ const Connect: React.FC = () => {
     
                 if (response.status === 200) {
                     console.log("📌 Setting state with data:", response.data);
-                    setRecommendedUsers(response.data);
+                    if (response.data === typeof Array) {
+                        setRecommendedUsers(response.data);
+                    };
                 } else {
                     console.warn("⚠️ Unexpected response status:", response.status);
                 }

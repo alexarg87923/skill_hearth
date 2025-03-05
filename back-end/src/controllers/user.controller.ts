@@ -183,10 +183,12 @@ export class UserController {
     async get_new_batch (req: Request, res: Response): Promise<void> {
         logger.info('Entered get_new_batch API endpoint...');
         try {
-            const users_arr = this.userService.get_num_of_users(3, req.session);
-            if (users_arr !== undefined && users_arr !== null) {
-                res.status(200).json(users_arr);
-                return;
+            if (req.session.user) {
+                const users_arr = await this.userService.get_num_of_users(3, req.session);
+                if (users_arr !== undefined && users_arr !== null) {
+                    res.status(200).json(users_arr);
+                    return;
+                };
             };
             res.sendStatus(403);
             return;
