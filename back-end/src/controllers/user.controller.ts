@@ -186,7 +186,7 @@ export class UserController {
             if (req.session.user) {
                 const users_arr = await this.userService.get_num_of_users(3, req.session);
                 if (users_arr !== undefined && users_arr !== null) {
-                    res.status(200).json(users_arr);
+                    res.status(200).json({users: users_arr});
                     return;
                 };
             };
@@ -200,21 +200,22 @@ export class UserController {
     };
 
     async connect (req: Request, res: Response): Promise<void> {
-        logger.info(`Entered interested API endpoint: ${JSON.stringify(req.body)}...`);
+        logger.info(`Entered /connect POST API endpoint: ${JSON.stringify(req.body)}...`);
         try {
-            const session = req.session;
+            const session = req.session.user;
             if (session) {
                 const replacement_user = await this.userService.handle_matching(req.session, req.body);
                 if (replacement_user) {
-                    res.status(200).json(replacement_user);
+                    res.status(200).json({user: replacement_user});
                     return;
                 };
-
                 res.sendStatus(200);
                 return;
             };
+            res.sendStatus(403);
+            return;
         } catch (err) {
-            logger.error(`${CONSTANTS.ERRORS.PREFIX.INTERESTED + CONSTANTS.ERRORS.CATASTROPHIC}: ` + err);
+            logger.error(`${CONSTANTS.ERRORS.PREFIX.CONNECT + CONSTANTS.ERRORS.CATASTROPHIC}: ` + err);
             res.sendStatus(500);
             return;
         };

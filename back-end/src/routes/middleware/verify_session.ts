@@ -36,34 +36,32 @@ export const verify_session = async (
         if (ENV.ENV_MODE === 'development' && req.cookies.admin_cookie) {
             logger.info('User is an Admin...');
             const adminCookie = req.cookies.admin_cookie;
-            logger.info(`JSON: ${JSON.stringify({ name: adminCookie.name, onboarded: adminCookie.onboarded })}`);
-            return returnStatusOrNext({ res, status: 200, data: {
-                user: { name: adminCookie.name, onboarded: adminCookie.onboarded }
+            logger.info(`JSON: ${JSON.stringify(adminCookie)}`);
+            return returnStatusOrNext({ res: res, status: 200, data: {
+                user: adminCookie
             }, next });
         };
         
         const userSession = req.session.user;
-        
-        console.log(userSession);
-        
+        logger.info(`Session JSON: ${JSON.stringify(userSession)}`);
+
         if (!userSession) {
             logger.info('User does not have a session...');
-            return returnStatusOrNext({ res, status: 204, next });
+            res.sendStatus(204);
+            return;
         };
         logger.info('User is not an Admin...');
-        logger.info(`JSON: ${JSON.stringify({ user: { name: userSession.name, onboarded: userSession.onboarded } })}`);
         return returnStatusOrNext({
             res,
             status: 200,
-            data: {
-                user: { name: userSession.name, onboarded: userSession.onboarded }
-            },
+            data: {user: userSession},
             next
         });
     } catch (err) {
         logger.error(
             `${CONSTANTS.ERRORS.PREFIX.VERIFY_SESSION + CONSTANTS.ERRORS.CATASTROPHIC}: ${err}`
         );
-        return returnStatusOrNext({ res, status: 500, next });
+        res.sendStatus(500);
+        return;
     };
 };

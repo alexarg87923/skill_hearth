@@ -6,7 +6,7 @@ export const CONSTANTS = {
             SIGNUP: "SIGNUP: ",
             GET_TOKEN: "GET TOKEN: ",
             VERIFY_SESSION: "VERIFY SESSION: ",
-            INTERESTED: "INTERESTED: ",
+            CONNECT: "CONNECT: ",
             NOT_INTERESTED: "NOT INTERESTED: ",
             VERIFY_EMAIL: "VERIFY EMAIL: "
         },

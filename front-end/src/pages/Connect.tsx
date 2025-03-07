@@ -26,9 +26,9 @@ const Connect: React.FC = () => {
                 console.log("✅ Response received:", response.data);
     
                 if (response.status === 200) {
-                    console.log("📌 Setting state with data:", response.data);
-                    if (Object.keys(response.data).length !== 0 || response.data !== undefined) {
-                        setRecommendedUsers(response.data);
+                    if (response.data.users !== undefined && Array.isArray(response.data.users)) {
+                        console.log("📌 Setting state with data:", response.data.users);
+                        setRecommendedUsers(response.data.users);
                     };
                 } else {
                     console.warn("⚠️ Unexpected response status:", response.status);
@@ -41,12 +41,18 @@ const Connect: React.FC = () => {
         fetchBatch();
     }, []);
 
-    const handleNotInterested = async (uuid: string): Promise<void> => {
-        const response = await backend.post("/user/connect", {user_id: uuid, status: "not_interested"});
-    };
-    
-    const handleInterested = async (uuid: string): Promise<void> => {
-        const response = await backend.post("/user/connect", {user_id: uuid, status: "pending"});
+    const handleSelection = async (formData: {user_id: string, status: "interested" | "not_interested"}): Promise<void> => {
+        const response = await backend.post("/user/connect", {...formData, other_users: recommendedUsers.map(profile => profile._id)});
+        console.log(response.data);
+        if (response.status === 200) {
+            if (response.data.user !== undefined && Object.keys(response.data.user).length !== 0) {
+                setRecommendedUsers((prev) => {
+                    return ([...prev, response.data.user]).filter((profile) => profile._id !== formData.user_id);
+                });
+            } else {
+                setRecommendedUsers((prev) => prev.filter((profile) => profile._id !== formData.user_id));
+            };
+        };
     };
 
     return (
@@ -72,7 +78,7 @@ const Connect: React.FC = () => {
                                 </div>
                                 <div className="mt-4">
                                     <p className="text-3xl mb-2">Interests:</p>
-                                    <div className="flex gap-2" key={index}>
+                                    <div className="flex flex-wrap gap-2" key={index}>
                                         {profile.interests.map(
                                             (interest, index) => (
                                                 <span
@@ -104,11 +110,11 @@ const Connect: React.FC = () => {
                                 </div>
 
                                 <div className="flex justify-between mt-10">
-                                    <button onClick={() => handleNotInterested(profile._id)} className="ms-10 bg-red-600 hover:bg-red-500 text-xl rouanded-sm p-1">
+                                    <button onClick={() => handleSelection({user_id: profile._id, status: "not_interested"})} className="ms-10 bg-red-600 hover:bg-red-500 text-xl rouanded-sm p-1">
                                         Not Interested
                                     </button>
 
-                                    <button onClick={() => handleInterested(profile._id)} className="me-10 bg-green-600 hover:bg-green-500 text-xl rounded-sm p-1">
+                                    <button onClick={() => handleSelection({user_id: profile._id, status: "interested"})} className="me-10 bg-green-600 hover:bg-green-500 text-xl rounded-sm p-1">
                                         Interested
                                     </button>
                                 </div>

@@ -101,37 +101,45 @@ export class UserService {
         return (await this.userRepository.addProfile(formData, user_id));
     };
 
-    async get_new_batch(user_id: string, interests: Types.ObjectId[], skills: Types.ObjectId[] ): Promise<Array<IUser>> {
-        const result = await this.userRepository.get_batch_of_users(user_id, interests, skills);
+    async get_new_batch(user_id: string, interests: Types.ObjectId[], skills: Types.ObjectId[], users_to_avoid: Array<string> = [] ): Promise<Array<IUser>> {
+        users_to_avoid.push(user_id)
+        const result = await this.userRepository.get_batch_of_users(user_id, interests, skills, users_to_avoid);
         if (result !== undefined && result !== null) {
-            logger.info('Successfully fetched a new batch of users...');
+            logger.info(`Successfully fetched a new batch of users: ${JSON.stringify(result)}...`);
             return result;
         } else {
             throw Error('New batch of users came back undefined...');
         };
     };
 
-    async handle_matching(session: Session & Partial<SessionData>, status_result: {user_id: string, status: string}): Promise<Array<IUser> | undefined>  {
-        if (status_result?.user_id === undefined || status_result?.status === undefined) {
+    async handle_matching(session: Session & Partial<SessionData>, request_data: {user_id: string, status: string, other_users: Array<string>}): Promise<IUser | undefined>  {
+        if (request_data?.user_id === undefined || request_data?.status === undefined || request_data.other_users === undefined) {
+            logger.error("Form data is invalid...");
             return;
         };
 
-        await this.userRepository.handleStatusUpdate(session.id, status_result.user_id, status_result.status);
-        return this.get_num_of_users(1, session);
+        await this.userRepository.handleStatusUpdate(session.user.id, request_data.user_id, request_data.status);
+
+        const userArr = await this.get_num_of_users(1, session, request_data.other_users);
+        logger.info(`Replacement user: ${JSON.stringify(userArr)}`);
+        if (userArr !== undefined && Array.isArray(userArr) && userArr.length === 1) {
+            return userArr[0];
+        };
     };
 
-    async get_num_of_users(num: number, session: Session & Partial<SessionData>): Promise<Array<IUser> | undefined> {
-        const matchCache = session.match_cache;
-        if (matchCache) { // check if we previously cached list of users so we don't repeat computation in this session
-            if (matchCache.length > num) {
-                const [arr1, arr2] = [matchCache.slice(0, num), matchCache.slice(num)]
-                session.match_cache = arr2;
-                return arr1;
-            };
-        };
+    async get_num_of_users(num: number, session: Session & Partial<SessionData>, users_to_avoid: Array<string> = []): Promise<Array<IUser> | undefined> {
+        // const matchCache = session.match_cache;
+        // if (matchCache) { // check if we previously cached list of users so we don't repeat computation in this session
+        //     logger.info("Cache hit!!");
+        //     if (matchCache.length > num) {
+        //         const [arr1, arr2] = [matchCache.slice(0, num), matchCache.slice(num)]
+        //         session.match_cache = arr2;
+        //         return arr1;
+        //     };
+        // };
 
         const userSession = session.user;
-        const batch_of_users = await this.get_new_batch(userSession.id, userSession.interests, userSession.skills);
+        const batch_of_users = await this.get_new_batch(userSession.id, userSession.interests, userSession.skills, users_to_avoid);
         if (batch_of_users !== undefined && batch_of_users !== null) {
             if (batch_of_users.length <= 0) { // if there are no more users to discover, return success with no list of users
                 return;
