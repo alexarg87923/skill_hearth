@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import backend from "../components/backend";
-import { array } from "prop-types";
 
 interface IProfile {
     _id: string;

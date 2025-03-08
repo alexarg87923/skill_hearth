@@ -19,4 +19,7 @@ router.get('/verify_email/:token', csrfProtect, verify_session, async (req: Requ
 router.get('/connect', csrfProtect, verify_session, async (req: Request, res: Response): Promise<void> => userController.get_new_batch(req, res));
 router.post('/connect', csrfProtect, verify_session, async (req: Request, res: Response): Promise<void> => userController.connect(req, res));
 
+router.get('/dashboard', csrfProtect, verify_session, async (req: Request, res: Response): Promise<void> => userController.get_messages(req, res));
+router.post('/dashboard', csrfProtect, verify_session, async (req: Request, res: Response): Promise<void> => userController.send_message(req, res));
+
 export const UserRoutes: Router = router;

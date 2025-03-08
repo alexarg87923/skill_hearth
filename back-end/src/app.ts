@@ -8,6 +8,7 @@ import { ENV } from './config/env';
 import { redisStore } from './config/redis';
 import session from 'express-session';
 import path from 'path';
+import expressWs from 'express-ws';
 
 declare module 'express-session' {
     export interface SessionData {
@@ -16,11 +17,10 @@ declare module 'express-session' {
     }
 };
 
-const app = express();
+const { app } = expressWs(express());
+
 var corsOptions;
 var sessionOptions;
-
-
 if (ENV.ENV_MODE === 'development') {
 	corsOptions = {
 		origin: 'http://localhost:5173',
@@ -56,6 +56,7 @@ if (ENV.ENV_MODE === 'development') {
 connectDatabase();
 
 // Middleware
+expressWs(app);
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors(corsOptions));
@@ -68,6 +69,13 @@ app.use('/api', express.static(path.join(__dirname, 'assets')));
 app.use("/api/", MainRouter);
 app.use((error: any, req: any, res: any, next: any) => {
   res.status(error.status || 500).json({ message: error.message });
+});
+
+
+app.ws('/api/ws/chat', (ws, req) => {
+  ws.on('message', (msg: string) => {
+    console.log(msg)
+  });
 });
 
 export default app;

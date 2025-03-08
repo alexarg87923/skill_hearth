@@ -127,6 +127,14 @@ export class UserService {
         };
     };
 
+    async get_chat_history(session: Session & Partial<SessionData>): Promise<Array<{to: Types.ObjectId | string, from: Types.ObjectId | string, message: string, timestamp: string }> | undefined> {
+        return;
+    };
+
+    async save_message(session: Session & Partial<SessionData>, formData: {to: Types.ObjectId | string, message: string, timestamp: string }): Promise<boolean> {
+        return !!(await this.userRepository.save_message({from: session.id, ...formData}));
+    };
+
     async get_num_of_users(num: number, session: Session & Partial<SessionData>, users_to_avoid: Array<string> = []): Promise<Array<IUser> | undefined> {
         // const matchCache = session.match_cache;
         // if (matchCache) { // check if we previously cached list of users so we don't repeat computation in this session

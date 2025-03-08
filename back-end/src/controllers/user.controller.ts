@@ -220,6 +220,49 @@ export class UserController {
             return;
         };
     };
+    
+    async get_messages (req: Request, res: Response): Promise<void> {
+        logger.info(`Entered get messages API endpoint: ${JSON.stringify(req.body)}...`);
+        try {
+            const userSession = req.session.user;
+            if (userSession) {
+                const messages_list = await this.userService.get_chat_history(userSession);
+                if (messages_list) {
+                    res.send(200).json(messages_list);
+                } else {
+                    res.sendStatus(500);
+                };
+            };
+        } catch (err) {
+            logger.error(`GET MESSAGES: ${CONSTANTS.ERRORS.CATASTROPHIC}: ` + err);
+            res.sendStatus(500);
+            return;
+        };
+    };
+    
+    async send_message (req: Request, res: Response): Promise<void> {
+        logger.info(`Entered get messages API endpoint: ${JSON.stringify(req.body)}...`);
+        try {
+            const userSession = req.session.user;
+            if (userSession) {
+                const response = await this.userService.save_message(userSession, req.body);
+
+                //
+                // TO DO: send message in real time to user
+                //
+
+                if (response) {
+                    res.sendStatus(200);
+                } else {
+                    res.sendStatus(500);
+                };
+            };
+        } catch (err) {
+            logger.error(`SEND MESSAGE: ${CONSTANTS.ERRORS.CATASTROPHIC}: ` + err);
+            res.sendStatus(500);
+            return;
+        };
+    };
 
     async verify_email (req: Request, res: Response): Promise<void> {
         logger.info(`Entered verify email API endpoint: ${JSON.stringify(req.body)}...`);

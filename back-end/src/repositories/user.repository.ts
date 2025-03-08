@@ -68,38 +68,33 @@ export class UserRepository {
         userProfile: Partial<IUser>,
         user_id: string
     ): Promise<IUser | null> {
-        try {
-            const skills = userProfile.skills || [];
-            const interests = userProfile.interests || [];
-            const userID = new Types.ObjectId(user_id);
+        const skills = userProfile.skills || [];
+        const interests = userProfile.interests || [];
+        const userID = new Types.ObjectId(user_id);
 
-            let updatedSkills: Array<Types.ObjectId> = [];
-            let updatedInterests: Array<Types.ObjectId> = [];
+        let updatedSkills: Array<Types.ObjectId> = [];
+        let updatedInterests: Array<Types.ObjectId> = [];
 
-            if (skills.length > 0) {
-                updatedSkills = await this.createOrUpdateUUID(userID, skills, SkillHas);
-            };
-
-            if (interests.length > 0) {
-                updatedInterests = await this.createOrUpdateUUID(userID, interests, SkillLookingFor);
-            };
-
-            userProfile.skills = updatedSkills;
-            userProfile.interests = updatedInterests;
-            userProfile.onboarded = true;
-
-            const updatedUser = await User.findByIdAndUpdate(
-                userID,
-                userProfile,
-                { new: true }
-            );
-
-            logger.info('User updated successfully!');
-            return updatedUser;
-        } catch (err) {
-            logger.error(`addProfile failed: ${err}`);
-            return null;
+        if (skills.length > 0) {
+            updatedSkills = await this.createOrUpdateUUID(userID, skills, SkillHas);
         };
+
+        if (interests.length > 0) {
+            updatedInterests = await this.createOrUpdateUUID(userID, interests, SkillLookingFor);
+        };
+
+        userProfile.skills = updatedSkills;
+        userProfile.interests = updatedInterests;
+        userProfile.onboarded = true;
+
+        const updatedUser = await User.findByIdAndUpdate(
+            userID,
+            userProfile,
+            { new: true }
+        );
+
+        logger.info('User updated successfully!');
+        return updatedUser;
     };
 
     async findUserByEmail(email: string): Promise<Partial<IUser> | null> {
@@ -109,109 +104,104 @@ export class UserRepository {
     async createUser(user: Partial<IUser>): Promise<Partial<IUser> | null> {
         return (await User.create(user));
     };
-    
+
     async get_batch_of_users(
         user_id: string,
         interests: Types.ObjectId[], 
         skills: Types.ObjectId[],
         users_to_avoid: Array<string> = []
     ): Promise<Array<IUser> | null> {
-        try {
-            const existing_relationships = await Relationship.aggregate([
-                {
-                    $match: {
-                        $or: [{ user1_id: new Types.ObjectId(user_id) }, { user2_id: new Types.ObjectId(user_id) }]
-                    }
-                },
-                {
-                    $project: {
-                        otherUser: {
-                            $cond: { if: { $eq: ["$user1_id", new Types.ObjectId(user_id)] }, then: "$user2_id", else: "$user1_id" }
-                        }
-                    }
-                },
-                {
-                    $group: {
-                        _id: null,
-                        uniqueUserIds: { $addToSet: "$otherUser" }
-                    }
-                },
-                {
-                    $project: {
-                        _id: 0,
-                        uniqueUserIds: 1
+        const existing_relationships = await Relationship.aggregate([
+            {
+                $match: {
+                    $or: [{ user1_id: new Types.ObjectId(user_id) }, { user2_id: new Types.ObjectId(user_id) }]
+                }
+            },
+            {
+                $project: {
+                    otherUser: {
+                        $cond: { if: { $eq: ["$user1_id", new Types.ObjectId(user_id)] }, then: "$user2_id", else: "$user1_id" }
                     }
                 }
-            ]);
-            return await User.aggregate([
-                {
-                    $match: {
-                        $and: [
-                            {
-                                $or: [
-                                    { _id: { $in: await SkillLookingFor.find({ skill_id: { $in: skills } }).distinct('user_id') } },
-                                    { _id: { $in: await SkillHas.find({ skill_id: { $in: interests } }).distinct('user_id') } }
-                                ]
-                            },
-                            { _id: { $nin: existing_relationships.length > 0 ? existing_relationships[0].uniqueUserIds : [] } },
-                            { _id: { $nin: users_to_avoid.map(uuid => new Types.ObjectId(uuid)) } }
-                        ]
-                    }
-                },
-                {
-                    $project: {
-                        _id: 1,
-                        first_name: 1,
-                        last_name: 1,
-                        email: 1,
-                        bio: 1,
-                        location: 1,
-                        skills: 1,
-                        interests: 1,
-                        profile_picture: 1
-                    }
-                },
-                {
-                    $lookup: {
-                        from: "skills",
-                        localField: "skills",
-                        foreignField: "_id",
-                        as: "skillObjects"
-                    }
-                },
-                {
-                    $addFields: {
-                        skills: { $map: { input: "$skillObjects", as: "skill", in: "$$skill.name" } }
-                    }
-                },
-                {
-                    $project: {
-                        skillObjects: 0
-                    }
-                },
-                {
-                    $lookup: {
-                        from: "skills",
-                        localField: "interests",
-                        foreignField: "_id",
-                        as: "interestObjects"
-                    }
-                },
-                {
-                    $addFields: {
-                        interests: { $map: { input: "$interestObjects", as: "interest", in: "$$interest.name" } }
-                    }
-                },
-                {
-                    $project: {
-                        interestObjects: 0
-                    }
+            },
+            {
+                $group: {
+                    _id: null,
+                    uniqueUserIds: { $addToSet: "$otherUser" }
                 }
-            ]);
-        } catch (err) {
-            logger.error(`Failed to get new batch of users: ${err}`);
-            return null;
-        };
+            },
+            {
+                $project: {
+                    _id: 0,
+                    uniqueUserIds: 1
+                }
+            }
+        ]);
+        return await User.aggregate([
+            {
+                $match: {
+                    $and: [
+                        {
+                            $or: [
+                                { _id: { $in: await SkillLookingFor.find({ skill_id: { $in: skills } }).distinct('user_id') } },
+                                { _id: { $in: await SkillHas.find({ skill_id: { $in: interests } }).distinct('user_id') } }
+                            ]
+                        },
+                        { _id: { $nin: existing_relationships.length > 0 ? existing_relationships[0].uniqueUserIds : [] } },
+                        { _id: { $nin: users_to_avoid.map(uuid => new Types.ObjectId(uuid)) } }
+                    ]
+                }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    first_name: 1,
+                    last_name: 1,
+                    email: 1,
+                    bio: 1,
+                    location: 1,
+                    skills: 1,
+                    interests: 1,
+                    profile_picture: 1
+                }
+            },
+            {
+                $lookup: {
+                    from: "skills",
+                    localField: "skills",
+                    foreignField: "_id",
+                    as: "skillObjects"
+                }
+            },
+            {
+                $addFields: {
+                    skills: { $map: { input: "$skillObjects", as: "skill", in: "$$skill.name" } }
+                }
+            },
+            {
+                $project: {
+                    skillObjects: 0
+                }
+            },
+            {
+                $lookup: {
+                    from: "skills",
+                    localField: "interests",
+                    foreignField: "_id",
+                    as: "interestObjects"
+                }
+            },
+            {
+                $addFields: {
+                    interests: { $map: { input: "$interestObjects", as: "interest", in: "$$interest.name" } }
+                }
+            },
+            {
+                $project: {
+                    interestObjects: 0
+                }
+            }
+        ]);
     };
 
     async handleStatusUpdate(user_id: string, match_id: string, status: string) {
@@ -263,5 +253,9 @@ export class UserRepository {
 
     async verify_user_email(uuid: string): Promise<undefined> {
         return;
+    };
+
+    async save_message(formData: {to: Types.ObjectId | string, from: Types.ObjectId | string, message: string, timestamp: string }) : Promise<boolean> {
+        return false;
     };
 };

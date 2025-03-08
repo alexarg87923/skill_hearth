@@ -18,38 +18,59 @@ const dashboard: React.FC = () => {
     const { userContext } = useContext(UserContext);
     // const [hideEmailVer, setHideEmailVer] = useState(false);
     const [selectedIndexChat, setSelectedIndexChat] = useState(0);
-    const chatHistoryRef = useRef(null);
+    const chatHistoryRef = useRef<HTMLDivElement | null>(null);
+    const ws = useRef<WebSocket | null>(null);
 
     useEffect(() => {
         console.log("Loaded dashboard page...");
-        if (chatHistoryRef.current) {
-            chatHistoryRef.current.innerHTML = connectedChats[
-                selectedIndexChat
-            ].history
-                ?.map((chat, index) => {
-                    return `
-                ${
-                    chat.name === "You"
-                        ? `<div class="mt-5 flex flex-col items-end" key="${index}">
-                        <div class="text-gray-500 text-sm pr-2">
-                            ${chat.name}
-                        </div>
-                        <div class="bg-gray-200 text-gray-600 rounded-lg p-3 max-w-xs md:max-w-sm lg:max-w-md xl:max-w-lg inline-block">
-                            ${chat.message ? chat.message : "Unknown sender"}
-                        </div>
-                    </div>`
-                        : `<div class="mt-5 flex flex-col items-start" key="${index}">
-                        <div class="text-gray-500 text-sm pl-2">
-                            ${chat.name}
-                        </div>
-                        <div class="bg-blue-600 text-white rounded-lg p-3 max-w-xs md:max-w-sm lg:max-w-md xl:max-w-lg inline-block">
-                            ${chat.message ? chat.message : "Unknown sender"}
-                        </div>
-                    </div>`
-                }`;
-                })
-                .join("");
-        }
+        
+        ws.current = new WebSocket("ws://localhost:3000/api/ws/chat");
+
+        ws.current.onopen = () => {
+            console.log("ws opened");
+            if (ws.current !== null) {
+                ws.current.send("test");
+            };
+        };
+
+        ws.current.onclose = () => console.log("ws closed");
+
+        return () => {
+            if (ws.current && ws.current.readyState !== WebSocket.CLOSED) {
+                ws.current.close();
+            }
+        };
+
+        // };
+
+        // if (chatHistoryRef.current) {
+        //     chatHistoryRef.current.innerHTML = connectedChats[
+        //         selectedIndexChat
+        //     ].history
+        //         ?.map((chat, index) => {
+        //             return `
+        //         ${
+        //             chat.name === "You"
+        //                 ? `<div class="mt-5 flex flex-col items-end" key="${index}">
+        //                 <div class="text-gray-500 text-sm pr-2">
+        //                     ${chat.name}
+        //                 </div>
+        //                 <div class="bg-gray-200 text-gray-600 rounded-lg p-3 max-w-xs md:max-w-sm lg:max-w-md xl:max-w-lg inline-block">
+        //                     ${chat.message ? chat.message : "Unknown sender"}
+        //                 </div>
+        //             </div>`
+        //                 : `<div class="mt-5 flex flex-col items-start" key="${index}">
+        //                 <div class="text-gray-500 text-sm pl-2">
+        //                     ${chat.name}
+        //                 </div>
+        //                 <div class="bg-blue-600 text-white rounded-lg p-3 max-w-xs md:max-w-sm lg:max-w-md xl:max-w-lg inline-block">
+        //                     ${chat.message ? chat.message : "Unknown sender"}
+        //                 </div>
+        //             </div>`
+        //         }`;
+        //         })
+        //         .join("");
+        // }
     }, [selectedIndexChat]);
 
     const currentUser = {
