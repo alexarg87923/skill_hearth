@@ -1,5 +1,6 @@
 import { UserRepository } from '../repositories/user.repository';
 import { IUser } from '../models/user.model';
+import { IChatMessage } from '../models/chat_history';
 import { validateSignUp, validateLogin, validateWizard } from '../validation/userValidation';
 import bcrypt from 'bcryptjs';
 import { CONSTANTS } from '../utils/constants';
@@ -8,6 +9,7 @@ import { Types } from 'mongoose';
 import { redisClient } from "../config/redis";
 import { v4 as uuidv4 } from 'uuid';
 import type { Session, SessionData } from 'express-session';
+import { validateChatMessage } from '../validation/chatValidation';
 
 interface ILoginData {
     email: string;
@@ -127,12 +129,19 @@ export class UserService {
         };
     };
 
-    async get_chat_history(session: Session & Partial<SessionData>): Promise<Array<{to: Types.ObjectId | string, from: Types.ObjectId | string, message: string, timestamp: string }> | undefined> {
+    async get_chat_history(session: Session & Partial<SessionData>): Promise<Array<IChatMessage> | undefined> {
         return;
     };
 
-    async save_message(session: Session & Partial<SessionData>, formData: {to: Types.ObjectId | string, message: string, timestamp: string }): Promise<boolean> {
-        return !!(await this.userRepository.save_message({from: session.id, ...formData}));
+    async save_message(userSession: Session & Partial<SessionData>, formData: Partial<IChatMessage>): Promise<boolean> {
+        const validationResult = validateChatMessage(formData);
+
+        if (validationResult.error) {
+            logger.error(`SAVE MESSAGE: ${validationResult.error.message}`);
+            return false;
+        };
+
+        return !!(await this.userRepository.save_message({from: new Types.ObjectId(userSession.id), to: new Types.ObjectId(formData.to!), message: formData.message!, timestamp: new Date() }));
     };
 
     async get_num_of_users(num: number, session: Session & Partial<SessionData>, users_to_avoid: Array<string> = []): Promise<Array<IUser> | undefined> {

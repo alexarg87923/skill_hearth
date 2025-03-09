@@ -1,5 +1,6 @@
 import { logger } from '../utils/logger';
 import { User, IUser } from '../models/user.model';
+import { ChatHistory, IChatMessage } from '../models/chat_history';
 import { Skill } from '../models/skill.model';
 import { SkillHas } from '../models/skill_has.model';
 import { SkillLookingFor } from '../models/skill_looking_for.model';
@@ -255,7 +256,11 @@ export class UserRepository {
         return;
     };
 
-    async save_message(formData: {to: Types.ObjectId | string, from: Types.ObjectId | string, message: string, timestamp: string }) : Promise<boolean> {
-        return false;
+    async save_message(formData: IChatMessage) : Promise<boolean> {
+        const result = await ChatHistory.create(formData);
+        if (result !== null && result !== undefined) {
+            return true;
+        };
+        return false
     };
 };

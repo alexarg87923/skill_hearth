@@ -33,6 +33,7 @@
     "express-session": "^1.18.1",
     "express-ws": "^5.0.2",
     "joi": "^17.13.3",
+    "joi-objectid": "^4.0.2",
     "joi-password-complexity": "^5.2.0",
     "mongoose": "^8.9.5",
     "redis": "^4.7.0",
