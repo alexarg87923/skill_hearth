@@ -2,7 +2,7 @@
 import mongoose, { Types } from 'mongoose';
 
 export interface IRelationship {
-    _id?: Types.ObjectId;
+    _id: Types.ObjectId;
     user1_id: Types.ObjectId;
     user2_id: Types.ObjectId;
     status: "pending" | "matched" | "not_interested"

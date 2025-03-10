@@ -2,7 +2,7 @@
 import mongoose, { Types } from 'mongoose';
 
 export interface IChatMessage {
-    _id?: Types.ObjectId;
+    _id: Types.ObjectId;
     to: Types.ObjectId;
     from: Types.ObjectId;
     message: string;

@@ -17,6 +17,8 @@ router.get('/verify-session', csrfProtect, async (req: Request, res: Response): 
 
 router.get('/get_token', csrfProtect, async (req: Request, res: Response): Promise<void> => userController.get_token(req, res));
 
+router.get('/verify_email/:token', csrfProtect, async (req: Request, res: Response): Promise<void> => userController.verify_email(req, res));
+
 // csrf protection not needed for logout
 router.post('/logout', async (req: Request, res: Response): Promise<void> => userController.logout(req, res));
 

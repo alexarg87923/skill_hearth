@@ -2,7 +2,7 @@
 import mongoose, { Types } from 'mongoose';
 
 export interface IRelationshipHistory {
-    _id?: Types.ObjectId;
+    _id: Types.ObjectId;
     relationship_id: Types.ObjectId;
     previous_status: "pending" | "matched" | "not_interested" | "created";
     new_status: "pending" | "matched" | "not_interested";

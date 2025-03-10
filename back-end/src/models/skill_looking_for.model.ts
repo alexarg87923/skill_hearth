@@ -2,7 +2,7 @@
 import mongoose, { Types } from 'mongoose';
 
 export interface ISkillLookingFor {
-    _id?: Types.ObjectId;
+    _id: Types.ObjectId;
     user_id: Types.ObjectId;
     skill_id: Types.ObjectId;
 };

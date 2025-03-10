@@ -98,11 +98,11 @@ export class UserRepository {
         return updatedUser;
     };
 
-    async findUserByEmail(email: string): Promise<Partial<IUser> | null> {
+    async findUserByEmail(email: string): Promise<IUser | null> {
         return (await User.findOne({ email: email }));
     };
 
-    async createUser(user: Partial<IUser>): Promise<Partial<IUser> | null> {
+    async createUser(user: Partial<IUser>): Promise<IUser | null> {
         return (await User.create(user));
     };
 
@@ -205,7 +205,7 @@ export class UserRepository {
         ]);
     };
 
-    async handleStatusUpdate(user_id: string, match_id: string, status: string) {
+    async handleStatusUpdate(user_id: string, match_id: string, status: string): Promise<void> {
         console.log(user_id, match_id);
         let relationship_row = await Relationship.findOne({
             $or: [
@@ -242,21 +242,38 @@ export class UserRepository {
                 throw new Error("Failed to create relationship record");
             };
         };
-
-        await RelationshipHistory.create({
+        
+        const historyRow = await RelationshipHistory.create({
             relationship_id: relationship_row._id,
             previous_status,
             new_status: updated_status,
             changed_by: user_id,
             changed_at: new Date()
         });
+        
+        if (!historyRow) {
+            throw new Error("Failed save status change to history");
+        };
     };
 
     async verify_user_email(uuid: string): Promise<undefined> {
         return;
     };
 
-    async save_message(formData: IChatMessage) : Promise<boolean> {
+    async get_messages(uuid: Types.ObjectId) : Promise<Array<IChatMessage> | undefined> {
+        return await ChatHistory.find(
+            { 
+                $or: [{ to: new Types.ObjectId(uuid) }, { from: new Types.ObjectId(uuid) }],
+            },
+            {
+                $sort: {
+                    timestamp: 1
+                }
+            }
+        );
+    };
+    
+    async save_message(formData: Partial<IChatMessage>) : Promise<boolean> {
         const result = await ChatHistory.create(formData);
         if (result !== null && result !== undefined) {
             return true;

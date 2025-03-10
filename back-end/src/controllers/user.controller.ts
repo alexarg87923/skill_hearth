@@ -54,8 +54,10 @@ export class UserController {
         logger.info('Entered signup API endpoint...');
         try {
             const createdUserRecord = await this.userService.signup(req.body);
-
+            
             if (createdUserRecord) {
+                const emailVerificationLink = await this.userService.get_email_verification_link(createdUserRecord._id.toString());
+
                 logger.info(`User was successfully made! ${createdUserRecord}`);
                 res.sendStatus(201);
                 return;

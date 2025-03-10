@@ -1,28 +1,33 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import UserContext from "../provider/UserProvider";
 import { BiSolidSend } from "react-icons/bi";
+import backend from "../components/backend";
 
-interface IMessage {
-    name: string;
+interface IChat {
+    to: string;
+    from: string;
     message: string;
-}
-
-interface chatUser {
-    name: string;
-    lastMessage?: string;
     timeStamp: string;
-    history: Array<IMessage>;
 }
 
 const dashboard: React.FC = () => {
     const { userContext } = useContext(UserContext);
     // const [hideEmailVer, setHideEmailVer] = useState(false);
-    const [selectedIndexChat, setSelectedIndexChat] = useState(0);
-    const chatHistoryRef = useRef<HTMLDivElement | null>(null);
+    const [selectedUserId, setSelectedUserId] = useState(String);
+    const [chatList, setChatList] = useState<Record<string, {name: string, lastMessage: string, chats: IChat[], lastMessageTimeStamp: string}>>({});
     const ws = useRef<WebSocket | null>(null);
 
     useEffect(() => {
         console.log("Loaded dashboard page...");
+
+        const fetch_message_list_and_populate = async () => {
+            const response = await backend.get("/api/dashboard");
+            if (response.status === 200 && Array.isArray(response.data.messageList) && response.data.messageList.length >= 0) {
+                setChatList(response.data.messageList);
+            };
+        };
+
+        fetch_message_list_and_populate();
         
         ws.current = new WebSocket("ws://localhost:3000/api/ws/chat");
 
@@ -41,76 +46,11 @@ const dashboard: React.FC = () => {
             }
         };
 
-        // };
+    }, []);
 
-        // if (chatHistoryRef.current) {
-        //     chatHistoryRef.current.innerHTML = connectedChats[
-        //         selectedIndexChat
-        //     ].history
-        //         ?.map((chat, index) => {
-        //             return `
-        //         ${
-        //             chat.name === "You"
-        //                 ? `<div class="mt-5 flex flex-col items-end" key="${index}">
-        //                 <div class="text-gray-500 text-sm pr-2">
-        //                     ${chat.name}
-        //                 </div>
-        //                 <div class="bg-gray-200 text-gray-600 rounded-lg p-3 max-w-xs md:max-w-sm lg:max-w-md xl:max-w-lg inline-block">
-        //                     ${chat.message ? chat.message : "Unknown sender"}
-        //                 </div>
-        //             </div>`
-        //                 : `<div class="mt-5 flex flex-col items-start" key="${index}">
-        //                 <div class="text-gray-500 text-sm pl-2">
-        //                     ${chat.name}
-        //                 </div>
-        //                 <div class="bg-blue-600 text-white rounded-lg p-3 max-w-xs md:max-w-sm lg:max-w-md xl:max-w-lg inline-block">
-        //                     ${chat.message ? chat.message : "Unknown sender"}
-        //                 </div>
-        //             </div>`
-        //         }`;
-        //         })
-        //         .join("");
-        // }
-    }, [selectedIndexChat]);
-
-    const currentUser = {
-        name: userContext?.name || ""
-        // skillset: userContext?.skillset || [],
-        // bio: userContext?.bio || ''
-    };
-
-    const connectedChats: chatUser[] = [
-        {
-            name: "Maria Garcia",
-            timeStamp: "2:45 PM",
-            history: [
-                { name: "You", message: "hey" },
-                { name: "Maria", message: "hi" },
-                { name: "You", message: "hows the project going" },
-                {
-                    name: "Maria",
-                    message: "good good ive been stuck on this one bug"
-                },
-                { name: "You", message: "oh really can i take a look" }
-            ]
-        },
-        {
-            name: "Michael Brown",
-            lastMessage: "Looking forward to our next meeting.",
-            timeStamp: "1:30 PM",
-            history: []
-        },
-        {
-            name: "Sarah Lee",
-            lastMessage: "Can you share the design file?",
-            timeStamp: "12:15 PM",
-            history: []
-        }
-    ];
-
-    const selectChat = (index: number) => {
-        alert(`Selected ${index}th chat!`);
-        setSelectedIndexChat(index);
+    const selectChat = (uuid: string) => {
+        alert(`Selected ${uuid} chat!`);
+        setSelectedUserId(uuid);
     };
 
     //   const clipPathValue = "polygon(74.8% 41.9%, 97.2% 73.2%, 100% 34.9%, 92.5% 0.4%, 87.5% 0%, 75% 28.6%, 58.5% 54.6%, 50.1% 56.8%, 46.9% 44%, 48.3% 17.4%, 24.7% 53.9%, 0% 27.9%, 11.9% 74.2%, 24.9% 54.1%, 68.6% 100%, 74.8% 41.9%)";
@@ -153,7 +93,7 @@ const dashboard: React.FC = () => {
                             Profile
                         </h1>
                         <h2 className="text-lg font-semibold">
-                            {currentUser.name}
+                            {userContext ? userContext.name : ""}
                         </h2>
                         {/* <p className="text-gray-300">{currentUser.bio}</p> */}
                         <h3 className="text-sm font-medium text-gray-300 mt-4 mb-2">
@@ -165,45 +105,34 @@ const dashboard: React.FC = () => {
 					))}
 				</ul> */}
                     </div>
-
-                    {/* Suggestions to Connect */}
                     <h2 className="text-lg font-bold text-gray-100 mb-4">
                         Chats
                     </h2>
-                    {connectedChats.map((chat, index) => (
+                    {chatList ? Object.keys(chatList).map((uuid) => (
                         <div
-                            key={index}
-                            onClick={() => selectChat(index)}
-                            className={`flex items-center justify-between mb-4 p-4 rounded-lg hover:cursor-pointer ${index === selectedIndexChat ? "bg-blue-600" : "bg-gray-700"}`}
+                            key={uuid}
+                            onClick={() => selectChat(uuid)}
+                            className={`flex items-center justify-between mb-4 p-4 rounded-lg hover:cursor-pointer ${uuid === selectedUserId ? "bg-blue-600" : "bg-gray-700"}`}
                         >
                             <div>
                                 <h3 className="text-lg font-semibold text-gray-100">
-                                    {chat.name}
+                                    {chatList[uuid].name}
                                 </h3>
                                 <p
-                                    className={`text-sm truncate ${index === selectedIndexChat ? "text-gray-100" : "text-gray-500"}`}
+                                    className={`text-sm truncate ${uuid === selectedUserId ? "text-gray-100" : "text-gray-500"}`}
                                 >
-                                    {chat.lastMessage
-                                        ? chat.lastMessage
-                                        : chat?.history[
-                                                chat?.history?.length - 1 !==
-                                                undefined
-                                                    ? chat?.history?.length - 1
-                                                    : 0
-                                            ].message
-                                          ? chat?.history[
-                                                chat?.history?.length - 1
-                                            ].message
-                                          : ""}
+                                    {chatList[uuid].lastMessage
+                                        ? chatList[uuid].lastMessage
+                                        : ""}
                                 </p>
                             </div>
                             <span
-                                className={`text-sm ${index === selectedIndexChat ? "text-gray-100" : "text-gray-500"} `}
+                                className={`text-sm ${uuid === selectedUserId ? "text-gray-100" : "text-gray-500"} `}
                             >
-                                {chat.timeStamp}
+                                {chatList[uuid].lastMessageTimeStamp}
                             </span>
                         </div>
-                    ))}
+                    )) : null}
                 </div>
 
                 {/* Main Content */}
@@ -212,7 +141,21 @@ const dashboard: React.FC = () => {
                         Chats
                     </h1>
                     <div className="bg-gray-800 shadow-md p-6 rounded-lg">
-                        <div ref={chatHistoryRef}></div>
+                        <div>
+                        {selectedUserId ? chatList[selectedUserId].chats.map((chat, index) => {
+                            return <div className={`mt-5 flex flex-col ${chat.from === "You" ? "items-end" : "items-start"}`} key={index}>
+                                <div className={`text-gray-500 text-sm ${chat.from === "You" ? "pr-2" : "pl-2"}`}>
+                                    ${chat.from}
+                                </div>
+                                <div className={`${chat.from === "You" ? "bg-blue-600 text-gray-600" : "bg-gray-200 text-white"}  rounded-lg p-3 max-w-xs md:max-w-sm lg:max-w-md xl:max-w-lg inline-block`}>
+                                    ${chat.message ? chat.message : "Unknown sender"}
+                                </div>
+                            </div>
+                        })
+                        : 
+                        null
+                        }
+                        </div>
                         <div className="flex justify-end">
                             <input className="py-3 mt-6 px-5 w-full bg-gray-600 focus-visible:outline-none"></input>
                             <button className=" ms-4 mt-6 text-4xl text-blue-600">

@@ -58,7 +58,7 @@ export class UserService {
         }
     };
 
-    async signup(formData: ISignUpData): Promise<Partial<IUser> | null | undefined> {
+    async signup(formData: ISignUpData): Promise<IUser | null | undefined> {
         const result = validateSignUp(formData);
 
         if (result.error) {
@@ -129,8 +129,12 @@ export class UserService {
         };
     };
 
-    async get_chat_history(session: Session & Partial<SessionData>): Promise<Array<IChatMessage> | undefined> {
-        return;
+    async get_chat_history(userSession: Session & Partial<SessionData>): Promise<Array<IChatMessage> | undefined> {
+        const chat_history = await this.userRepository.get_messages(new Types.ObjectId(userSession.id));
+
+        if (chat_history !== undefined) {
+            return chat_history
+        };
     };
 
     async save_message(userSession: Session & Partial<SessionData>, formData: Partial<IChatMessage>): Promise<boolean> {
@@ -141,7 +145,7 @@ export class UserService {
             return false;
         };
 
-        return !!(await this.userRepository.save_message({from: new Types.ObjectId(userSession.id), to: new Types.ObjectId(formData.to!), message: formData.message!, timestamp: new Date() }));
+        return !!(await this.userRepository.save_message({from: new Types.ObjectId(userSession.id), to: new Types.ObjectId(formData.to), message: formData.message, timestamp: new Date() }));
     };
 
     async get_num_of_users(num: number, session: Session & Partial<SessionData>, users_to_avoid: Array<string> = []): Promise<Array<IUser> | undefined> {
@@ -172,7 +176,12 @@ export class UserService {
         };
     };
 
-    async send_email_verification(user_id: string): Promise<Partial<IUser> | undefined> {
+    async send_email_verification(verification_link: string): Promise<undefined> {
+        // await redisClient.setEx(`verify:${uuidv4()}`, 900, user_id);
+        return;
+    };
+
+    async get_email_verification_link(user_id: string): Promise<undefined> {
         await redisClient.setEx(`verify:${uuidv4()}`, 900, user_id);
         return;
     };
