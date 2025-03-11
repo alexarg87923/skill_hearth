@@ -176,23 +176,25 @@ export class UserService {
         };
     };
 
-    async send_email_verification(verification_link: string, user_id: String): Promise<boolean> {
+    async send_email_verification(verification_link: string, user_id: string): Promise<boolean> {
         //
-        // TO DO: create email verification link and set up the redis-cache to verify against it later
+        // TO DO: send email verification link and set up in redis cache
         //
-        // await redisClient.setEx(`verify:${uuidv4()}`, 900, user_id);
+        await redisClient.setEx(`verify:${uuidv4()}`, 900, user_id);
         return false;
     };
     
     async get_email_verification_link(user_id: string): Promise<string> {
         //
-        // TO DO: verify that the entry is in redis cache
+        // TO DO: create email verification link and set up the redis-cache to verify against it later
         //
-        await redisClient.setEx(`verify:${uuidv4()}`, 900, user_id);
         return "";
     };
-
+    
     async verify_token(token: string): Promise<Boolean> {
+        //
+        // TO DO: verify that the entry is in redis cache
+        //
         const verified_user_id = await redisClient.get(`verify:${token}`);
         if (verified_user_id === null) {
             return false;

@@ -69,7 +69,7 @@ export class UserController {
                 //
                 //
 
-                this.userService.send_email_verification(emailVerificationLink, created_user_id);
+                await this.userService.send_email_verification(emailVerificationLink, created_user_id);
 
                 logger.info(`User was successfully made! ${createdUserRecord}`);
                 res.sendStatus(201);
