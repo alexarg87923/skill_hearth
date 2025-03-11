@@ -28,6 +28,11 @@ const dashboard: React.FC = () => {
         };
 
         fetch_message_list_and_populate();
+
+
+        //
+        // TO DO: clean up websocket logic and shape up the logic in the front-end and back-end
+        //
         
         ws.current = new WebSocket("ws://localhost:3000/api/ws/chat");
 
