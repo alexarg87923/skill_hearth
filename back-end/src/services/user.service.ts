@@ -183,8 +183,11 @@ export class UserService {
         // await redisClient.setEx(`verify:${uuidv4()}`, 900, user_id);
         return false;
     };
-
+    
     async get_email_verification_link(user_id: string): Promise<string> {
+        //
+        // TO DO: verify that the entry is in redis cache
+        //
         await redisClient.setEx(`verify:${uuidv4()}`, 900, user_id);
         return "";
     };
