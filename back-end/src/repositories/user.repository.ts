@@ -261,6 +261,9 @@ export class UserRepository {
     };
 
     async get_messages(uuid: Types.ObjectId) : Promise<Array<IChatMessage> | undefined> {
+        //
+        // TO DO: properly shape the data so it follows the structure expected in the front-end:
+        // const [chatList, setChatList] = useState<Record<string, {name: string, lastMessage: string, chats: IChat[], lastMessageTimeStamp: string}>>({});
         return await ChatHistory.find(
             { 
                 $or: [{ to: new Types.ObjectId(uuid) }, { from: new Types.ObjectId(uuid) }],
@@ -274,6 +277,9 @@ export class UserRepository {
     };
     
     async save_message(formData: Partial<IChatMessage>) : Promise<boolean> {
+        //
+        // TO DO: ensure this endpoint properly saved the msg in the DB
+        //
         const result = await ChatHistory.create(formData);
         if (result !== null && result !== undefined) {
             return true;
