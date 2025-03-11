@@ -56,7 +56,20 @@ export class UserController {
             const createdUserRecord = await this.userService.signup(req.body);
 
             if (createdUserRecord) {
-                const emailVerificationLink = await this.userService.get_email_verification_link(createdUserRecord._id.toString());
+                const created_user_id = createdUserRecord._id.toString();
+                //
+                // TO DO: make email verification link
+                //
+
+                const emailVerificationLink = await this.userService.get_email_verification_link(created_user_id);
+
+                //
+                //
+                //  TODO: send email verification here
+                //
+                //
+
+                this.userService.send_email_verification(emailVerificationLink, created_user_id);
 
                 logger.info(`User was successfully made! ${createdUserRecord}`);
                 res.sendStatus(201);
@@ -146,14 +159,6 @@ export class UserController {
 
                 if (completedUserProfile) {
                     logger.info('Successfully created user profile...');
-
-                    //
-                    //
-                    //  TODO: send email verification here
-                    //
-                    //
-
-                    this.userService.send_email_verification(userSession.id);
 
                     req.session.user = { id: completedUserProfile._id, name:completedUserProfile.first_name, onboarded: completedUserProfile.onboarded, interests: completedUserProfile.interests, skills: completedUserProfile.skills };
                     res.status(200).json({ user: {name:completedUserProfile.first_name, onboarded: completedUserProfile.onboarded} });
