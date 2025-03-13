@@ -4,7 +4,6 @@ import { BiSolidSend } from "react-icons/bi";
 import backend from "../components/backend";
 
 interface IChat {
-    to: string;
     from: string;
     message: string;
     timeStamp: string;
@@ -16,6 +15,13 @@ const dashboard: React.FC = () => {
     const [selectedUserId, setSelectedUserId] = useState(String);
     const [chatList, setChatList] = useState<Record<string, {name: string, lastMessage: string, chats: IChat[], lastMessageTimeStamp: string}>>({});
     const ws = useRef<WebSocket | null>(null);
+
+    const send_message = async (uuid: string, new_message: string) => {
+        const response = await backend.get("/api/dashboard");
+        if (response.status === 200) {
+            setChatList((prev) => ({...prev, [uuid]: ({...prev[uuid], chats: response.data.chats })}));
+        };
+    };
 
     useEffect(() => {
         console.log("Loaded dashboard page...");
